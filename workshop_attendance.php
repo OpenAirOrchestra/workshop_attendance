@@ -80,7 +80,7 @@ class workshopAttendance {
 
 		$export_nonce = wp_create_nonce('export_nonce');
 		$export_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/csv.php";
-		$today = date("j M o");
+		$today = date("j M o", time() - 8 * 60 * 60 /* we are GMT-8 */);
 		$long_ago = ("1 Jan 2001");
 ?>
 	<div class="wrap">
@@ -149,7 +149,7 @@ class workshopAttendance {
 		$table_name = $wpdb->prefix . "workshops";
 
 		if (! $workshop_id) {
-			$today = date( 'Y-m-d' );
+			$today = date( 'Y-m-d' , time() - 8 * 60 * 60 /* we are GMT-8 */);
 			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s", $today);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
 			$workshop_id = $workshop['id'];
@@ -222,9 +222,9 @@ class workshopAttendance {
 ?>
 	<div class="wrap">
 		<div id="icon-edit" class="icon32"><br/></div>
-		<h2>New Workshop
-		</h2>
+		<h2>New Workshop</h2>
 <?php
+
 		global $wpdb;
 		$table_name = $wpdb->prefix . "workshops";
 		$sql = $wpdb->prepare("SELECT column_name 'Column Name',
@@ -234,8 +234,8 @@ class workshopAttendance {
 
 		$columns = $wpdb->get_results( $sql, ARRAY_A );
 
-		$workshop = array( 'date' => date("j M o"),
-				   'title' => date("l") . " Workshop, " . date("j F"));
+		$workshop = array( 'date' => date("j M o", time() - 8 * 60 * 60 /* we are GMT-8 */),
+				   'title' => date("l", time() - 8 * 60 * 60 /* we are GMT-8 */) . " Workshop, " . date("j F", time() - 8 * 60 * 60 /* we are GMT-8 */));
 		$this->workshopFormView = new workshopFormView;
 		$this->workshopFormView->render_form($this->list_uri(), $workshop, $columns);
 ?>
