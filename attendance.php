@@ -217,7 +217,18 @@ class workshopAttendees {
 			
 ?>
 			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input></td>
+				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
+<?php
+			if ($user_info->user_description) {
+?>
+			<div class="details">
+
+				<?php echo $user_info->user_description; ?>
+			</div>
+<?php
+			}
+?>
+			</td>
 <?php
 			if ($user_info->first_name) {
 ?>
@@ -240,6 +251,7 @@ class workshopAttendees {
 			}
 ?>
 				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $user->user_email; ?>"/>
+
 			</tr>
 <?php
 		}
@@ -256,7 +268,20 @@ class workshopAttendees {
 			$count = $count + 1;
 ?>
 			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" checked="checked" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $attendee['firstname'] . " " . $attendee['lastname']; ?></input></td>
+				<input onclick="checkClicked(this, event)" type="checkbox" checked="checked" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $attendee['firstname'] . " " . $attendee['lastname']; ?></input>
+
+<?php
+			if ($attendee['notes']) {
+?>
+			<div class="details">
+
+				<?php echo $attendee['notes']; ?>
+			</div>
+<?php
+			}
+?>
+
+</td>
 				<input type="hidden" name="firstname_<?php echo $count; ?>" value="<?php echo $attendee['firstname']; ?>"/>
 				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $attendee['lastname']; ?>"/>
 				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $attendee['email']; ?>"/>

@@ -7,6 +7,13 @@ tr.absent {
 	background-color: #EE9090;
 } 
 
+div.details {
+	height:1EM;
+	font-size: 12px;
+	overflow:hidden;
+	text-indent:18px;
+}
+
 /* iphone-ish */
 body {
 	text-align: center;
