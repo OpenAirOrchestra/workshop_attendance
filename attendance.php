@@ -189,7 +189,7 @@ class workshopAttendees {
 		}
 
 ?>
-	<h2>Members</h2>
+	<h2><a name="#members">Members</a></h2>
 	<table>
 <?php
 	$authors = get_users('orderby=nicename');
@@ -259,7 +259,7 @@ class workshopAttendees {
 ?>
 	</table>
 
-	<h2>Non-Members</h2>
+	<h2><a name="#nonmembers">Non-Members</a></h2>
 	<table>
 <?php
 	$class = "present";
@@ -331,7 +331,17 @@ $workshop_id = $_REQUEST['workshop'];
 		<LINK href="css/attendance.css" rel="stylesheet" type="text/css">
 		<meta name="viewport" content="width=device-width" />
 	</head>
+<?php
+		if ($_POST['submit']) {
+?>
+	<body onload="window.scrollTo(0, document.height);">
+<?php
+		} else {
+?>
 	<body>
+<?php
+		}
+?>
 <?php
 	if (current_user_can('edit_pages')) {
 		$WORKSHOPATTENDEES->render_contents($workshop_id);
