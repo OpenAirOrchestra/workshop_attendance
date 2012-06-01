@@ -28,11 +28,11 @@ class workshopAttendees {
 					$workshop_data = array();
 					$workshop_format = array();
 	
-					$date = date( 'Y-m-d');
+					$date = date( 'Y-m-d', time() - 8 * 60 * 60 /* we are GMT-8 */);
 					$workshop_data['date'] = $date;
 					array_push($workshop_format, "%s");
 
-					$title = date( 'l' ) . ' Workshop, ' . date( 'j F');
+					$title = date( 'l', time() - 8 * 60 * 60 /* we are GMT-8 */ ) . ' Workshop, ' . date( 'j F', time() - 8 * 60 * 60 /* we are GMT-8 */);
 					$workshop_data['title'] = $title;
 					array_push($workshop_format, "%s");
 
@@ -135,7 +135,7 @@ class workshopAttendees {
 		$this->process_post();
 
 		if (! $workshop_id) {
-			$today = date( 'Y-m-d', time() );
+			$today = date( 'Y-m-d', time() - 8 * 60 * 60 /* we are GMT-8 */ );
 			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s", $today);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
 			$workshop_id = $workshop['id'];
