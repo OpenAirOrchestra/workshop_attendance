@@ -189,7 +189,7 @@ class workshopAttendees {
 		}
 
 ?>
-	<h2><a name="#members">Members</a></h2>
+	<h2><a name="#participants">Participants</a></h2>
 	<table>
 <?php
 	$authors = get_users('orderby=nicename');
@@ -259,7 +259,7 @@ class workshopAttendees {
 ?>
 	</table>
 
-	<h2><a name="#nonmembers">Non-Members</a></h2>
+	<h2><a name="#newfolks">New Folks</a></h2>
 	<table>
 <?php
 	$class = "present";
