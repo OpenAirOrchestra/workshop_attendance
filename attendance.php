@@ -50,6 +50,7 @@ class workshopAttendees {
 					$id = $_POST[ 'id_' . $i ];
 				
 					$attending = $_POST[ 'attending_' . $i ];
+					$user_id = $_POST[ 'user_id_' . $i ];
 					$firstname = $_POST[ 'firstname_' . $i ];
 					$lastname = $_POST[ 'lastname_' . $i ];
 					$email = $_POST[ 'email_' . $i ];
@@ -60,6 +61,8 @@ class workshopAttendees {
 					$format = array();
 
 					$data['workshopid'] = $workshop_id;
+					array_push($format, "%d");
+					$data['user_id'] = $user_id;
 					array_push($format, "%d");
 					$data['firstname'] = $firstname;
 					array_push($format, "%s");
@@ -73,7 +76,7 @@ class workshopAttendees {
 					array_push($format, "%s");
 
 
-					if ($attending && !$id && ($firstname || $lastname || $email)) {
+					if ($attending && !$id && ($user_id || $firstname || $lastname || $email)) {
 						$wpdb->insert( $table_name,
 							$data,
 							$format);
@@ -229,6 +232,7 @@ class workshopAttendees {
 			}
 ?>
 			</td>
+			<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $user->ID; ?>"/>
 <?php
 			if ($user_info->first_name) {
 ?>

@@ -417,6 +417,7 @@ class workshopAttendance {
 		$sql = "CREATE TABLE $table_name (
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
   			workshopid mediumint(9) NOT NULL,
+			user_id bigint(20),
   			firstname text ,
   			lastname text ,
   			phone text ,
