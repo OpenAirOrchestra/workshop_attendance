@@ -96,6 +96,7 @@ class workshopDetailView {
 			}
 ?>
 					<th>notes</th>
+					<th>new</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -110,6 +111,7 @@ class workshopDetailView {
 			}
 ?>
 					<th>notes</th>
+					<th>new</th>
 				</tr>
 			</tfoot>
 			<tbody>
@@ -141,6 +143,13 @@ class workshopDetailView {
 ?>
 					<td>
 						<?php echo stripslashes($attendee['notes']); ?>
+					</td>
+					<td>
+<?php
+			if (! $attendee['user_id']) {
+					echo "new";
+			}
+?>
 					</td>
 				</td>
 <?php
