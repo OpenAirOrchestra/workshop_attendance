@@ -3,7 +3,7 @@
 Plugin Name: Workshop Attendance
 Plugin URI: http://www.thecarnivalband.com
 Description: A simple workshop attendance plugin for the carnival band
-Version: 1.0
+Version: 1.1
 Author: Darryl Fuller
 Author URI: http://www.thecarnivalband.com
 License: GPL2
@@ -322,31 +322,24 @@ class workshopAttendance {
 		$attendee = 0;
 		$current_user = wp_get_current_user();
 
-		if ($_GET["attendee"]) {
-			$attendee = intval($_GET['attendee']);
-			if ($attendee > 0) {
-				$user_info = get_userdata($attendee);
-				if ($user_info) {
-					$attendee = $user_info->user_email;
-				}
-			}
-		}
-		
    		$table_name = $wpdb->prefix . "workshops";
 	
 		$all_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name;" ) );
 		$filtered_count = $all_count;
 
 		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT $offset, $limit");
-
-		if ($attendee && strlen($attendee) > 0) {
+ 
+		if ($_GET["attendee"]) {
+			$attendee = intval($_GET['attendee']);
+		}
+		if ($attendee > 0) {
    			$attendance_table_name = $wpdb->prefix . "workshop_attendance";
 
 			$sql = $wpdb->prepare("
 				SELECT * 
 				FROM $attendance_table_name, $table_name
 				WHERE 
-					$attendance_table_name.email = %s
+					$attendance_table_name.user_id = %d
 				AND 
 					$table_name.id = $attendance_table_name.workshopid
 				", $attendee);
@@ -355,7 +348,8 @@ class workshopAttendance {
 
 
 		$table_name = $wpdb->prefix . "workshop_attendance";
-		$sql =  $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE `email` = %s;", $current_user->user_email );
+
+		$sql =  $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE `user_id` = %d;", $current_user->ID );
 		$my_count = $wpdb->get_var( $sql  );
 
 		$this->workshopTableView = new workshopTableView;

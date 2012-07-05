@@ -98,7 +98,7 @@ class workshopAttendees {
 
 	/* 
 	 * Returns attendees of workshop in database rows
-	 * indexed by email
+	 * sorted by last name
 	 */
 	function attendee_rows( $workshop_id ) {
 		global $wpdb;

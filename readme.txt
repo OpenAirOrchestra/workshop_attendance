@@ -4,7 +4,7 @@ Donate link: http://example.com/
 Tags: users, logging
 Requires at least: 3.2
 Tested up to: 3.2.1
-Stable tag: 1.0
+Stable tag: 1.1
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -30,4 +30,6 @@ Taking attendance at workshops was tedious.
 = 1.0 =
 * Initial Version.
 
+= 1.1 = 
+* put user_id into attendance table
 
