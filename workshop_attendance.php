@@ -201,7 +201,7 @@ class workshopAttendance {
 			} else {
 			
    				$table_name = $wpdb->prefix . "workshop_attendance";
-				$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshopid = %d", $workshop_id);
+				$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshopid = %d ORDER BY `lastname`", $workshop_id);
 				$attendees = $wpdb->get_results( $sql, ARRAY_A );
 
 				$this->workshopDetailView = new workshopDetailView;
