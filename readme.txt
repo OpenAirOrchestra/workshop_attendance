@@ -1,6 +1,6 @@
 === Workshop Attendance ===
 Contributors: darrylf
-Donate link: http://example.com/
+Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.2
 Tested up to: 3.2.1
