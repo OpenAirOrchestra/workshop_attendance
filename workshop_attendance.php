@@ -327,7 +327,7 @@ class workshopAttendance {
 		$all_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name;" );
 		$filtered_count = $all_count;
 
-		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT $offset, $limit");
+		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT %d, %d", $offset, $limit);
  
 		if ($_GET["attendee"]) {
 			$attendee = intval($_GET['attendee']);
