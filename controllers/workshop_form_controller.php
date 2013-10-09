@@ -26,10 +26,10 @@ class workshopFormController {
 
    			$table_name = $wpdb->prefix . "workshops";
 
-			$sql = $wpdb->prepare("SELECT column_name 'Column Name',
+			$sql = "SELECT column_name 'Column Name',
 				data_type 'Data Type'
 				FROM information_schema.columns
-				WHERE table_name = '$table_name'");
+				WHERE table_name = '$table_name'";
 
 			$columns = $wpdb->get_results( $sql, ARRAY_A );
 

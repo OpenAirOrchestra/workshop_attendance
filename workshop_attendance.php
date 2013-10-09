@@ -187,10 +187,10 @@ class workshopAttendance {
 			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE id = %d", $workshop_id);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
 
-			$sql = $wpdb->prepare("SELECT column_name 'Column Name',
+			$sql = "SELECT column_name 'Column Name',
 				data_type 'Data Type'
 				FROM information_schema.columns
-				WHERE table_name = '$table_name'");
+				WHERE table_name = '$table_name'";
 
 			$columns = $wpdb->get_results( $sql, ARRAY_A );
 
@@ -227,10 +227,10 @@ class workshopAttendance {
 
 		global $wpdb;
 		$table_name = $wpdb->prefix . "workshops";
-		$sql = $wpdb->prepare("SELECT column_name 'Column Name',
+		$sql = "SELECT column_name 'Column Name',
 			data_type 'Data Type'
 			FROM information_schema.columns
-			WHERE table_name = '$table_name'");
+			WHERE table_name = '$table_name'";
 
 		$columns = $wpdb->get_results( $sql, ARRAY_A );
 
@@ -324,7 +324,7 @@ class workshopAttendance {
 
    		$table_name = $wpdb->prefix . "workshops";
 	
-		$all_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name;" ) );
+		$all_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name;" );
 		$filtered_count = $all_count;
 
 		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT $offset, $limit");
