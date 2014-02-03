@@ -1,5 +1,5 @@
 === Workshop Attendance ===
-Contributors: darrylf, richardk
+Contributors: darrylf, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.2
