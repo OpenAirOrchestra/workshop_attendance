@@ -195,7 +195,7 @@ class workshopAttendees {
 	<h2><a name="#participants">Participants</a></h2>
 	<table>
 <?php
-	$authors = get_users('orderby=nicename');
+	$authors = get_users('orderby=display_name');
 	$count = 0;
 	$rendered_emails = array();
 	foreach ($authors as $user) {
