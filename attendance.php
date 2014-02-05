@@ -97,6 +97,52 @@ class workshopAttendees {
 	}
 
 	/* 
+	 * Returns users in database rows
+	 * sorted by first_name or display_name
+	 */
+	function recent_users() {
+		global $wpdb;
+
+		$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
+								FROM  `wp_users` u
+								JOIN  `wp_usermeta` m ON u.id = m.user_id AND m.meta_key =  'first_name'
+								JOIN  `wp_usermeta` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
+								WHERE u.id <> 1 
+								AND u.id IN 
+								(
+									SELECT DISTINCT a.user_ID
+									FROM `wp_workshop_attendance` a
+									JOIN `wp_workshops` w ON w.id = a.workshopid 
+									AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+								)
+								AND m2.meta_value LIKE '%%author%%'
+								ORDER BY COALESCE( NULLIF( m.meta_value,  '' ) , display_name )", $workshop_id);
+		$recent_users = $wpdb->get_results( $sql, ARRAY_A );
+		return $recent_users;
+	}
+
+	function remaining_users() {
+		global $wpdb;
+
+		$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
+								FROM  `wp_users` u
+								JOIN  `wp_usermeta` m ON u.id = m.user_id AND m.meta_key =  'first_name'
+								JOIN  `wp_usermeta` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
+								WHERE u.id <> 1 
+								AND u.id NOT IN 
+								(
+									SELECT DISTINCT a.user_ID
+									FROM `wp_workshop_attendance` a
+									JOIN `wp_workshops` w ON w.id = a.workshopid 
+									AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+								)
+								AND m2.meta_value LIKE '%%author%%'
+								ORDER BY COALESCE( NULLIF( m.meta_value,  '' ) , display_name )", $workshop_id);
+		$remaining_users = $wpdb->get_results( $sql, ARRAY_A );
+		return $remaining_users;
+	}	
+
+	/* 
 	 * Returns attendees of workshop in database rows
 	 * sorted by last name
 	 */
@@ -182,6 +228,7 @@ class workshopAttendees {
 
 		$attendance_nonce = wp_create_nonce('attendance_nonce');
 ?>
+
 	<form method="post" action="<?php echo plugins_url( 'attendance.php', __FILE__ );?>">
 		<input type="hidden" name="attendance_nonce" value="<?php echo $attendance_nonce; ?>" />
 <?php
@@ -192,22 +239,28 @@ class workshopAttendees {
 		}
 
 ?>
-	<h2><a name="#participants">Participants</a></h2>
+<div class="tabs">
+	<ul>
+	<li class="current"><a href="#recent"><h2>Recent</h2></a></li>
+	<li><a href="#remaining"><h2>Remaining</h2></a></li>
+	<li><a href="#newfolks"><h2>New Folks</h2></a></li>
+	</ul>
+	<div>
+	<div id="recent" class="tab-content">
 	<table>
 <?php
-	$authors = get_users('orderby=display_name');
 	$count = 0;
+	$recent_users = $this->recent_users();
 	$rendered_emails = array();
-	foreach ($authors as $user) {
-		if ($user->ID != 1) {
+	foreach ($recent_users as $user) {
 			$count = $count + 1;
-			$name = $user->display_name;
-			$user_info = get_userdata($user->ID);
-			$attendance_info = $attendees[$user->user_email];
+			$name = $user['display_name'];
+			$user_info = get_userdata($user['ID']);
+			$attendance_info = $attendees[$user['user_email']];
 			$checked = '';
 			$class = "absent";
 
-			array_push($rendered_emails, $user->user_email);
+			array_push($rendered_emails, $user['user_email']);
 			
 			if ($attendance_info) {
 				$checked = 'checked = "checked"';
@@ -232,7 +285,7 @@ class workshopAttendees {
 			}
 ?>
 			</td>
-			<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $user->ID; ?>"/>
+			<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $user['ID']; ?>"/>
 <?php
 			if ($user_info->first_name) {
 ?>
@@ -245,7 +298,7 @@ class workshopAttendees {
 <?php
 			} else {
 ?>
-				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user->display_name; ?>"/>
+				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user['display_name']; ?>"/>
 <?php
 			}
 			if ($attendance_info) {
@@ -254,16 +307,83 @@ class workshopAttendees {
 <?php
 			}
 ?>
-				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $user->user_email; ?>"/>
+				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $user['user_email']; ?>"/>
 
 			</tr>
 <?php
-		}
 	}
 ?>
 	</table>
+	</div>
+	<div id="remaining" class="tab-content">
+	<table>
+<?php
+	$remaining_users = $this->remaining_users();
+	$rendered_emails = array();
+	foreach ($remaining_users as $user) {
+			$count = $count + 1;
+			$name = $user['display_name'];
+			$user_info = get_userdata($user['ID']);
+			$attendance_info = $attendees[$user['user_email']];
+			$checked = '';
+			$class = "absent";
 
-	<h2><a name="#newfolks">New Folks</a></h2>
+			array_push($rendered_emails, $user['user_email']);
+			
+			if ($attendance_info) {
+				$checked = 'checked = "checked"';
+				$class = "present";
+			}
+			if ($user_info->first_name || $user_info->last_name) {
+				$name = $user_info->first_name . ' ' . $user_info->last_name;
+			}
+
+			
+?>
+			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
+				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
+<?php
+			if ($user_info->user_description) {
+?>
+			<div class="details">
+
+				<?php echo $user_info->user_description; ?>
+			</div>
+<?php
+			}
+?>
+			</td>
+			<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $user['ID']; ?>"/>
+<?php
+			if ($user_info->first_name) {
+?>
+				<input type="hidden" name="firstname_<?php echo $count; ?>" value="<?php echo $user_info->first_name; ?>"/>
+<?php
+			}
+			if ($user_info->last_name && strlen($user_info->last_name)) {
+?>
+				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user_info->last_name; ?>"/>
+<?php
+			} else {
+?>
+				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user['display_name']; ?>"/>
+<?php
+			}
+			if ($attendance_info) {
+?>
+				<input type="hidden" name="id_<?php echo $count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
+<?php
+			}
+?>
+				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $user['user_email']; ?>"/>
+
+			</tr>
+<?php
+	}
+?>
+	</table>
+	</div>
+	<div id="newfolks" class="tab-content">
 	<table>
 <?php
 	$class = "present";
@@ -315,7 +435,22 @@ class workshopAttendees {
 				<input type="hidden" name="attending_<?php echo $count; ?>" value="attending"/>
 	</dl>
 			<p><input name="submit" type="submit" value="Update Attendance"></p>
-		</form>
+	</div>
+	</div>	
+</div>
+<script type="text/javascript">
+
+$(document).ready(function(){
+ $(".tabs li").click(function() {
+  $(this).parent().parent().find(".tab-content").hide();
+  var selected_tab = $(this).find("a").attr("href");
+  $(selected_tab).fadeIn();
+  $(this).parent().find("li").removeClass('current');
+  $(this).addClass("current");
+   return false;
+    });
+});</script>
+</form>
 <?php
 	}
 
@@ -332,7 +467,9 @@ $workshop_id = $_REQUEST['workshop'];
 <html>
 	<head>
 		<script type="text/javascript" src="js/attendance.js"></script>
-		<LINK href="css/attendance.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="css/attendance.css" >
+		<link rel="stylesheet" type="text/css" href="css/tab.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<meta name="viewport" content="width=device-width" />
 	</head>
 <?php
