@@ -30,12 +30,12 @@
 	display:block;
 	color:#333;
 	outline:none;
+	text-decoration:none;
 }
 
 .tabs li.current {
-	border-bottom:#F00 1px solid;
+	border-top:#333 1px solid;
 	outline:none;
-
 }
 
 .tab-content {
