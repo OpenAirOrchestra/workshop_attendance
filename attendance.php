@@ -116,7 +116,7 @@ class workshopAttendees {
 	 * filtered by recent attendance if a
 	 * type is specified ('recent' or 'remaining')
 	 */
-	function users($type) {
+	function users($type = NULL) {
 		global $wpdb;
 
 		$users_name = $wpdb->prefix . "users";
