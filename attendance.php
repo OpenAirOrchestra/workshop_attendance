@@ -11,6 +11,7 @@ require_once 'ajaxSetup.php';
 class workshopAttendees {
 	
 	private $count = 0;  //tracks attendee count
+	private $sticky_types = array();
 	/*
  	 * Processes posted data
 	 */
@@ -97,6 +98,11 @@ class workshopAttendees {
 							$wpdb->query( $sql );
 						}
 					}
+					// Remember tab type (we'll make it sticky)
+					if ($user_id) {
+						$sticky_type = $_POST[ 'sticky_type' . $i ];
+						$this->sticky_types[$user_id] = $sticky_type;
+					}
 				}
 				
 			}
@@ -106,6 +112,9 @@ class workshopAttendees {
 	/* 
 	 * Returns users in database rows
 	 * sorted by first_name or display_name
+	 *
+	 * filtered by recent attendance if a
+	 * type is specified ('recent' or 'remaining')
 	 */
 	function users($type) {
 		global $wpdb;
@@ -115,24 +124,12 @@ class workshopAttendees {
 		$workshop_attendance_name = $wpdb->prefix . "workshop_attendance";
 		$workshops_name = $wpdb->prefix . "workshops";
 
-		$sqlFilter = ""; //$type == "recent"
-		if ($type == "remaining")
-		{
-			$sqlFilter = "NOT";
-		}
-		
+		// Unfiltered users sql query.
 		$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
 								FROM  `$users_name` u
 								JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key =  'first_name'
 								JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
 								WHERE u.id <> 1 
-								AND u.id " . $sqlFilter . " IN 
-								(
-									SELECT DISTINCT a.user_ID
-									FROM `$workshop_attendance_name` a
-									JOIN `$workshops_name` w ON w.id = a.workshopid 
-									AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-								)
 								AND 
 									(
 										m2.meta_value LIKE '%%author%%'
@@ -141,6 +138,34 @@ class workshopAttendees {
 									)
 								ORDER BY COALESCE( NULLIF( m.meta_value,  '' ) , display_name )", $workshop_id);
 
+		if ($type == "remaining" || $type == "recent") {
+			// Filtered users sql query.
+			$sqlFilter = ""; //$type == "recent"
+			if ($type == "remaining")
+			{
+				$sqlFilter = "NOT";
+			}
+			$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
+									FROM  `$users_name` u
+									JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key =  'first_name'
+									JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
+									WHERE u.id <> 1 
+									AND u.id " . $sqlFilter . " IN 
+									(
+										SELECT DISTINCT a.user_ID
+										FROM `$workshop_attendance_name` a
+										JOIN `$workshops_name` w ON w.id = a.workshopid 
+										AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+									)
+									AND 
+										(
+											m2.meta_value LIKE '%%author%%'
+											OR m2.meta_value LIKE '%%editor%%'
+											OR m2.meta_value LIKE '%%administrator%%'
+										)
+									ORDER BY COALESCE( NULLIF( m.meta_value,  '' ) , display_name )", $workshop_id);
+		}
+		
 		$users = $wpdb->get_results( $sql, ARRAY_A );
 		return $users;
 	}
@@ -220,17 +245,16 @@ class workshopAttendees {
 
 	/*
 	 * render attendee tab, recent or remaining
+	 * returns updated rendered_emails array.
 	 */
-	 
 	function render_attendees($type, $attendees, $rendered_emails)
 	{
 ?>
 		<table>
 <?php
-		global $count;
 		$users = $this->users($type);
 		foreach ($users as $user) {
-			$count = $count + 1;
+			$this->count = $this->count + 1;
 			$name = $user['display_name'];
 			$user_info = get_userdata($user['ID']);
 			$attendance_info = $attendees[$user['user_email']];
@@ -249,7 +273,7 @@ class workshopAttendees {
 
 ?>
 			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
+				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
 <?php
 			if ($user_info->user_description) {
 ?>
@@ -260,35 +284,37 @@ class workshopAttendees {
 			}
 ?>
 			</td>
-			<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $user['ID']; ?>"/>
+			<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
 <?php
 			if ($user_info->first_name) {
 ?>
-				<input type="hidden" name="firstname_<?php echo $count; ?>" value="<?php echo $user_info->first_name; ?>"/>
+				<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
 <?php
 			}
 			if ($user_info->last_name && strlen($user_info->last_name)) {
 ?>
-				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user_info->last_name; ?>"/>
+				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
 <?php
 			} else {
 ?>
-				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $user['display_name']; ?>"/>
+				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
 <?php
 			}
 			if ($attendance_info) {
 ?>
-				<input type="hidden" name="id_<?php echo $count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
+				<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
 <?php
 			}
 ?>
-				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $user['user_email']; ?>"/>
+				<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
+				<input type="hidden" name="sticky_type<?php echo $this->count; ?>" value="<?php echo $type; ?>"/>
 			</tr>
 <?php
 		}
 ?>
 		</table>
 <?php
+		return $rendered_emails;
 	}
 	
 	/*
@@ -299,7 +325,6 @@ class workshopAttendees {
 		$attendees = $this->attendees( $workshop_id, $attendee_rows );
 
 		global $wpdb;
-		global $count;
 		$attendance_nonce = wp_create_nonce('attendance_nonce');
 ?>
 
@@ -336,34 +361,33 @@ class workshopAttendees {
 	<div id="recent" class="tab-content">
 <?php
 	$rendered_emails = array();
-	$this->render_attendees("recent", $attendees, $rendered_emails);
+	$rendered_emails = $this->render_attendees("recent", $attendees, $rendered_emails);
 ?>	
 	</div>
 	<div id="remaining" class="tab-content">
 <?php
-	$this->render_attendees("remaining", $attendees, $rendered_emails);
-	$count = $count + 1;
+	$rendered_emails = $this->render_attendees("remaining", $attendees, $rendered_emails);
+	$this->count = $this->count + 1;
 ?>	
 	</div>
 	<div id="newfolks" class="tab-content">
 	<dl>
-				<dd><input type="text" name="firstname_<?php echo $count; ?>" title="First Name (Required)"/></dd>
-				<dd><input type="text" name="lastname_<?php echo $count; ?>" title="Last Name"/></dd>
-				<dd><input type="text" name="email_<?php echo $count; ?>" title="Email"/></dd>
-				<dd><input type="text" name="phone_<?php echo $count; ?>" title="Phone"/></dd>
-				<dd>Notes<br><textarea name="notes_<?php echo $count; ?>"></textarea></dd>
-				<input type="hidden" name="attending_<?php echo $count; ?>" value="attending"/>
+				<dd><input type="text" name="firstname_<?php echo $this->count; ?>" title="First Name (Required)"/></dd>
+				<dd><input type="text" name="lastname_<?php echo $this->count; ?>" title="Last Name"/></dd>
+				<dd><input type="text" name="email_<?php echo $this->count; ?>" title="Email"/></dd>
+				<dd><input type="text" name="phone_<?php echo $this->count; ?>" title="Phone"/></dd>
+				<dd>Notes<br><textarea name="notes_<?php echo $this->count; ?>"></textarea></dd>
+				<input type="hidden" name="attending_<?php echo $this->count; ?>" value="attending"/>
 	</dl>
 	<table>
 <?php
-	global $count;
 	$class = "present";
 	foreach ($attendee_rows as $attendee) {
 		if (! in_array($attendee['email'], $rendered_emails)) {
-			$count = $count + 1;
+			$this->count = $this->count + 1;
 ?>
 			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" checked="checked" name="attending_<?php echo $count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $attendee['firstname'] . " " . $attendee['lastname']; ?></input>
+				<input onclick="checkClicked(this, event)" type="checkbox" checked="checked" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $attendee['firstname'] . " " . $attendee['lastname']; ?></input>
 <?php
 			if ($attendee['notes']) {
 ?>
@@ -375,18 +399,18 @@ class workshopAttendees {
 			}
 ?>
 				</td>
-				<input type="hidden" name="user_id_<?php echo $count; ?>" value="<?php echo $attendee['user_id']; ?>"/>
-				<input type="hidden" name="firstname_<?php echo $count; ?>" value="<?php echo $attendee['firstname']; ?>"/>
-				<input type="hidden" name="lastname_<?php echo $count; ?>" value="<?php echo $attendee['lastname']; ?>"/>
-				<input type="hidden" name="email_<?php echo $count; ?>" value="<?php echo $attendee['email']; ?>"/>
-				<input type="hidden" name="phone_<?php echo $count; ?>" value="<?php echo $attendee['phone']; ?>"/>
-				<input type="hidden" name="notes_<?php echo $count; ?>" value="<?php echo stripslashes($attendee['notes']); ?>"/>
-				<input type="hidden" name="id_<?php echo $count; ?>" value="<?php echo stripslashes($attendee['id']); ?>"/>
+				<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $attendee['user_id']; ?>"/>
+				<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $attendee['firstname']; ?>"/>
+				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $attendee['lastname']; ?>"/>
+				<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $attendee['email']; ?>"/>
+				<input type="hidden" name="phone_<?php echo $this->count; ?>" value="<?php echo $attendee['phone']; ?>"/>
+				<input type="hidden" name="notes_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['notes']); ?>"/>
+				<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['id']); ?>"/>
 			</tr>
 <?php
 		}
 	}
-	$count = $count + 1;
+	$this->count = $this->count + 1;
 ?>
 	</table>
 	</div>
