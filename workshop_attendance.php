@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Workshop Attendance
-Plugin URI: http://www.thecarnivalband.com
+Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
 Description: A simple workshop attendance plugin for the carnival band
-Version: 1.1
+Version: 1.2
 Author: DarrylF
 Author URI: http://www.thecarnivalband.com
 License: GPL2
