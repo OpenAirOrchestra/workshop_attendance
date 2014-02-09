@@ -2,9 +2,9 @@
 Contributors: darrylf, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
-Requires at least: 3.2
-Tested up to: 3.2.1
-Stable tag: 1.1
+Requires at least: 3.6
+Tested up to: 3.8.1
+Stable tag: 1.2
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -32,4 +32,11 @@ Taking attendance at workshops was tedious.
 
 = 1.1 = 
 * put user_id into attendance table
+
+= 1.2 =
+* Filter out users with user role.
+* On attendence form, put users who have attended workshops recently on
+  a different tab of the form.
+* Put the add new users functionality on a different tab of the form.
+* Sort users in attendace form by first name.
 
