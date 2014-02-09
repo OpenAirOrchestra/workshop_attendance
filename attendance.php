@@ -252,64 +252,85 @@ class workshopAttendees {
 ?>
 		<table>
 <?php
-		$users = $this->users($type);
+		$users = array();
+		
+		// Use database to filter if we are rendering for the
+		// first time, use sticky types from form data if
+		// we are processing a post.
+		$filter_sticky = false;
+		if (count($this->sticky_types)) {
+			$filter_sticky = true;
+			$users = $this->users();
+		} else {
+			$users = $this->users($type);
+		}
+
+
+
+
 		foreach ($users as $user) {
-			$this->count = $this->count + 1;
-			$name = $user['display_name'];
-			$user_info = get_userdata($user['ID']);
-			$attendance_info = $attendees[$user['user_email']];
-			$checked = '';
-			$class = "absent";
 
-			array_push($rendered_emails, $user['user_email']);
+			if (!$filter_sticky || 
+			    !$user['ID'] ||
+ 			    ($type == $this->sticky_types[$user['ID']])) {
+				$this->count = $this->count + 1;
+				$name = $user['display_name'];
+				$user_info = get_userdata($user['ID']);
+				$attendance_info = $attendees[$user['user_email']];
+				$checked = '';
+				$class = "absent";
+
+				array_push($rendered_emails, $user['user_email']);
+				
+				if ($attendance_info) {
+					$checked = 'checked = "checked"';
+					$class = "present";
+				}
+				if ($user_info->first_name || $user_info->last_name) {
+					$name = $user_info->first_name . ' ' . $user_info->last_name;
+				}
+
+	?>
+				<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
+					<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
+	<?php
+				if ($user_info->user_description) {
+	?>
+				<div class="details">
+					<?php echo $user_info->user_description; ?>
+				</div>
+	<?php
+				}
+	?>
+				</td>
+				<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
+	<?php
+				if ($user_info->first_name) {
+	?>
+					<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
+	<?php
+				}
+				if ($user_info->last_name && strlen($user_info->last_name)) {
+	?>
+					<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
+	<?php
+				} else {
+	?>
+					<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
+	<?php
+				}
+				if ($attendance_info) {
+	?>
+					<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
+	<?php
+				}
+	?>
+					<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
+					<input type="hidden" name="sticky_type<?php echo $this->count; ?>" value="<?php echo $type; ?>"/>
+				</tr>
+	<?php
 			
-			if ($attendance_info) {
-				$checked = 'checked = "checked"';
-				$class = "present";
 			}
-			if ($user_info->first_name || $user_info->last_name) {
-				$name = $user_info->first_name . ' ' . $user_info->last_name;
-			}
-
-?>
-			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
-<?php
-			if ($user_info->user_description) {
-?>
-			<div class="details">
-				<?php echo $user_info->user_description; ?>
-			</div>
-<?php
-			}
-?>
-			</td>
-			<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
-<?php
-			if ($user_info->first_name) {
-?>
-				<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
-<?php
-			}
-			if ($user_info->last_name && strlen($user_info->last_name)) {
-?>
-				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
-<?php
-			} else {
-?>
-				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
-<?php
-			}
-			if ($attendance_info) {
-?>
-				<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
-<?php
-			}
-?>
-				<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
-				<input type="hidden" name="sticky_type<?php echo $this->count; ?>" value="<?php echo $type; ?>"/>
-			</tr>
-<?php
 		}
 ?>
 		</table>
