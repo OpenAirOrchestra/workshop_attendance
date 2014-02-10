@@ -4,7 +4,7 @@ Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 1.2
+Stable tag: 1.3
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -39,4 +39,8 @@ Taking attendance at workshops was tedious.
   a different tab of the form.
 * Put the add new users functionality on a different tab of the form.
 * Sort users in attendace form by first name.
+
+= 1.3 =
+* make what tab users are on "sticky" so users don't jump between tabs
+  while taking attendance.
 
