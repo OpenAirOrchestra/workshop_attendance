@@ -14,8 +14,11 @@ class workshopAttendees {
 	private $sticky_types = array();
 	/*
  	 * Processes posted data
+ 	 * Returns diagnostics
 	 */
 	function process_post() {
+
+		$diagnostics = "";
 
 		$attendance_nonce = $_REQUEST['attendance_nonce'];
 		
@@ -49,6 +52,8 @@ class workshopAttendees {
 				$table_name = $wpdb->prefix . "workshop_attendance";
 
 				for ($i = 1; $i < count($_POST); ++ $i) {
+
+					$diagnostics = $diagnostics . $i . "\n";
 				
 					$id = $_POST[ 'id_' . $i ];
 				
@@ -61,6 +66,7 @@ class workshopAttendees {
 					$notes = $_POST[ 'notes_' . $i ];
 					if ($firstname != "First Name (Required)") //don't insert New Folk data if first name not entered
 					{
+						$diagnostics = $diagnostics . $firstname . "\n";
 						$data = array();
 						$format = array();
 						
@@ -88,15 +94,20 @@ class workshopAttendees {
 							$wpdb->insert( $table_name,
 								$data,
 								$format);
+							$diagnostics = $diagnostics . " INSERT \n";
 						} else if ($attending && $id) {
 							$wpdb->update( $table_name,
 								$data,
 								array ( 'ID' => $id),
 								$format);
+							$diagnostics = $diagnostics . " UPDATE \n";
 						} else if (!$attending && $id) {
 							$sql = $wpdb->prepare("DELETE FROM `$table_name` WHERE id = %d", $id);
 							$wpdb->query( $sql );
+							$diagnostics = $diagnostics . " DELETE \n";
 						}
+					} else {
+						$diagnostics = $diagnostics . "Missing First Name \n";
 					}
 					// Remember tab type (we'll make it sticky)
 					if ($user_id) {
@@ -107,6 +118,7 @@ class workshopAttendees {
 				
 			}
 		}
+		return $diagnostics;
 	}
 
 	/* 
@@ -207,7 +219,7 @@ class workshopAttendees {
 		global $wpdb;
 		$table_name = $wpdb->prefix . "workshops";
 
-		$this->process_post();
+		$post_diagnostics = $this->process_post();
 
 		if (! $workshop_id) {
 			$today = date( 'Y-m-d', time() - 8 * 60 * 60 /* we are GMT-8 */ );
@@ -240,7 +252,7 @@ class workshopAttendees {
 			$attendee_rows = $this->attendee_rows( $workshop_id );
 		}
 		
-		$this->render_form($workshop_id, $attendee_rows);
+		$this->render_form($workshop_id, $attendee_rows, $post_diagnostics);
 	}
 
 	/*
@@ -341,7 +353,7 @@ class workshopAttendees {
 	/*
 	 * renders form
 	 */
-	function render_form( $workshop_id, $attendee_rows ) {
+	function render_form( $workshop_id, $attendee_rows, $post_diagnostics ) {
 
 		$attendees = $this->attendees( $workshop_id, $attendee_rows );
 
@@ -377,6 +389,7 @@ class workshopAttendees {
 	<li><a href="#recent"><h3>Recent</h3></a></li>
 	<li><a href="#remaining"><h3>Remaining</h3></a></li>
 	<li><a href="#newfolks"><h3>New Folks</h3></a></li>
+	<li><a href="#diagnostics"><h4>Diagnostics</h4></a></li>
 	</ul>
 	<div>
 	<div id="recent" class="tab-content">
@@ -435,6 +448,11 @@ class workshopAttendees {
 ?>
 	</table>
 	</div>
+	<div id="diagnostics" class="tab-content">
+<?php
+	$this->render_diagnostics( $post_diagnostics );
+?>	
+	</div>
 	</div>	
 </div>
 <script type="text/javascript">
@@ -475,6 +493,27 @@ $(document).ready(function(){
     }); 	
 });</script>
 </form>
+<?php
+	}
+
+	/*
+  	 * Renders diagnostics
+	 */
+	function render_diagnostics( $post_diagnostics ) {
+?>	
+		<div class="diagnostics">
+		<h4>raw post</h4>
+		<pre>
+<?php
+		
+		var_dump($_POST);	
+?>	
+		</pre>
+		<h4>post processing diagnostics</h4>
+		<pre>
+			<?php echo $post_diagnostics; ?>
+		</pre>
+		</div>
 <?php
 	}
 
