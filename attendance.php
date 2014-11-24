@@ -105,9 +105,11 @@ class workshopAttendees {
 							$sql = $wpdb->prepare("DELETE FROM `$table_name` WHERE id = %d", $id);
 							$wpdb->query( $sql );
 							$diagnostics = $diagnostics . " DELETE \n";
+						} else {
+							$diagnostics = $diagnostics . " UNCHANGED \n";
 						}
 					} else {
-						$diagnostics = $diagnostics . "Missing First Name \n";
+						$diagnostics = $diagnostics . "Missing First Name \n SKIP\n";
 					}
 					// Remember tab type (we'll make it sticky)
 					if ($user_id) {
