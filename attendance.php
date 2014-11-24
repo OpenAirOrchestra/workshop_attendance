@@ -51,7 +51,17 @@ class workshopAttendees {
 
 				$table_name = $wpdb->prefix . "workshop_attendance";
 
-				for ($i = 1; $i < count($_POST); ++ $i) {
+				$count = $_POST['count'];
+
+				if ($count <= 0) {
+					$count = count($_POST);
+				}
+				// Evil hacker limit
+				if ($count > 10000) {
+					$count = 10000;
+				}
+
+				for ($i = 1; $i < $count; ++ $i) {
 
 					$diagnostics = $diagnostics . $i . "\n";
 				
@@ -457,6 +467,7 @@ class workshopAttendees {
 	</div>
 	</div>	
 </div>
+<input type="hidden" name="count" value="<?php echo $this->count; ?>"/>
 <script type="text/javascript">
 
 $(".tab-content").hide();
