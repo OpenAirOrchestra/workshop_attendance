@@ -4,7 +4,7 @@ Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 1.3
+Stable tag: 1.4
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -44,3 +44,5 @@ Taking attendance at workshops was tedious.
 * make what tab users are on "sticky" so users don't jump between tabs
   while taking attendance.
 
+= 1.4 =
+* reduce data sent to avoid php maximum post fields limit.
