@@ -379,7 +379,7 @@ class workshopAttendees {
 	<li><a href="#recent"><h3>Recent</h3></a></li>
 	<li><a href="#remaining"><h3>Remaining</h3></a></li>
 	<li><a href="#newfolks"><h3>New Folks</h3></a></li>
-	<li><a href="#diagnostics"><h4>Diagnostics</h4></a></li>
+	<!-- <li><a href="#diagnostics"><h4>Diagnostics</h4></a></li> -->
 	</ul>
 	<div>
 	<div id="recent" class="tab-content">
@@ -438,11 +438,12 @@ class workshopAttendees {
 ?>
 	</table>
 	</div>
-	<div id="diagnostics" class="tab-content">
+	
+<!-- <div id="diagnostics" class="tab-content"> -->
 <?php
-	$this->render_diagnostics( $post_diagnostics );
+	// $this->render_diagnostics( $post_diagnostics );
 ?>	
-	</div>
+	<!-- </div> -->
 	</div>	
 </div>
 <input type="hidden" name="count" value="<?php echo $this->count; ?>"/>
