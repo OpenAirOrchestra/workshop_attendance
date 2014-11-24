@@ -180,6 +180,7 @@ class workshopAttendees {
 										FROM `$workshop_attendance_name` a
 										JOIN `$workshops_name` w ON w.id = a.workshopid 
 										AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+										AND w.date < DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
 									)
 									AND 
 										(
@@ -282,15 +283,12 @@ class workshopAttendees {
 		// first time, use sticky types from form data if
 		// we are processing a post.
 		$filter_sticky = false;
-		if (count($this->sticky_types)) {
+		if (false /* DFDF TESTING */ && count($this->sticky_types)) {
 			$filter_sticky = true;
 			$users = $this->users();
 		} else {
 			$users = $this->users($type);
 		}
-
-
-
 
 		foreach ($users as $user) {
 
@@ -327,30 +325,30 @@ class workshopAttendees {
 				}
 	?>
 				</td>
-				<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
 	<?php
 				if ($user_info->first_name) {
 	?>
-					<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
+					<input type="hidden" disabled = "disabled" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
 	<?php
 				}
 				if ($user_info->last_name && strlen($user_info->last_name)) {
 	?>
-					<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
+					<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
 	<?php
 				} else {
 	?>
-					<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
+					<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
 	<?php
 				}
 				if ($attendance_info) {
 	?>
-					<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
+					<input type="hidden" disabled = "disabled" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
 	<?php
 				}
 	?>
-					<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
-					<input type="hidden" name="sticky_type<?php echo $this->count; ?>" value="<?php echo $type; ?>"/>
+					<input type="hidden" disabled = "disabled" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
+					<input type="hidden" disabled = "disabled" name="sticky_type<?php echo $this->count; ?>" value="<?php echo $type; ?>"/>
 				</tr>
 	<?php
 			
@@ -445,13 +443,13 @@ class workshopAttendees {
 			}
 ?>
 				</td>
-				<input type="hidden" name="user_id_<?php echo $this->count; ?>" value="<?php echo $attendee['user_id']; ?>"/>
-				<input type="hidden" name="firstname_<?php echo $this->count; ?>" value="<?php echo $attendee['firstname']; ?>"/>
-				<input type="hidden" name="lastname_<?php echo $this->count; ?>" value="<?php echo $attendee['lastname']; ?>"/>
-				<input type="hidden" name="email_<?php echo $this->count; ?>" value="<?php echo $attendee['email']; ?>"/>
-				<input type="hidden" name="phone_<?php echo $this->count; ?>" value="<?php echo $attendee['phone']; ?>"/>
-				<input type="hidden" name="notes_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['notes']); ?>"/>
-				<input type="hidden" name="id_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['id']); ?>"/>
+				<input type="hidden" disabled = "disabled" name="user_id_<?php echo $this->count; ?>" value="<?php echo $attendee['user_id']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="firstname_<?php echo $this->count; ?>" value="<?php echo $attendee['firstname']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $attendee['lastname']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="email_<?php echo $this->count; ?>" value="<?php echo $attendee['email']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="phone_<?php echo $this->count; ?>" value="<?php echo $attendee['phone']; ?>"/>
+				<input type="hidden" disabled = "disabled" name="notes_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['notes']); ?>"/>
+				<input type="hidden" disabled = "disabled" name="id_<?php echo $this->count; ?>" value="<?php echo stripslashes($attendee['id']); ?>"/>
 			</tr>
 <?php
 		}
