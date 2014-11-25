@@ -363,8 +363,6 @@ class workshopAttendees {
 <br>
 <input id="Update" class="button" type="submit" name="Update" value="Update">
 <br>
-<div class="tabs">
-	<ul>
 <?php 
 	if (isset($_POST['current_tab']))	
 	{
@@ -372,34 +370,36 @@ class workshopAttendees {
 	}
 	else
 	{
-		$current_tab = "#recent";
+		$current_tab = "recent";
 	}
 ?>
+<div class="tabs <?php echo $current_tab; ?>">
+	<ul>
 	<input type="hidden" id="current_tab" name="current_tab" value="<?php echo $current_tab;?>" />
-	<li><a href="#recent"><h3>Recent</h3></a></li>
-	<li><a href="#remaining"><h3>Remaining</h3></a></li>
-	<li><a href="#newfolks"><h3>New Folks</h3></a></li>
-	<!-- <li><a href="#diagnostics"><h4>Diagnostics</h4></a></li> -->
+	<li class="recent"><a href="#recent" onclick="selectTab(this, 'recent')"><h3>Recent</h3></a></li>
+	<li class="remaining"><a href="#remaining" onclick="selectTab(this, 'remaining')"><h3>Remaining</h3></a></li>
+	<li class="newfolks"><a href="#newfolks" onclick="selectTab(this, 'newfolks')"><h3>New Folks</h3></a></li>
+	<!-- <li class="diagnostics"><a href="#diagnostics" onclick="selectTab(this, 'diagnostics')"><h4>Diagnostics</h4></a></li> -->
 	</ul>
 	<div>
-	<div id="recent" class="tab-content">
+	<div class="tab-content recent">
 <?php
 	$rendered_emails = array();
 	$rendered_emails = $this->render_attendees("recent", $attendees, $rendered_emails);
 ?>	
 	</div>
-	<div id="remaining" class="tab-content">
+	<div class="tab-content remaining">
 <?php
 	$rendered_emails = $this->render_attendees("remaining", $attendees, $rendered_emails);
 	$this->count = $this->count + 1;
 ?>	
 	</div>
-	<div id="newfolks" class="tab-content">
+	<div class="tab-content newfolks">
 	<dl>
-				<dd><input type="text" name="firstname_<?php echo $this->count; ?>" title="First Name (Required)"/></dd>
-				<dd><input type="text" name="lastname_<?php echo $this->count; ?>" title="Last Name"/></dd>
-				<dd><input type="text" name="email_<?php echo $this->count; ?>" title="Email"/></dd>
-				<dd><input type="text" name="phone_<?php echo $this->count; ?>" title="Phone"/></dd>
+				<dd>First Name (Required)<br/><input type="text" name="firstname_<?php echo $this->count; ?>" title="First Name (Required)"/></dd>
+				<dd>Last Name<br/><input type="text" name="lastname_<?php echo $this->count; ?>" title="Last Name"/></dd>
+				<dd>Email<br/><input type="text" name="email_<?php echo $this->count; ?>" title="Email"/></dd>
+				<dd>Phone<br/?<input type="text" name="phone_<?php echo $this->count; ?>" title="Phone"/></dd>
 				<dd>Notes<br><textarea name="notes_<?php echo $this->count; ?>"></textarea></dd>
 				<input type="hidden" name="attending_<?php echo $this->count; ?>" value="attending"/>
 	</dl>
@@ -439,7 +439,7 @@ class workshopAttendees {
 	</table>
 	</div>
 	
-<!-- <div id="diagnostics" class="tab-content"> -->
+<!-- <div class="tab-content diagnostics"> -->
 <?php
 	// $this->render_diagnostics( $post_diagnostics );
 ?>	
@@ -447,43 +447,6 @@ class workshopAttendees {
 	</div>	
 </div>
 <input type="hidden" name="count" value="<?php echo $this->count; ?>"/>
-<script type="text/javascript">
-
-$(".tab-content").hide();
-$("<?php echo $current_tab; ?>").fadeIn();
-var selected_tab = $("a[href='<?php echo $current_tab; ?>']").parent();
-selected_tab.addClass("current");
-
-$(document).ready(function(){
-	//tab functionality
-	$(".tabs li").click(function() {
-		$(this).parent().parent().find(".tab-content").hide();
-		var selected_tab = $(this).find("a").attr("href");
-		$(selected_tab).fadeIn();
-		$(this).parent().find("li").removeClass('current');
-		$(this).addClass("current");
-		$("input#current_tab").val(selected_tab);
-		return false;
-    });
-
-	//grey input functionality
-    var inputs = $('input[type=text]');
-    inputs.each(function(){
-        $(this).val($(this).attr('title')).addClass('unfocused');
-    });
-    inputs.focus(function(){
-        var input = $(this);
-        if(input.val() == input.attr('title')){
-            $(this).removeClass('unfocused').val('');
-        }
-    });
-    inputs.blur(function(){
-        var input = $(this);
-        if(input.val() == ''){ // User has not placed text
-            input.val(input.attr('title')).addClass('unfocused');
-        }
-    }); 	
-});</script>
 <br>
 <input id="Update" type="submit" class="button" name="Update" value="Update">
 <br>
@@ -527,7 +490,6 @@ $workshop_id = $_REQUEST['workshop'];
 		<script type="text/javascript" src="js/attendance.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/attendance.css" >
 		<link rel="stylesheet" type="text/css" href="css/tab.css" />
-		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<meta name="viewport" content="width=device-width" />
 	</head>
 <?php
