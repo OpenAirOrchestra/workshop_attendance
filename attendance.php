@@ -399,7 +399,7 @@ class workshopAttendees {
 				<dd>First Name (Required)<br/><input type="text" name="firstname_<?php echo $this->count; ?>" title="First Name (Required)"/></dd>
 				<dd>Last Name<br/><input type="text" name="lastname_<?php echo $this->count; ?>" title="Last Name"/></dd>
 				<dd>Email<br/><input type="text" name="email_<?php echo $this->count; ?>" title="Email"/></dd>
-				<dd>Phone<br/?<input type="text" name="phone_<?php echo $this->count; ?>" title="Phone"/></dd>
+				<dd>Phone<br/><input type="text" name="phone_<?php echo $this->count; ?>" title="Phone"/></dd>
 				<dd>Notes<br><textarea name="notes_<?php echo $this->count; ?>"></textarea></dd>
 				<input type="hidden" name="attending_<?php echo $this->count; ?>" value="attending"/>
 	</dl>
