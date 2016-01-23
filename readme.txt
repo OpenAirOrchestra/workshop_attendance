@@ -3,8 +3,8 @@ Contributors: darrylf, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.6
-Tested up to: 3.8.1
-Stable tag: 1.4
+Tested up to: 4.4.1
+Stable tag: 1.4.1
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -46,3 +46,6 @@ Taking attendance at workshops was tedious.
 
 = 1.4 =
 * reduce data sent to avoid php maximum post fields limit.
+
+= 1.4.1 = 
+* bugfix release

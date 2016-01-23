@@ -86,8 +86,11 @@ class workshopAttendees {
 				
 						$data['workshopid'] = $workshop_id;
 						array_push($format, "%d");
-						$data['user_id'] = $user_id;
-						array_push($format, "%d");
+						if ($user_id != NULL) 
+						{
+							$data['user_id'] = $user_id;
+							array_push($format, "%d");
+						}
 						$data['firstname'] = $firstname;
 						array_push($format, "%s");
 						$data['lastname'] = $lastname;
@@ -104,6 +107,7 @@ class workshopAttendees {
 								$data,
 								$format);
 							$diagnostics = $diagnostics . " INSERT \n";
+
 						} else if ($attending && $id) {
 							$wpdb->update( $table_name,
 								$data,
