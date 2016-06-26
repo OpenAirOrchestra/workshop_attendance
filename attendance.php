@@ -138,7 +138,7 @@ class workshopAttendees {
 	 * filtered by recent attendance if a
 	 * type is specified ('recent' or 'remaining')
 	 */
-	function users($type = NULL) {
+	function users($type = NULL, $workshop_id = 0) {
 		global $wpdb;
 
 		$users_name = $wpdb->prefix . "users";
@@ -160,25 +160,20 @@ class workshopAttendees {
 									)
 								ORDER BY COALESCE( NULLIF( m.meta_value,  '' ) , display_name )", $workshop_id);
 
-		if ($type == "remaining" || $type == "recent") {
+		if ($type == "recent") {
 			// Filtered users sql query.
-			$sqlFilter = ""; //$type == "recent"
-			if ($type == "remaining")
-			{
-				$sqlFilter = "NOT";
-			}
 			$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
 									FROM  `$users_name` u
 									JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key =  'first_name'
 									JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
 									WHERE u.id <> 1 
-									AND u.id " . $sqlFilter . " IN 
+									AND u.id IN 
 									(
 										SELECT DISTINCT a.user_ID
 										FROM `$workshop_attendance_name` a
 										JOIN `$workshops_name` w ON w.id = a.workshopid 
 										AND w.date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-										AND w.date < DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+										AND w.id != $workshop_id
 									)
 									AND 
 										(
@@ -270,7 +265,7 @@ class workshopAttendees {
 	 * render attendee tab, recent or remaining
 	 * returns updated rendered_emails array.
 	 */
-	function render_attendees($type, $attendees, $rendered_emails)
+	function render_attendees($type, $attendees, $rendered_emails, $workshop_id)
 	{
 ?>
 		<table>
@@ -278,7 +273,7 @@ class workshopAttendees {
 		$users = array();
 		
 		// Use database to filter if we are rendering
-		$users = $this->users($type);
+		$users = $this->users($type, $workshop_id);
 
 		foreach ($users as $user) {
 			$this->count = $this->count + 1;
@@ -288,56 +283,58 @@ class workshopAttendees {
 			$checked = '';
 			$class = "absent";
 
-			array_push($rendered_emails, $user['user_email']);
-			
-			if ($attendance_info) {
-				$checked = 'checked = "checked"';
-				$class = "present";
-			}
-			if ($user_info->first_name || $user_info->last_name) {
-				$name = $user_info->first_name . ' ' . $user_info->last_name;
-			}
+			if (! in_array($user['user_email'], $rendered_emails)) {
+				array_push($rendered_emails, $user['user_email']);
+				
+				if ($attendance_info) {
+					$checked = 'checked = "checked"';
+					$class = "present";
+				}
+				if ($user_info->first_name || $user_info->last_name) {
+					$name = $user_info->first_name . ' ' . $user_info->last_name;
+				}
 
-?>
-			<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
-				<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
-<?php
-			if ($user_info->user_description) {
-?>
-			<div class="details">
-				<?php echo $user_info->user_description; ?>
-			</div>
-<?php
+	?>
+				<tr onclick="selectRow(this)" class="<?php echo $class; ?>"><td>
+					<input onclick="checkClicked(this, event)" type="checkbox" name="attending_<?php echo $this->count; ?>" value="attending" <?php echo $checked; ?> ><?php echo $name; ?></input>
+	<?php
+				if ($user_info->user_description) {
+	?>
+				<div class="details">
+					<?php echo $user_info->user_description; ?>
+				</div>
+	<?php
+				}
+	?>
+				</td>
+				<input type="hidden" disabled = "disabled" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
+	<?php
+				if ($user_info->first_name) {
+	?>
+					<input type="hidden" disabled = "disabled" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
+	<?php
+				}
+				if ($user_info->last_name && strlen($user_info->last_name)) {
+	?>
+					<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
+	<?php
+				} else {
+	?>
+					<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
+	<?php
+				}
+				if ($attendance_info) {
+	?>
+					<input type="hidden" disabled = "disabled" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
+	<?php
+				}
+	?>
+					<input type="hidden" disabled = "disabled" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
+				</tr>
+	<?php
+			
 			}
-?>
-			</td>
-			<input type="hidden" disabled = "disabled" name="user_id_<?php echo $this->count; ?>" value="<?php echo $user['ID']; ?>"/>
-<?php
-			if ($user_info->first_name) {
-?>
-				<input type="hidden" disabled = "disabled" name="firstname_<?php echo $this->count; ?>" value="<?php echo $user_info->first_name; ?>"/>
-<?php
 			}
-			if ($user_info->last_name && strlen($user_info->last_name)) {
-?>
-				<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user_info->last_name; ?>"/>
-<?php
-			} else {
-?>
-				<input type="hidden" disabled = "disabled" name="lastname_<?php echo $this->count; ?>" value="<?php echo $user['display_name']; ?>"/>
-<?php
-			}
-			if ($attendance_info) {
-?>
-				<input type="hidden" disabled = "disabled" name="id_<?php echo $this->count; ?>" value="<?php echo $attendance_info["id"]; ?>"/>
-<?php
-			}
-?>
-				<input type="hidden" disabled = "disabled" name="email_<?php echo $this->count; ?>" value="<?php echo $user['user_email']; ?>"/>
-			</tr>
-<?php
-		
-		}
 ?>
 		</table>
 <?php
@@ -389,12 +386,12 @@ class workshopAttendees {
 	<div class="tab-content recent">
 <?php
 	$rendered_emails = array();
-	$rendered_emails = $this->render_attendees("recent", $attendees, $rendered_emails);
+	$rendered_emails = $this->render_attendees("recent", $attendees, $rendered_emails, $workshop_id);
 ?>	
 	</div>
 	<div class="tab-content remaining">
 <?php
-	$rendered_emails = $this->render_attendees("remaining", $attendees, $rendered_emails);
+	$rendered_emails = $this->render_attendees("remaining", $attendees, $rendered_emails, $workshop_id);
 	$this->count = $this->count + 1;
 ?>	
 	</div>
