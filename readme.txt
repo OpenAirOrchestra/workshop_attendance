@@ -1,10 +1,10 @@
 === Workshop Attendance ===
-Contributors: darrylf, Richard K
+Contributors: Darryl F, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.6
-Tested up to: 4.4.1
-Stable tag: 1.4.1
+Tested up to: 5.3.1
+Stable tag: 1.4.2
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -49,3 +49,6 @@ Taking attendance at workshops was tedious.
 
 = 1.4.1 = 
 * bugfix release
+
+= 1.4.2
+* GitHub updater integration
