@@ -17,6 +17,10 @@ function AttendanceSheet(props) {
 }
 
 // Dummy data
+const EVENT_ID = 1000;
+
+const EVENT_NAME = "June 8 Workshop";
+
 const ATTENDEES = [
         // Recent users, attending
 	{  user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', recent_event_id: 10, recordid: 200 },
