@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function AttendApp() {
+import AttendanceSheet from './AttendanceSheet'
+
+function App() {
   return (
     <div className="App">
-      <h1>Hello World</h1>
+      <AttendanceSheet />
     </div>
   );
 }
@@ -14,6 +16,6 @@ function AttendApp() {
 
 
 ReactDOM.render(
-  <AttendApp />,
+  <App />,
   document.getElementById('root')
 );
