@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from './Header'
 import SearchBar from './SearchBar'
 import AddendanceList from './AttendanceList'
 import NewAttendeeForm from './NewAttendeeForm'
@@ -8,9 +9,9 @@ export default AttendanceSheet
 function AttendanceSheet(props) {
   return (
     <div>
-	<h1>Attendance for</h1>
+	<Header name={ EVENT_NAME } />
 	<SearchBar />
-  	<AddendanceList />
+  	<AddendanceList attendees={ ATTENDEES } />
 	<NewAttendeeForm />
     </div>      
   )
@@ -23,6 +24,7 @@ const EVENT_NAME = "June 8 Workshop";
 
 const ATTENDEES = [
         // Recent users, attending
+	{  user_id: 99, firstname: 'Zaphond', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', recent_event_id: 10, recordid: 199 },
 	{  user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', recent_event_id: 10, recordid: 200 },
 	{  user_id: 101, firstname: 'Bob', lastname: 'Gill', phone: '', email: '', notes: 'Bob is a fella', recent_event_id: 10, recordid: 201 },
 	{  user_id: 102, firstname: 'Charlie', lastname: 'Lipp', phone: '', email: '', notes: 'C Saxophone', recent_event_id: 10, recordid: 202 },
