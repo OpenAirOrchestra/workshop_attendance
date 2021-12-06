@@ -1,5 +1,5 @@
 import React from 'react';
-import Filters from './Filters'
+import SearchBar from './SearchBar'
 import AddendanceList from './AttendanceList'
 import NewAttendeeForm from './NewAttendeeForm'
 
@@ -9,7 +9,7 @@ function AttendanceSheet(props) {
   return (
     <div>
 	<h1>Attendance for</h1>
-	<Filters />
+	<SearchBar />
   	<AddendanceList />
 	<NewAttendeeForm />
     </div>      
