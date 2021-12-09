@@ -52,12 +52,21 @@
     text-align: center;
 }
 
-.AttendanceRecord.present {
+.AttendanceRecord.present:nth-child(even) {
     background-color: #AAEEAA;
 }
-.AttendanceRecord.absent {
+.AttendanceRecord.present:nth-child(odd) {
+    background-color: #80EE80;
+}
+
+
+.AttendanceRecord.absent:nth-child(even) {
     background-color: #EEAAAA;
 }
+.AttendanceRecord.absent:nth-child(odd) {
+    background-color: #EE8080;
+}
+
 
 .AttendanceRecord .details {
     font-size: 0.8em;
