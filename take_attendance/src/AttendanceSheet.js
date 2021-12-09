@@ -13,7 +13,9 @@ function search(attendees, searchTerm) {
 
 	if (pattern) {
 		result = result.filter(attendee => {
-			const line = (attendee.firstname + attendee.lastname + attendee.email + attendee.phone + attendee.notes).toLowerCase().replace(/\s+/g, '');
+			const line = Object.values(attendee).map(value => {
+				return String(value).toLowerCase()
+			}).join().replace(/\s+/g, '');
 			return line.includes(pattern);
 		})
 	}
