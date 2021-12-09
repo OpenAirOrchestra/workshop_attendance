@@ -6,14 +6,33 @@ import NewAttendeeForm from './NewAttendeeForm'
 
 export default AttendanceSheet
 
+/// Retun the subset of attendees with text that matches searchTerm
+function search(attendees, searchTerm) {
+	const pattern = searchTerm ? searchTerm.toLowerCase().replace(/\s+/g, '') : null;
+	let result = attendees;
+
+	if (pattern) {
+		result = result.filter(attendee => {
+			const line = (attendee.firstname + attendee.lastname + attendee.email + attendee.phone + attendee.notes).toLowerCase().replace(/\s+/g, '');
+			return line.includes(pattern);
+		})
+	}
+
+	return result;
+}
+
 function AttendanceSheet(props) {
-	const [search, setSearch] = useState('');
+	const [searchTerm, setSearchTerm] = useState('');
+	const [attendees, setAttendees] = useState(ATTENDEES);
+
+	// Search
+	var filteredAttendees = search(attendees, searchTerm);
 
 	return (
 		<div className="AttendanceSheet">
 			<Header name={EVENT_NAME} />
-			<SearchBar search={ search } setSearch={setSearch} />
-			<AddendanceList attendees={ATTENDEES} />
+			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			<AddendanceList attendees={filteredAttendees} />
 			<NewAttendeeForm />
 		</div>
 	)
@@ -54,8 +73,8 @@ const ATTENDEES = [
 
 	// Not recent users, not attending
 	{ user_id: 123, firstname: 'Ruth', lastname: 'Ginsberg', notes: 'Hero' },
-	{ user_id: 123, firstname: 'Seth', lastname: 'Rogan', notes: 'Actor' },
-	{ user_id: 123, firstname: 'Taylor', lastname: 'Swift', notes: 'Singer' },
-	{ user_id: 123, firstname: 'Uluu', lastname: 'Luulo', notes: 'Rockin the Alien' }
+	{ user_id: 124, firstname: 'Seth', lastname: 'Rogan', notes: 'Actor' },
+	{ user_id: 125, firstname: 'Taylor', lastname: 'Swift', notes: 'Singer' },
+	{ user_id: 126, firstname: 'Uluu', lastname: 'Luulo', notes: 'Rockin the Alien' }
 ];
 

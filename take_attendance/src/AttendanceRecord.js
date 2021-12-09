@@ -18,7 +18,7 @@ function AttendanceRecord(props) {
   </div>;
 
   return (
-    <tr className={'AttendanceRecord' + ' ' + attendanceClassName}>
+    <tr className={'AttendanceRecord  ' + attendanceClassName}>
       <td className='attendee' >
         {attendee.firstname + ' ' + attendee.lastname}
         <div className="details">

@@ -14,7 +14,9 @@ function AddendanceList(props) {
   return (
     <div className='AddendanceList'>
       <table>
-        {rows}
+        <tbody>
+          {rows}
+        </tbody>
       </table>
     </div>
   )
