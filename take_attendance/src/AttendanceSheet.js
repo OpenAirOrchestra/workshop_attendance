@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header'
 import SearchBar from './SearchBar'
 import AddendanceList from './AttendanceList'
@@ -7,10 +7,12 @@ import NewAttendeeForm from './NewAttendeeForm'
 export default AttendanceSheet
 
 function AttendanceSheet(props) {
+	const [search, setSearch] = useState('');
+
 	return (
 		<div className="AttendanceSheet">
 			<Header name={EVENT_NAME} />
-			<SearchBar />
+			<SearchBar search={ search } setSearch={setSearch} />
 			<AddendanceList attendees={ATTENDEES} />
 			<NewAttendeeForm />
 		</div>
