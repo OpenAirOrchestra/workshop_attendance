@@ -15,7 +15,13 @@
  }
 
  .SearchBar input[type="text"] {
+    margin-left: 0;
+    margin-right: 0;
     width: 100%
+ }
+
+ .SearchBar input {
+     margin: 8px;
  }
 
  /* AttendanceSheet */
