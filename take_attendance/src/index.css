@@ -27,7 +27,6 @@
 /* AttendanceSheet */
 
 .AttendanceSheet {
-    border-bottom: 3px solid black;
     padding: 10px;
 }
 
@@ -84,6 +83,9 @@
 
 /* NewAttendeeForm */
 
+.NewAttendeeForm {
+    border-bottom: 3px solid black;
+}
 .NewAttendeeForm h2 {
     text-align: center;
 }
@@ -98,4 +100,11 @@
 
 .NewAttendeeForm .centered {
     text-align: center;
+}
+
+.NewAttendeeForm input[type="submit"] {
+    padding: 10px;
+    background-color: #80EE80;
+    border-color: black;
+    font-weight: bold;
 }

@@ -63,6 +63,9 @@ function AttendanceSheet(props) {
 	// Filter
 	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterNew, filterPresent);
 
+	const showNewAttendeeForm = filterNew || filterPresent || !filterRecent;
+	const newAttendeeForm = showNewAttendeeForm ? <NewAttendeeForm /> : '';
+
 	return (
 		<div className="AttendanceSheet">
 			<Header name={EVENT_NAME} />
@@ -73,7 +76,7 @@ function AttendanceSheet(props) {
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
 			<AddendanceList attendees={filteredAttendees} />
-			<NewAttendeeForm />
+			{ newAttendeeForm }
 		</div>
 	)
 }
