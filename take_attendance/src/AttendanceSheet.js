@@ -7,7 +7,7 @@ import NewAttendeeForm from './NewAttendeeForm'
 export default AttendanceSheet
 
 /// Retun the subset of attendees with text that matches searchTerm
-function search(attendees, searchTerm) {
+function searchAttendees(attendees, searchTerm) {
 	const pattern = searchTerm ? searchTerm.toLowerCase().replace(/\s+/g, '') : null;
 	let result = attendees;
 
@@ -23,17 +23,55 @@ function search(attendees, searchTerm) {
 	return result;
 }
 
+/// Return the subset of attendees that match the filter criteria
+function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
+	let result = attendees;
+
+	if (filterRecent || filterNew || filterPresent) {
+		result = result.filter(attendee => {
+			if (filterRecent && attendee.recent_event_id) {
+				return true;
+			}
+
+			if (filterNew && !attendee.user_id) {
+				return true;
+			}
+
+			if (filterPresent && attendee.recordid) {
+				return true;
+			}
+
+			return false;
+		});
+	}
+
+	return result;
+}
+
 function AttendanceSheet(props) {
 	const [searchTerm, setSearchTerm] = useState('');
+
 	const [attendees, setAttendees] = useState(ATTENDEES);
 
+	const [filterRecent, setFilterRecent] = useState(false);
+	const [filterNew, setFilterNew] = useState(false);
+	const [filterPresent, setFilterPresent] = useState(false);
+
 	// Search
-	var filteredAttendees = search(attendees, searchTerm);
+	const searchedAttendees = searchAttendees(attendees, searchTerm);
+
+	// Filter
+	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterNew, filterPresent);
 
 	return (
 		<div className="AttendanceSheet">
 			<Header name={EVENT_NAME} />
-			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			<SearchBar
+				searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+				filterRecent={filterRecent} setFilterRecent={setFilterRecent}
+				filterNew={filterNew} setFilterNew={setFilterNew}
+				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
+			/>
 			<AddendanceList attendees={filteredAttendees} />
 			<NewAttendeeForm />
 		</div>
