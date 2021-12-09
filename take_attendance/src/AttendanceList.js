@@ -12,7 +12,7 @@ function AddendanceList(props) {
 	<AttendanceRecord attendee = { attendee } key = { attendee.user_id ? attendee.user_id : attendee.firstname + attendee.lastname } />
   );
   return (
-    <div> 
+    <div className='AddendanceList'> 
       <table>
         {rows}
       </table>

@@ -1,0 +1,84 @@
+/* Header  */
+.Header {
+    border-bottom: 3px solid black;
+    padding: 10px;
+}
+
+.Header h1 {
+    text-align: center;
+}
+
+/* SearchBar */
+.SearchBar {
+    border-bottom: 3px solid black;
+    padding: 10px;
+ }
+
+ .SearchBar input[type="text"] {
+    width: 100%
+ }
+
+ /* AttendanceSheet */
+
+ .AttendanceSheet {
+    border-bottom: 3px solid black;
+    padding: 10px;
+ }
+ 
+/* AttendanceList */
+
+.AddendanceList {
+    border-bottom: 3px solid black;
+}
+
+.AddendanceList table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* AttendanceRecord */
+
+.AttendanceRecord {
+    text-align: left;
+    color: black;
+    border-top: 3px solid white;
+}
+
+.AttendanceRecord td {
+    padding: 5px;
+}
+
+.AttendanceRecord .presence {
+    text-align: center;
+}
+
+.AttendanceRecord.present {
+    background-color: #AAEEAA;
+}
+.AttendanceRecord.absent {
+    background-color: #EEAAAA;
+}
+
+.AttendanceRecord .details {
+    font-size: 0.8em;
+    margin-left:18px;
+    margin-right:18px;
+}
+
+/* NewAttendeeForm */
+
+.NewAttendeeForm h2 {
+    text-align: center;
+}
+
+.NewAttendeeForm input[type="text"] {
+    width:100%;
+}
+
+.NewAttendeeForm textarea {
+    width: 100%;
+}
+
+.NewAttendeeForm .centered {
+    text-align: center;
+}

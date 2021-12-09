@@ -4,34 +4,28 @@ export default NewAttendeeForm
 
 function NewAttendeeForm(props) {
   return (
-    <div> 
+    <div className='NewAttendeeForm'> 
+      <h2>Add New Attendee</h2>
       <form>
-        <label>
-	  First Name:
-          <input type="text" name="firstname" />
-        </label>
+        <label for="firstname">First Name:</label>
+        <input type="text" name="firstname" id="firstname" />
         <br/>
-        <label>
-	  Last Name:
-          <input type="text" name="lastname" />
-        </label>
+        <label for="lastname">Last Name: </label>
+        <input type="text" name="lastname" id="lastname" />
         <br/>
-        <label>
-	  Email:
-          <input type="text" name="email" />
-        </label>
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" />
         <br/>
-        <label>
-	  Phone:
-          <input type="text" name="phone" />
-        </label>
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone"  id="phone"/>
         <br/>
-        <label>
-	  Notes:
-          <input type="textarea" name="notes" />
-        </label>
+        <label for="notes">Notes:</label>
         <br/>
-        <input type="submit" value="Add" />
+        <textarea name="notes" id="notes" />
+        <br/>
+        <div className='centered'>
+          <input type="submit" value="Add" />
+        </div>
       </form>
     </div>      
   )

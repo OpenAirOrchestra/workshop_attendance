@@ -9,7 +9,8 @@ function AttendanceRecord(props) {
   const phone = attendee.phone ? <span> { attendee.phone } </span> : '';
   const email = attendee.email ? <span> { attendee.email } </span> : '';
 
-  const attending = attendee.recordid ? '\u2714' : '\u274c'; 
+  const attendanceIcon = attendee.recordid ? '\u2714' : '\u274c'; 
+  const attendanceClassName = attendee.recordid ? 'present' : 'absent'; 
   const attendeeDetails = <div>
 	{ notes } 
 	{ email } 
@@ -17,14 +18,14 @@ function AttendanceRecord(props) {
   </div>; 
 
   return (
-    <tr> 
-      <td>
+    <tr className= { 'AttendanceRecord' + ' ' +  attendanceClassName }> 
+      <td className='attendee' >
         { attendee.firstname + ' ' +  attendee.lastname }
-        <div>
+        <div className="details">
           { attendeeDetails } 
         </div>
       </td>
-      <td>{ attending }</td>
+      <td className='presence' >{ attendanceIcon }</td>
     </tr>      
   )
 }

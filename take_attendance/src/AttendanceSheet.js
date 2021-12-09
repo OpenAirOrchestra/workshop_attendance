@@ -8,7 +8,7 @@ export default AttendanceSheet
 
 function AttendanceSheet(props) {
   return (
-    <div>
+    <div className="AttendanceSheet">
 	<Header name={ EVENT_NAME } />
 	<SearchBar />
   	<AddendanceList attendees={ ATTENDEES } />

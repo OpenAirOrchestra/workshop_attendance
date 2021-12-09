@@ -4,7 +4,7 @@ export default SearchBar
 
 function SearchBar(props) {
   return (
-    <div> 
+    <div className='SearchBar'> 
       <form>
         <input type="text" name="search" placeholder="&#128269;"/>
 	<br/>
