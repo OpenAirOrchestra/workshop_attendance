@@ -12,25 +12,25 @@
 .SearchBar {
     border-bottom: 3px solid black;
     padding: 10px;
- }
+}
 
- .SearchBar input[type="text"] {
+.SearchBar input[type="text"] {
     margin-left: 0;
     margin-right: 0;
     width: 100%
- }
+}
 
- .SearchBar input {
-     margin: 8px;
- }
+.SearchBar input {
+    margin: 8px;
+}
 
- /* AttendanceSheet */
+/* AttendanceSheet */
 
- .AttendanceSheet {
+.AttendanceSheet {
     border-bottom: 3px solid black;
     padding: 10px;
- }
- 
+}
+
 /* AttendanceList */
 
 .AddendanceList {
@@ -61,6 +61,7 @@
 .AttendanceRecord.present:nth-child(even) {
     background-color: #AAEEAA;
 }
+
 .AttendanceRecord.present:nth-child(odd) {
     background-color: #80EE80;
 }
@@ -69,6 +70,7 @@
 .AttendanceRecord.absent:nth-child(even) {
     background-color: #EEAAAA;
 }
+
 .AttendanceRecord.absent:nth-child(odd) {
     background-color: #EE8080;
 }
@@ -76,8 +78,8 @@
 
 .AttendanceRecord .details {
     font-size: 0.8em;
-    margin-left:18px;
-    margin-right:18px;
+    margin-left: 18px;
+    margin-right: 18px;
 }
 
 /* NewAttendeeForm */
@@ -87,7 +89,7 @@
 }
 
 .NewAttendeeForm input[type="text"] {
-    width:100%;
+    width: 100%;
 }
 
 .NewAttendeeForm textarea {
