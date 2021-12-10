@@ -3,6 +3,13 @@ import React from 'react';
 export default NewAttendeeForm
 
 function NewAttendeeForm(props) {
+
+  const hideAttendeeForm = props.hideAttendeeForm;
+
+  if (hideAttendeeForm) {
+    return null;
+  }
+
   return (
     <div className='NewAttendeeForm'>
       <h2>Add New Attendee</h2>

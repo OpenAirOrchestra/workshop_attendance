@@ -3,6 +3,7 @@ import Header from './Header'
 import SearchBar from './SearchBar'
 import AddendanceList from './AttendanceList'
 import NewAttendeeForm from './NewAttendeeForm'
+import Loading from './Loading'
 
 export default AttendanceSheet
 
@@ -49,9 +50,11 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 }
 
 function AttendanceSheet(props) {
+	const [isLoading, setIsLoading] = useState(true);
+
 	const [searchTerm, setSearchTerm] = useState('');
 
-	const [attendees, setAttendees] = useState(ATTENDEES);
+	const attendees = ATTENDEES;
 
 	const [filterRecent, setFilterRecent] = useState(false);
 	const [filterNew, setFilterNew] = useState(false);
@@ -63,8 +66,9 @@ function AttendanceSheet(props) {
 	// Filter
 	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterNew, filterPresent);
 
-	const showNewAttendeeForm = filterNew || filterPresent || !filterRecent;
-	const newAttendeeForm = showNewAttendeeForm ? <NewAttendeeForm /> : '';
+	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
+
+	// Loading Initial data?
 
 	return (
 		<div className="AttendanceSheet">
@@ -76,7 +80,8 @@ function AttendanceSheet(props) {
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
 			<AddendanceList attendees={filteredAttendees} />
-			{ newAttendeeForm }
+			<NewAttendeeForm hideAttendeeForm={ !showNewAttendeeForm }/>
+			<Loading isLoading={isLoading} />
 		</div>
 	)
 }
