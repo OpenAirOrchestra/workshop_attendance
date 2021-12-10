@@ -12,7 +12,7 @@ function Loading(props) {
     return (
         <div className='Loading'>
             <div className='inner'>
-                <h1>Loading &#x2699;</h1>
+                <div className='spinner'></div>
             </div>
         </div>
     );
