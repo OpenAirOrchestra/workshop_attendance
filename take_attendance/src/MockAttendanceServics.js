@@ -5,12 +5,12 @@ class MockAttendanceService {
 
     constructor() {
         this.attendanceRecords = [
-            { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 10, id: 199 },
-            { user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', event_id: 10, id: 200 },
-            { user_id: 101, firstname: 'Bob', lastname: 'Gill', phone: '', email: '', notes: 'Bob is a fella', event_id: 10, id: 201 },
-            { user_id: 102, firstname: 'Charlie', lastname: 'Lipp', phone: '', email: '', notes: 'C Saxophone', event_id: 10, id: 202 },
-            { user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 10, id: 203 },
-            { user_id: 104, firstname: 'Ethan', lastname: 'Fuller', phone: '', email: '', notes: 'F Flute', event_id: 10, id: 204 },
+            { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 1000, id: 199 },
+            { user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', event_id: 1000, id: 200 },
+            { user_id: 101, firstname: 'Bob', lastname: 'Gill', phone: '', email: '', notes: 'Bob is a fella', event_id: 1000, id: 201 },
+            { user_id: 102, firstname: 'Charlie', lastname: 'Lipp', phone: '', email: '', notes: 'C Saxophone', event_id: 1000, id: 202 },
+            { user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 1000, id: 203 },
+            { user_id: 104, firstname: 'Ethan', lastname: 'Fuller', phone: '', email: '', notes: 'F Flute', event_id: 1000, id: 204 },
 
             { user_id: 105, firstname: 'Francine', lastname: 'Churchih', phone: '', email: '', notes: 'C Flute', id: 205 },
             { user_id: 106, firstname: 'Greg', lastname: 'Guard', phone: '', email: '', notes: 'Clarinet', id: 206 },
