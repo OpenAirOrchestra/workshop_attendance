@@ -12,7 +12,7 @@ class MockAttendanceService {
             { user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 1000, id: 203 },
             { user_id: 104, firstname: 'Ethan', lastname: 'Fuller', phone: '', email: '', notes: 'F Flute', event_id: 1000, id: 204 },
 
-            { user_id: 105, firstname: 'Francine', lastname: 'Churchih', phone: '', email: '', notes: 'C Flute', id: 205 },
+            { user_id: 105, firstname: 'Francine', lastname: 'Churchill', phone: '', email: '', notes: 'C Flute', id: 205 },
             { user_id: 106, firstname: 'Greg', lastname: 'Guard', phone: '', email: '', notes: 'Clarinet', id: 206 },
             { user_id: 107, firstname: 'Harry', lastname: 'Gill', phone: '', email: '', notes: 'Bassoon', id: 207 },
             { user_id: 108, firstname: 'Ichabod', lastname: 'Crane', phone: '', email: '', notes: 'Trombone', id: 208 },
@@ -24,8 +24,12 @@ class MockAttendanceService {
         ];
     }
 
-    async retrieve() {
-        return Promise.resolve(this.attendanceRecords);
+    async retrieve(event_id) {
+        let records = this.attendanceRecords;
+        if (event_id) {
+            records = records.filter(record => record.event_id === event_id);
+        }
+        return Promise.resolve(records);
     }
 
     async get(id) {
