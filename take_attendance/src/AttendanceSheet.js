@@ -10,6 +10,35 @@ import Loading from './Loading'
 
 export default AttendanceSheet
 
+/// Compute attendees from users and attendance records
+function possibleAttendees(users) {
+	let attendanceMap = {}
+
+	// Add users to the map.
+	const allUsers = users ? users : [];
+	for  (const user of allUsers) {
+		let attendanceRecord = { user_id: user.id, firstname: '', lastname: '' }
+		if (user.nickname) {
+			attendanceRecord.firstname = user.nickname;
+		} else if (user.first_name) {
+			attendanceRecord.firstname = user.first_name;
+			if (user.last_name) {
+				attendanceRecord.lastname = user.last_name.charAt(0);
+			}
+		}
+
+		if (user.description) {
+			attendanceRecord.notes = user.description;
+		}
+
+		attendanceMap[user.id] = attendanceRecord;
+	}
+
+	// Iterate the map to create result.
+	const attendees = Object.values(attendanceMap);
+	return attendees ? attendees : [];
+}
+
 /// Return the subset of attendees with text that matches searchTerm
 function searchAttendees(attendees, searchTerm) {
 	const pattern = searchTerm ? searchTerm.toLowerCase().replace(/\s+/g, '') : null;
@@ -77,10 +106,7 @@ function AttendanceSheet(props) {
 	const [eventRecord, setEventRecord] = useState(null);
 	const [users, setUsers] = useState(null);
 
-	const attendees = ATTENDEES;
-
 	// Set up configuration
-	// Configuration
 	useEffect(() => {
 		if (!Configuration.eventService) {
 			Configuration.eventService = new MockEventService();
@@ -89,12 +115,15 @@ function AttendanceSheet(props) {
 	});
 
 
-	// Load data.
+	// Load initial data.
 	useEffect(() => {
 		if (isLoading) {
 			loadAll(setIsLoading, setEventRecord, setUsers)
 		}
 	}, [isLoading]);
+
+	// Attendance
+	const attendees = possibleAttendees(users);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
@@ -103,8 +132,6 @@ function AttendanceSheet(props) {
 	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterNew, filterPresent);
 
 	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
-
-	// Loading Initial data?
 
 	return (
 		<div className="AttendanceSheet">
