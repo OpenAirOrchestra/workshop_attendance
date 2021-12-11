@@ -73,7 +73,7 @@ function AttendanceSheet(props) {
 
 	const attendees = ATTENDEES;
 
-	// Set up configuratin
+	// Set up configuration
 	// Configuration
 	useEffect(() => {
 		if (!Configuration.eventService) {
