@@ -32,11 +32,11 @@
 
 /* AttendanceList */
 
-.AddendanceList {
+.AttendanceList {
     border-bottom: 3px solid black;
 }
 
-.AddendanceList table {
+.AttendanceList table {
     width: 100%;
     border-collapse: collapse;
 }

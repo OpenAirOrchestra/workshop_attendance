@@ -3,7 +3,7 @@ import Configuration from './Configuration';
 import MockEventService from './MockEventService';
 import Header from './Header'
 import SearchBar from './SearchBar'
-import AddendanceList from './AttendanceList'
+import AttendanceList from './AttendanceList'
 import NewAttendeeForm from './NewAttendeeForm'
 import Loading from './Loading'
 
@@ -108,7 +108,7 @@ function AttendanceSheet(props) {
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
-			<AddendanceList attendees={filteredAttendees} />
+			<AttendanceList attendees={filteredAttendees} />
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} />
 			<Loading isLoading={isLoading} />
 		</div>
