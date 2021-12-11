@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Configuration from './Configuration';
 import MockEventService from './MockEventService';
+import MockUserService from './MockUserService';
 import Header from './Header'
 import SearchBar from './SearchBar'
 import AttendanceList from './AttendanceList'
@@ -9,7 +10,7 @@ import Loading from './Loading'
 
 export default AttendanceSheet
 
-/// Retun the subset of attendees with text that matches searchTerm
+/// Return the subset of attendees with text that matches searchTerm
 function searchAttendees(attendees, searchTerm) {
 	const pattern = searchTerm ? searchTerm.toLowerCase().replace(/\s+/g, '') : null;
 	let result = attendees;
@@ -52,12 +53,16 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 }
 
 /// Load all data from backend.
-function loadAll(setIsLoading, setEventRecord) {
+async function loadAll(setIsLoading, setEventRecord, setUsers) {
 	const eventService = Configuration.eventService;
-	eventService.get(EVENT_ID).then(eventRecord => {
-		setEventRecord(eventRecord);
-		setIsLoading(false);
-	});
+	const userService = Configuration.userService;
+
+	let eventRecord = await eventService.get(EVENT_ID);
+	setEventRecord(eventRecord);
+	let users = await userService.retrieve();
+	setUsers(users);
+
+	setIsLoading(false);
 }
 
 function AttendanceSheet(props) {
@@ -70,6 +75,7 @@ function AttendanceSheet(props) {
 	const [filterPresent, setFilterPresent] = useState(false);
 
 	const [eventRecord, setEventRecord] = useState(null);
+	const [users, setUsers] = useState(null);
 
 	const attendees = ATTENDEES;
 
@@ -77,15 +83,16 @@ function AttendanceSheet(props) {
 	// Configuration
 	useEffect(() => {
 		if (!Configuration.eventService) {
-		  Configuration.eventService = new MockEventService();
+			Configuration.eventService = new MockEventService();
+			Configuration.userService = new MockUserService();
 		}
-	  });
+	});
 
-	  
+
 	// Load data.
 	useEffect(() => {
 		if (isLoading) {
-			loadAll(setIsLoading, setEventRecord)
+			loadAll(setIsLoading, setEventRecord, setUsers)
 		}
 	}, [isLoading]);
 
