@@ -52,9 +52,10 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 }
 
 /// Load all data from backend.
-function loadAll(setIsLoading) {
+function loadAll(setIsLoading, setEventRecord) {
 	const eventService = Configuration.eventService;
-	eventService.get(EVENT_ID).then(event => {
+	eventService.get(EVENT_ID).then(eventRecord => {
+		setEventRecord(eventRecord);
 		setIsLoading(false);
 	});
 }
@@ -67,6 +68,8 @@ function AttendanceSheet(props) {
 	const [filterRecent, setFilterRecent] = useState(false);
 	const [filterNew, setFilterNew] = useState(false);
 	const [filterPresent, setFilterPresent] = useState(false);
+
+	const [eventRecord, setEventRecord] = useState(null);
 
 	const attendees = ATTENDEES;
 
@@ -82,7 +85,7 @@ function AttendanceSheet(props) {
 	// Load data.
 	useEffect(() => {
 		if (isLoading) {
-			loadAll(setIsLoading)
+			loadAll(setIsLoading, setEventRecord)
 		}
 	}, [isLoading]);
 
@@ -98,7 +101,7 @@ function AttendanceSheet(props) {
 
 	return (
 		<div className="AttendanceSheet">
-			<Header name={EVENT_NAME} />
+			<Header name={eventRecord ? eventRecord.title : ''} />
 			<SearchBar
 				searchTerm={searchTerm} setSearchTerm={setSearchTerm}
 				filterRecent={filterRecent} setFilterRecent={setFilterRecent}
@@ -114,8 +117,6 @@ function AttendanceSheet(props) {
 
 // Dummy data
 const EVENT_ID = 1000;
-
-const EVENT_NAME = "June 8 Workshop";
 
 const ATTENDEES = [
 	// Recent users, attending

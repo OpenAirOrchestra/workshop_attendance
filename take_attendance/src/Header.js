@@ -4,10 +4,11 @@ export default Header
 
 function Header(props) {
   const name = props.name;
+  const title = name ? 'Attendance for ' + name : 'Loading...'
 
   return (
     <div className='Header'>
-      <h1>Attendance for {name}</h1>
+      <h1>{title}</h1>
     </div>
   )
 }
