@@ -24,11 +24,15 @@ class MockAttendanceService {
         ];
     }
 
-    async retrieve(event_id) {
+    async retrieve(event_id, limit) {
         let records = this.attendanceRecords;
         if (event_id) {
             records = records.filter(record => record.event_id === event_id);
         }
+        if (limit) {
+            records = records.slice(0, limit);
+        }
+        await new Promise((res) => setTimeout(res, 1000));
         return Promise.resolve(records);
     }
 

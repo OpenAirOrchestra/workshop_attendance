@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Configuration from './Configuration';
+import MockAttendanceService from './MockAttendanceService';
 import MockEventService from './MockEventService';
 import MockUserService from './MockUserService';
 import Header from './Header'
@@ -11,12 +12,11 @@ import Loading from './Loading'
 export default AttendanceSheet
 
 /// Compute attendees from users and attendance records
-function possibleAttendees(users) {
+function possibleAttendees(users, recents) {
 	let attendanceMap = {}
 
 	// Add users to the map.
-	const allUsers = users ? users : [];
-	for  (const user of allUsers) {
+	for (const user of users) {
 		let attendanceRecord = { user_id: user.id, firstname: '', lastname: '' }
 		if (user.nickname) {
 			attendanceRecord.firstname = user.nickname;
@@ -32,6 +32,24 @@ function possibleAttendees(users) {
 		}
 
 		attendanceMap[user.id] = attendanceRecord;
+	}
+
+	// Add recents to the map
+	for (const recent of recents) {
+		const key = recent.user_id ? recent.user_id : (recent.firstname + recent.lastname);
+		let attendanceRecord = attendanceMap[key];
+		if (attendanceRecord) {
+			if (!attendanceRecord.notes) {
+				attendanceRecord.notes = recent.notes;
+			}
+			attendanceRecord.recent_event_id = recent.event_id;
+			attendanceMap[key] = attendanceRecord;
+		}
+		// if (!attendanceRecord) {
+		// 	attendanceRecord = { firstname: recent.firstname, lastname: recent.lastname }
+		// 	attendanceRecord.email = recent.email;
+		// }
+		
 	}
 
 	// Iterate the map to create result.
@@ -82,14 +100,19 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 }
 
 /// Load all data from backend.
-async function loadAll(setIsLoading, setEventRecord, setUsers) {
+async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents) {
 	const eventService = Configuration.eventService;
 	const userService = Configuration.userService;
+	const attendanceService = Configuration.attendanceService;
 
-	let eventRecord = await eventService.get(EVENT_ID);
+	const eventRecord = await eventService.get(EVENT_ID);
 	setEventRecord(eventRecord);
-	let users = await userService.retrieve();
+
+	const users = await userService.retrieve();
 	setUsers(users);
+
+	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
+	setRecents(recents);
 
 	setIsLoading(false);
 }
@@ -104,13 +127,15 @@ function AttendanceSheet(props) {
 	const [filterPresent, setFilterPresent] = useState(false);
 
 	const [eventRecord, setEventRecord] = useState(null);
-	const [users, setUsers] = useState(null);
+	const [users, setUsers] = useState([]);
+	const [recents, setRecents] = useState([])
 
 	// Set up configuration
 	useEffect(() => {
 		if (!Configuration.eventService) {
 			Configuration.eventService = new MockEventService();
 			Configuration.userService = new MockUserService();
+			Configuration.attendanceService = new MockAttendanceService();
 		}
 	});
 
@@ -118,12 +143,12 @@ function AttendanceSheet(props) {
 	// Load initial data.
 	useEffect(() => {
 		if (isLoading) {
-			loadAll(setIsLoading, setEventRecord, setUsers)
+			loadAll(setIsLoading, setEventRecord, setUsers, setRecents)
 		}
 	}, [isLoading]);
 
 	// Attendance
-	const attendees = possibleAttendees(users);
+	const attendees = possibleAttendees(users, recents);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
