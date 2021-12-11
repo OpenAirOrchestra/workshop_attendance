@@ -16,11 +16,20 @@ class MockEventService {
     }
 
     async get(id) {
+        let result = null;
+
         for (var i = 0; i < this.events.length; i++) {
             if (this.events[i].id === id) {
-                return Promise.resolve(this.events[i]);
+                result = this.events[i];
+                break;
             }
         }
+        if (result) {
+            // Dummy loading delay
+            await new Promise((res) => setTimeout(res, 2000));
+            return Promise.resolve(result);
+        }
+        
         return null;
     }
 }
