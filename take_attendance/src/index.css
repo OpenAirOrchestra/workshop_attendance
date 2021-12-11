@@ -128,8 +128,8 @@
 }
 
 .spinner {
-    border: 16px solid grey; /* Light grey */
-    border-top: 16px solid blue; /* Blue */
+    border: 16px solid #80EE80;
+    border-top: 16px solid #EE8080;
     border-radius: 50%;
     width: 120px;
     height: 120px;

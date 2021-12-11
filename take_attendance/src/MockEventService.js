@@ -12,13 +12,13 @@ class MockEventService {
     }
 
     async retrieve() {
-        return Promise.resolve(this.attendanceRecords);
+        return Promise.resolve(this.events);
     }
 
     async get(id) {
-        for (var i = 0; i < this.items.length; i++) {
-            if (this.attendanceRecords[i].id === id) {
-                return Promise.resolve(this.items[i]);
+        for (var i = 0; i < this.events.length; i++) {
+            if (this.events[i].id === id) {
+                return Promise.resolve(this.events[i]);
             }
         }
         return null;

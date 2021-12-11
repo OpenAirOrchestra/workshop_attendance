@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Configuration from './Configuration';
+import MockEventService from './MockEventService';
 import Header from './Header'
 import SearchBar from './SearchBar'
 import AddendanceList from './AttendanceList'
@@ -49,16 +51,40 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 	return result;
 }
 
+/// Load all data from backend.
+function loadAll(setIsLoading) {
+	const eventService = Configuration.eventService;
+	eventService.get(EVENT_ID).then(event => {
+		setIsLoading(false);
+	});
+}
+
 function AttendanceSheet(props) {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [searchTerm, setSearchTerm] = useState('');
 
-	const attendees = ATTENDEES;
-
 	const [filterRecent, setFilterRecent] = useState(false);
 	const [filterNew, setFilterNew] = useState(false);
 	const [filterPresent, setFilterPresent] = useState(false);
+
+	const attendees = ATTENDEES;
+
+	// Set up configuratin
+	// Configuration
+	useEffect(() => {
+		if (!Configuration.eventService) {
+		  Configuration.eventService = new MockEventService();
+		}
+	  });
+
+	  
+	// Load data.
+	useEffect(() => {
+		if (isLoading) {
+			loadAll(setIsLoading)
+		}
+	}, [isLoading]);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
@@ -80,7 +106,7 @@ function AttendanceSheet(props) {
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
 			<AddendanceList attendees={filteredAttendees} />
-			<NewAttendeeForm hideAttendeeForm={ !showNewAttendeeForm }/>
+			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} />
 			<Loading isLoading={isLoading} />
 		</div>
 	)
