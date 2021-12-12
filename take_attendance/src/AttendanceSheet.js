@@ -41,6 +41,8 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...recent };
+		} else {
+			attendanceRecord = { ...attendanceRecord };
 		}
 
 		attendanceRecord.id = recent.id;
@@ -58,7 +60,10 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...currentAttendee };
+		} else {
+			attendanceRecord = { ...attendanceRecord };
 		}
+
 		attendanceRecord.id = currentAttendee.id;
 		attendanceRecord.event_id = currentAttendee.event_id;
 		if (currentAttendee.phone && !attendanceRecord.phone) {
@@ -89,6 +94,8 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...pendingAttendee };
+		} else {
+			attendanceRecord = { ...attendanceRecord };
 		}
 
 		attendanceMap[key] = attendanceRecord;
