@@ -10,7 +10,7 @@ function AttendanceList(props) {
   const event_id = props.event_id;
 
   const rows = attendees
-    .sort((a, b) => (a.firstname > b.firstname) ? 1 : (a.firstname === b.firstname) ? ((a.lastname > b.lastname) ? 1 : -1) : -1)
+    .sort((a, b) => (a.firstname.toLowerCase() > b.firstname.toLowerCase()) ? 1 : (a.firstname.toLowerCase() === b.firstname.toLowerCase()) ? ((a.lastname.toLowerCase() > b.lastname.toLowerCase()) ? 1 : -1) : -1)
     .map((attendee) =>
       <AttendanceRecord attendee={attendee} event_id={event_id} pendingMap={pendingMap} key={attendee.user_id ? attendee.user_id : attendee.firstname + '.' + attendee.lastname} />
     );
