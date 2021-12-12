@@ -12,6 +12,7 @@ function AttendanceRecord(props) {
   const pendingMap = props.pendingMap ? props.pendingMap : {};
   const event_id = props.event_id;
   const addAttendanceRecord = props.addAttendanceRecord;
+  const deleteAttendanceRecord = props.deleteAttendanceRecord;
 
   const key = attendeeKey(attendee);
 
@@ -38,9 +39,9 @@ function AttendanceRecord(props) {
   return (
     <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName}
       onClick={() => {
-        if (present) {
-
-        } else {
+        if (present && !pending) {
+          deleteAttendanceRecord(attendee);
+        } else if (!pending) {
           addAttendanceRecord(attendee);
         }
       }} >
