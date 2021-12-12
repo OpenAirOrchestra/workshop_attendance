@@ -53,8 +53,6 @@ class MockAttendanceService {
     }
 
     async create(attendanceRecord) {
-        console.log("MockAttendanceService.createAttendanceRecord():");
-        console.log(attendanceRecord);
 
         // Add record to pending.
         this.pendingRecords.push(attendanceRecord);
