@@ -3,9 +3,19 @@ import React, { useState } from 'react';
 export default NewAttendeeForm
 
 /// Handle clicking on the add button
-function handleAdd(addAttendanceRecord, firstname, lastname, email, phone, notes, attAttendanceRecord) {
+function handleAdd(addAttendanceRecord, firstname, setFirstname, lastname, setLastname, email, setEmail, phone, setPhone, notes, setNotes, attAttendanceRecord) {
+  // Create record
   const attendee = { firstname: firstname, lastname: lastname, email:email, phone:phone, notes:notes };
+
+  // Add the record
   addAttendanceRecord(attendee);
+
+  // Clear the form.
+  setFirstname('');
+  setLastname('');
+  setEmail('');
+  setPhone('');
+  setNotes('');
 }
 
 function NewAttendeeForm(props) {
@@ -44,7 +54,7 @@ function NewAttendeeForm(props) {
         <textarea name="notes" id="notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
         <br />
         <div className='centered'>
-          <input type="submit" value="Add" disabled={!(firstname && lastname)} onClick={() => {handleAdd(addAttendanceRecord, firstname, lastname, email, phone, notes)}} />
+          <input type="submit" value="Add" disabled={!(firstname && lastname)} onClick={() => {handleAdd(addAttendanceRecord, firstname, setFirstname, lastname, setLastname, email, setEmail, phone, setPhone, notes, setNotes)}} />
         </div>
       </form>
     </div>
