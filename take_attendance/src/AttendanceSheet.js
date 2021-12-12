@@ -23,7 +23,7 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 		} else if (user.first_name) {
 			attendanceRecord.firstname = user.first_name;
 			if (user.last_name) {
-				attendanceRecord.lastname = user.last_name.charAt(0);
+				attendanceRecord.lastname = user.last_name;
 			}
 		}
 
@@ -36,27 +36,29 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add recents to the map
 	for (const recent of recents) {
-		const key = recent.user_id ? recent.user_id : (recent.firstname + recent.lastname);
+		const key = recent.user_id ? recent.user_id : (recent.firstname + '.' + recent.lastname);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
-			attendanceRecord = { firstname: recent.firstname, lastname: recent.lastname };
+			attendanceRecord = { ...recent };
 		}
+
+		attendanceRecord.id = recent.id;
 
 		if (!attendanceRecord.notes) {
 			attendanceRecord.notes = recent.notes;
 		}
-		attendanceRecord.recent_event_id = recent.event_id;
+		attendanceRecord.event_id = recent.event_id;
 		attendanceMap[key] = attendanceRecord;
 	}
 
 	// Add currentAttendees to the map
 	for (const currentAttendee of currentAttendees) {
-		const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
+		const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + '.' + currentAttendee.lastname);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
-			attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname };
+			attendanceRecord = { ...currentAttendee };
 		}
-		attendanceRecord.recordid = currentAttendee.id;
+		attendanceRecord.id = currentAttendee.id;
 		attendanceRecord.event_id = currentAttendee.event_id;
 		if (currentAttendee.phone && !attendanceRecord.phone) {
 			attendanceRecord.phone = currentAttendee.phone;
@@ -82,37 +84,10 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add pending to the map
 	for (const pendingAttendee of pending) {
-		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + pendingAttendee.lastname);
+		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + '.' + pendingAttendee.lastname);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
-			attendanceRecord = { firstname: pendingAttendee.firstname, lastname: pendingAttendee.lastname };
-		}
-		attendanceRecord.pending = true;
-
-		if (pendingAttendee.recordid && !attendanceRecord.recordid) {
-			attendanceRecord.recordid = pendingAttendee.recordid;
-		}
-		if (pendingAttendee.id && !attendanceRecord.recordid) {
-			attendanceRecord.recordid = pendingAttendee.id;
-		}
-		attendanceRecord.event_id = pendingAttendee.event_id;
-		if (pendingAttendee.phone && !attendanceRecord.phone) {
-			attendanceRecord.phone = pendingAttendee.phone;
-		}
-		if (pendingAttendee.user_id && !attendanceRecord.user_id) {
-			attendanceRecord.user_id = pendingAttendee.user_id;
-		}
-		if (pendingAttendee.user_id && !attendanceRecord.user_id) {
-			attendanceRecord.user_id = pendingAttendee.user_id;
-		}
-		if (pendingAttendee.firstname && !attendanceRecord.firstname) {
-			attendanceRecord.firstname = pendingAttendee.firstname;
-		}
-		if (pendingAttendee.lastname && !attendanceRecord.lastname) {
-			attendanceRecord.lastname = pendingAttendee.lastname;
-		}
-		if (pendingAttendee.notes && !attendanceRecord.notes) {
-			attendanceRecord.notes = pendingAttendee.notes;
+			attendanceRecord = { ...pendingAttendee };
 		}
 
 		attendanceMap[key] = attendanceRecord;
@@ -146,7 +121,7 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 
 	if (filterRecent || filterNew || filterPresent) {
 		result = result.filter(attendee => {
-			if (filterRecent && attendee.recent_event_id) {
+			if (filterRecent && attendee.event_id) {
 				return true;
 			}
 
@@ -154,7 +129,7 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 				return true;
 			}
 
-			if (filterPresent && attendee.recordid) {
+			if (filterPresent && attendee.event_id && attendee.event_id === EVENT_ID) {
 				return true;
 			}
 
@@ -203,6 +178,12 @@ function AttendanceSheet(props) {
 		{ user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 1000, id: 203 }
 	]);
 
+	let pendingMap = { };
+	for (const pendingAttendee of pending) {
+		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + '.' + pendingAttendee.lastname);
+		pendingMap[key] = pendingAttendee;
+	}
+
 	// Set up configuration
 	useEffect(() => {
 		if (!Configuration.eventService) {
@@ -240,7 +221,7 @@ function AttendanceSheet(props) {
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
-			<AttendanceList attendees={filteredAttendees} />
+			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap = { pendingMap } />
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} />
 			<Loading isLoading={isLoading} />
 		</div>
