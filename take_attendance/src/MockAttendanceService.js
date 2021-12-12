@@ -61,13 +61,13 @@ class MockAttendanceService {
         await new Promise((res) => setTimeout(res, 1000));
 
         // Add the new record
-        ++ this.maxRecordId;
+        ++this.maxRecordId;
         let newRecord = { ...attendanceRecord };
         newRecord.id = this.maxRecordId;
-        this.attendanceRecords.push( newRecord );
+        this.attendanceRecords.push(newRecord);
 
         // Remove the record from pending
-        this.pendingRecords = this.pendingRecords.filter(attendee => { return attendee !==  attendanceRecord; });
+        this.pendingRecords = this.pendingRecords.filter(attendee => { return attendee !== attendanceRecord; });
 
         //Return the promise
         return Promise.resolve(attendanceRecord);
@@ -76,6 +76,21 @@ class MockAttendanceService {
     async delete(id) {
         console.log("MockAttendanceService.deleteAttenanceRecord():");
         console.log("ID:" + id);
+
+        // Add record to pending.
+        //  this.pendingRecords.push(attendanceRecord);
+
+        // Fake delay
+        await new Promise((res) => setTimeout(res, 1000));
+
+        // Remove new record
+        this.attendanceRecords = this.attendanceRecords.filter(attendee => { return id !== attendee.id; });
+
+        // Remove the record from pending
+        //  this.pendingRecords = this.pendingRecords.filter(attendee => { return id !==  attendanceRecord.id; });
+
+        //Return the promise
+        return Promise.resolve(id);
     }
 
     async update(attendanceRecord) {

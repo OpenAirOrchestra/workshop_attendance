@@ -192,6 +192,34 @@ async function addAttendanceRecord(attendee, setPending, setCurrentAttendees) {
 	setPending(attendanceService.pendingRecords);
 }
 
+/// Add an attendance record (add attendee)
+async function deleteAttendanceRecord(attendee, setPending, setRecents, setCurrentAttendees) {
+	const attendanceService = Configuration.attendanceService;
+
+	// Get the id
+	const recordId = attendee.id;
+
+	// Delete the attendance record
+	const response = attendanceService.delete(recordId);
+
+	// Set pending
+	setPending(attendanceService.pendingRecords);
+
+	// Await creation response
+	await response;
+
+	// List recent attendees again and set them
+	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
+	setRecents(recents);
+
+	// List current attendees again and set them
+	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	setCurrentAttendees(currentAttendees);
+
+	// Set pending
+	setPending(attendanceService.pendingRecords);
+}
+
 /// The actual component!
 function AttendanceSheet(props) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -254,7 +282,11 @@ function AttendanceSheet(props) {
 			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap}
 				addAttendanceRecord={(attendee) => {
 					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
-				}} />
+				}} 
+				deleteAttendanceRecord={(attendee) => {
+					deleteAttendanceRecord(attendee, setPending, setRecents, setCurrentAttendees);
+				}} 
+				/>
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
 				addAttendanceRecord={(attendee) => {
 					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
