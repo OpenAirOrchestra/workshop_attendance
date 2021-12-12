@@ -88,31 +88,20 @@
     margin-right: 18px;
 }
   
-  .pending-spinner,
-  .pending-spinner:before {
+  .pending-spinner {
+    top: 2px;
+    margin: 0 2px;
     display: inline-block;
     width: 1EM;
     height: 1EM;
     transform-origin: 50%;
-    border: 2px solid #80EE80;
-    border-top: 2px solid #EE8080;
+    border: 3px solid #80EE80;
+    border-top: 3px solid #EE8080;
     border-radius: 50%;
-    content: "";
     animation: spin 2s linear infinite;
     position: relative;
     vertical-align: inherit;
     line-height: inherit;
-  }
-  .pending-spinner {
-    top: 3px;
-    margin: 0 3px;
-  }
-  .pending-spinner:before {
-    border-color: #80EE80 #80EE80 #EE8080 #EE8080;
-    position: absolute;
-    left: -2px;
-    top: -2px;
-    border-style: solid;
   }
 
 /* NewAttendeeForm */
