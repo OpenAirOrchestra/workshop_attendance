@@ -86,6 +86,10 @@
     opacity: 0.5;
 }
 
+.AttendanceRecord.pending .presenceIcon {
+    opacity: 0.5;
+} 
+
 .AttendanceRecord .details {
     font-size: 0.8em;
     margin-left: 18px;

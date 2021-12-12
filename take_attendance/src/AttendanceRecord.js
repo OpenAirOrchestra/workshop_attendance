@@ -18,17 +18,17 @@ function AttendanceRecord(props) {
     {phone}
   </div>;
 
-  const pendingSpinner = attendee.pending ? ( <span className="pending-spinner" /> ) : '';
+  const pendingSpinner = attendee.pending ? (<span className="pending-spinner" />) : '';
 
   return (
-    <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName }>
+    <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName}>
       <td className='attendee' >
         {attendee.firstname + ' ' + attendee.lastname}
         <div className="details">
           {attendeeDetails}
         </div>
       </td>
-      <td className='presence' >{ pendingSpinner }{attendanceIcon}</td>
+      <td className='presence' >{pendingSpinner}<span className='presenceIcon'>{attendanceIcon}</span></td>
     </tr>
   )
 }

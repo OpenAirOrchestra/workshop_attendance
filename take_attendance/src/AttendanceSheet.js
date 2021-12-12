@@ -50,7 +50,7 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 		for (const currentAttendee of currentAttendees) {
 			const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
 			let attendanceRecord = attendanceMap[key];
-			if (! attendanceRecord) {
+			if (!attendanceRecord) {
 				attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname };
 			}
 			attendanceRecord.recordid = currentAttendee.id;
@@ -82,11 +82,11 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 	for (const pendingAttendee of pending) {
 		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + pendingAttendee.lastname);
 		let attendanceRecord = attendanceMap[key];
-		if (! attendanceRecord) {
+		if (!attendanceRecord) {
 			attendanceRecord = { firstname: pendingAttendee.firstname, lastname: pendingAttendee.lastname };
 		}
 		attendanceRecord.pending = true;
-		
+
 		if (pendingAttendee.recordid && !attendanceRecord.recordid) {
 			attendanceRecord.recordid = pendingAttendee.recordid;
 		}
