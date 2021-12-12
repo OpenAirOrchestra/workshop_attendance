@@ -82,6 +82,16 @@
     background-color: #808080;
 }
 
+.AttendanceRecord.pending .attendee {
+    opacity: 0.5;
+}
+
+.AttendanceRecord .details {
+    font-size: 0.8em;
+    margin-left: 18px;
+    margin-right: 18px;
+}
+
 .AttendanceRecord .details {
     font-size: 0.8em;
     margin-left: 18px;
