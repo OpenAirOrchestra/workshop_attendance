@@ -66,5 +66,4 @@ class MockAttendanceService {
 
 }
 
-
 export default MockAttendanceService;

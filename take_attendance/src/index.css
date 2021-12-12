@@ -54,7 +54,7 @@
 }
 
 .AttendanceRecord .presence {
-    text-align: center;
+    text-align: right;
 }
 
 .AttendanceRecord.present:nth-child(even) {
@@ -74,12 +74,46 @@
     background-color: #EE8080;
 }
 
+.AttendanceRecord.pending:nth-child(even) {
+    background-color: #AAAAAA;
+}
+
+.AttendanceRecord.pending:nth-child(odd) {
+    background-color: #808080;
+}
 
 .AttendanceRecord .details {
     font-size: 0.8em;
     margin-left: 18px;
     margin-right: 18px;
 }
+  
+  .pending-spinner,
+  .pending-spinner:before {
+    display: inline-block;
+    width: 1EM;
+    height: 1EM;
+    transform-origin: 50%;
+    border: 2px solid transparent;
+    border-color: #74a8d0 #74a8d0 transparent transparent;
+    border-radius: 50%;
+    content: "";
+    animation: spin 2s linear infinite;
+    position: relative;
+    vertical-align: inherit;
+    line-height: inherit;
+  }
+  .pending-spinner {
+    top: 3px;
+    margin: 0 3px;
+  }
+  .pending-spinner:before {
+    border-color: #74a8d0 #74a8d0 transparent transparent;
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    border-style: solid;
+  }
 
 /* NewAttendeeForm */
 
@@ -103,7 +137,6 @@
 }
 
 .NewAttendeeForm input[type="submit"] {
-    padding: 10px;
     border-color: black;
     font-weight: bold;
 }

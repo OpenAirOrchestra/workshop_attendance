@@ -12,12 +12,12 @@ import Loading from './Loading'
 export default AttendanceSheet
 
 /// Compute attendees from users and attendance records
-function possibleAttendees(users, recents, currentAttendees) {
+function possibleAttendees(users, recents, currentAttendees, pending) {
 	let attendanceMap = {}
 
 	// Add users to the map.
 	for (const user of users) {
-		let attendanceRecord = { user_id: user.id, firstname: '', lastname: '' }
+		let attendanceRecord = { user_id: user.id, firstname: '', lastname: '' };
 		if (user.nickname) {
 			attendanceRecord.firstname = user.nickname;
 		} else if (user.first_name) {
@@ -51,7 +51,7 @@ function possibleAttendees(users, recents, currentAttendees) {
 			const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
 			let attendanceRecord = attendanceMap[key];
 			if (! attendanceRecord) {
-				attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname }
+				attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname };
 			}
 			attendanceRecord.recordid = currentAttendee.id;
 			attendanceRecord.event_id = currentAttendee.event_id;
@@ -76,6 +76,44 @@ function possibleAttendees(users, recents, currentAttendees) {
 
 			attendanceMap[key] = attendanceRecord;
 		}
+	}
+
+	// Add pending to the map
+	for (const pendingAttendee of pending) {
+		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + pendingAttendee.lastname);
+		let attendanceRecord = attendanceMap[key];
+		if (! attendanceRecord) {
+			attendanceRecord = { firstname: pendingAttendee.firstname, lastname: pendingAttendee.lastname };
+		}
+		attendanceRecord.pending = true;
+		
+		if (pendingAttendee.recordid && !attendanceRecord.recordid) {
+			attendanceRecord.recordid = pendingAttendee.recordid;
+		}
+		if (pendingAttendee.id && !attendanceRecord.recordid) {
+			attendanceRecord.recordid = pendingAttendee.id;
+		}
+		attendanceRecord.event_id = pendingAttendee.event_id;
+		if (pendingAttendee.phone && !attendanceRecord.phone) {
+			attendanceRecord.phone = pendingAttendee.phone;
+		}
+		if (pendingAttendee.user_id && !attendanceRecord.user_id) {
+			attendanceRecord.user_id = pendingAttendee.user_id;
+		}
+		if (pendingAttendee.user_id && !attendanceRecord.user_id) {
+			attendanceRecord.user_id = pendingAttendee.user_id;
+		}
+		if (pendingAttendee.firstname && !attendanceRecord.firstname) {
+			attendanceRecord.firstname = pendingAttendee.firstname;
+		}
+		if (pendingAttendee.lastname && !attendanceRecord.lastname) {
+			attendanceRecord.lastname = pendingAttendee.lastname;
+		}
+		if (pendingAttendee.notes && !attendanceRecord.notes) {
+			attendanceRecord.notes = pendingAttendee.notes;
+		}
+
+		attendanceMap[key] = attendanceRecord;
 	}
 
 	// Iterate the map to create result.
@@ -159,6 +197,9 @@ function AttendanceSheet(props) {
 	const [users, setUsers] = useState([]);
 	const [recents, setRecents] = useState([])
 	const [currentAttendees, setCurrentAttendees] = useState([]);
+	const [pending, setPending] = useState([
+		{ user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 1000, id: 203 }
+	]);
 
 	// Set up configuration
 	useEffect(() => {
@@ -178,7 +219,7 @@ function AttendanceSheet(props) {
 	}, [isLoading]);
 
 	// Attendance
-	const attendees = possibleAttendees(users, recents, currentAttendees);
+	const attendees = possibleAttendees(users, recents, currentAttendees, pending);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
