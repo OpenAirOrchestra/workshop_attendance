@@ -11,6 +11,7 @@ function AttendanceRecord(props) {
   const attendee = props.attendee;
   const pendingMap = props.pendingMap ? props.pendingMap : {};
   const event_id = props.event_id;
+  const addAttendanceRecord = props.addAttendanceRecord;
 
   const key = attendeeKey(attendee);
 
@@ -33,9 +34,16 @@ function AttendanceRecord(props) {
   const pendingSpinner = pending ? (<span className="pending-spinner" />) : '';
 
   // For not new users, don't show full last name
-  const lastname = (attendee.user_id && attendee.lastname)? attendee.lastname.charAt(0) : attendee.lastname;
+  const lastname = (attendee.user_id && attendee.lastname) ? attendee.lastname.charAt(0) : attendee.lastname;
   return (
-    <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName}>
+    <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName}
+      onClick={() => {
+        if (present) {
+
+        } else {
+          addAttendanceRecord(attendee);
+        }
+      }} >
       <td className='attendee' >
         {attendee.firstname + ' ' + lastname}
         <div className="details">

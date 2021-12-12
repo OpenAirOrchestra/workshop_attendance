@@ -5,7 +5,7 @@ export default NewAttendeeForm
 /// Handle clicking on the add button
 function handleAdd(addAttendanceRecord, firstname, setFirstname, lastname, setLastname, email, setEmail, phone, setPhone, notes, setNotes, attAttendanceRecord) {
   // Create record
-  const attendee = { firstname: firstname, lastname: lastname, email:email, phone:phone, notes:notes };
+  const attendee = { firstname: firstname, lastname: lastname, email: email, phone: phone, notes: notes };
 
   // Add the record
   addAttendanceRecord(attendee);
@@ -54,7 +54,10 @@ function NewAttendeeForm(props) {
         <textarea name="notes" id="notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
         <br />
         <div className='centered'>
-          <input type="submit" value="Add" disabled={!(firstname && lastname)} onClick={() => {handleAdd(addAttendanceRecord, firstname, setFirstname, lastname, setLastname, email, setEmail, phone, setPhone, notes, setNotes)}} />
+          <input type="submit" value="Add" disabled={!(firstname && lastname)}
+            onClick={() => {
+              handleAdd(addAttendanceRecord, firstname, setFirstname, lastname, setLastname, email, setEmail, phone, setPhone, notes, setNotes);
+            }} />
         </div>
       </form>
     </div>

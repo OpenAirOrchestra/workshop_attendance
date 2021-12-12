@@ -9,10 +9,12 @@ function AttendanceList(props) {
   const pendingMap = props.pendingMap ? props.pendingMap : {}
   const event_id = props.event_id;
 
+  const addAttendanceRecord = props.addAttendanceRecord;
+
   const rows = attendees
     .sort((a, b) => (a.firstname.toLowerCase() > b.firstname.toLowerCase()) ? 1 : (a.firstname.toLowerCase() === b.firstname.toLowerCase()) ? ((a.lastname.toLowerCase() > b.lastname.toLowerCase()) ? 1 : -1) : -1)
     .map((attendee) =>
-      <AttendanceRecord attendee={attendee} event_id={event_id} pendingMap={pendingMap} key={attendeeKey(attendee)} />
+      <AttendanceRecord attendee={attendee} event_id={event_id} pendingMap={pendingMap} key={attendeeKey(attendee)} addAttendanceRecord={addAttendanceRecord} />
     );
   return (
     <div className='AttendanceList'>

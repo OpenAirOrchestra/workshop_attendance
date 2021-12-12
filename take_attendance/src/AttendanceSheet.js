@@ -251,12 +251,14 @@ function AttendanceSheet(props) {
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
-			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap} />
+			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap}
+				addAttendanceRecord={(attendee) => {
+					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
+				}} />
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
 				addAttendanceRecord={(attendee) => {
 					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
-				}
-				} />
+				}} />
 			<Loading isLoading={isLoading} />
 		</div>
 	)
