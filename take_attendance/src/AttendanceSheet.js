@@ -169,6 +169,14 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 	setIsLoading(false);
 }
 
+/// Add an attendance record (add attendee)
+async function addAttendanceRecord(attendee, setPending) {
+	alert('add ' + attendee.firstname);
+	const attendanceService = Configuration.attendanceService;
+	attendanceService.create(attendee);
+}
+
+/// The actual component!
 function AttendanceSheet(props) {
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -230,7 +238,11 @@ function AttendanceSheet(props) {
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
 			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap = { pendingMap } />
-			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} />
+			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} 
+			addAttendanceRecord = { (attendee)=> {
+				addAttendanceRecord(attendee, setPending);
+			}
+		} />
 			<Loading isLoading={isLoading} />
 		</div>
 	)

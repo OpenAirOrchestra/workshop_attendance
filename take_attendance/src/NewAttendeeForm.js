@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 
 export default NewAttendeeForm
 
+/// Handle clicking on the add button
+function handleAdd(addAttendanceRecord, firstname, lastname, email, phone, notes, attAttendanceRecord) {
+  const attendee = { firstname: firstname, lastname: lastname, email:email, phone:phone, notes:notes };
+  addAttendanceRecord(attendee);
+}
+
 function NewAttendeeForm(props) {
 
   const hideAttendeeForm = props.hideAttendeeForm;
+  const addAttendanceRecord = props.addAttendanceRecord;
 
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
 
   if (hideAttendeeForm) {
     return null;
@@ -16,25 +26,25 @@ function NewAttendeeForm(props) {
   return (
     <div className='NewAttendeeForm'>
       <h2>Add New Attendee</h2>
-      <form>
+      <form action="javascript:void(0);">
         <label htmlFor="firstname">First Name (required):</label>
-        <input type="text" name="firstname" id="firstname" className='required' value={firstname} onChange={(event) => setFirstname(event.target.value)}/>
+        <input type="text" name="firstname" id="firstname" className='required' value={firstname} onChange={(event) => setFirstname(event.target.value)} />
         <br />
         <label htmlFor="lastname">Last Name (required): </label>
-        <input type="text" name="lastname" id="lastname" className='required' value={lastname} onChange={(event) => setLastname(event.target.value)}/>
+        <input type="text" name="lastname" id="lastname" className='required' value={lastname} onChange={(event) => setLastname(event.target.value)} />
         <br />
         <label htmlFor="email">Email:</label>
-        <input type="text" name="email" id="email" />
+        <input type="text" name="email" id="email" value={email} onChange={(event) => setEmail(event.target.value)} />
         <br />
         <label htmlFor="phone">Phone:</label>
-        <input type="text" name="phone" id="phone" />
+        <input type="text" name="phone" id="phone" value={phone} onChange={(event) => setPhone(event.target.value)} />
         <br />
         <label htmlFor="notes">Notes:</label>
         <br />
-        <textarea name="notes" id="notes" />
+        <textarea name="notes" id="notes" value={notes} onChange={(event) => setNotes(event.target.value)} />
         <br />
         <div className='centered'>
-          <input type="submit" value="Add" disabled={!(firstname && lastname)} />
+          <input type="submit" value="Add" disabled={!(firstname && lastname)} onClick={() => {handleAdd(addAttendanceRecord, firstname, lastname, email, phone, notes)}} />
         </div>
       </form>
     </div>
