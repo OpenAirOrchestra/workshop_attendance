@@ -38,44 +38,46 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 	for (const recent of recents) {
 		const key = recent.user_id ? recent.user_id : (recent.firstname + recent.lastname);
 		let attendanceRecord = attendanceMap[key];
-		if (attendanceRecord) {
-			if (!attendanceRecord.notes) {
-				attendanceRecord.notes = recent.notes;
-			}
-			attendanceRecord.recent_event_id = recent.event_id;
-			attendanceMap[key] = attendanceRecord;
+		if (!attendanceRecord) {
+			attendanceRecord = { firstname: recent.firstname, lastname: recent.lastname };
 		}
 
-		// Add currentAttendees to the map
-		for (const currentAttendee of currentAttendees) {
-			const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
-			let attendanceRecord = attendanceMap[key];
-			if (!attendanceRecord) {
-				attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname };
-			}
-			attendanceRecord.recordid = currentAttendee.id;
-			attendanceRecord.event_id = currentAttendee.event_id;
-			if (currentAttendee.phone && !attendanceRecord.phone) {
-				attendanceRecord.phone = currentAttendee.phone;
-			}
-			if (currentAttendee.user_id && !attendanceRecord.user_id) {
-				attendanceRecord.user_id = currentAttendee.user_id;
-			}
-			if (currentAttendee.user_id && !attendanceRecord.user_id) {
-				attendanceRecord.user_id = currentAttendee.user_id;
-			}
-			if (currentAttendee.firstname && !attendanceRecord.firstname) {
-				attendanceRecord.firstname = currentAttendee.firstname;
-			}
-			if (currentAttendee.lastname && !attendanceRecord.lastname) {
-				attendanceRecord.lastname = currentAttendee.lastname;
-			}
-			if (currentAttendee.notes && !attendanceRecord.notes) {
-				attendanceRecord.notes = currentAttendee.notes;
-			}
-
-			attendanceMap[key] = attendanceRecord;
+		if (!attendanceRecord.notes) {
+			attendanceRecord.notes = recent.notes;
 		}
+		attendanceRecord.recent_event_id = recent.event_id;
+		attendanceMap[key] = attendanceRecord;
+	}
+
+	// Add currentAttendees to the map
+	for (const currentAttendee of currentAttendees) {
+		const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
+		let attendanceRecord = attendanceMap[key];
+		if (!attendanceRecord) {
+			attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname };
+		}
+		attendanceRecord.recordid = currentAttendee.id;
+		attendanceRecord.event_id = currentAttendee.event_id;
+		if (currentAttendee.phone && !attendanceRecord.phone) {
+			attendanceRecord.phone = currentAttendee.phone;
+		}
+		if (currentAttendee.user_id && !attendanceRecord.user_id) {
+			attendanceRecord.user_id = currentAttendee.user_id;
+		}
+		if (currentAttendee.user_id && !attendanceRecord.user_id) {
+			attendanceRecord.user_id = currentAttendee.user_id;
+		}
+		if (currentAttendee.firstname && !attendanceRecord.firstname) {
+			attendanceRecord.firstname = currentAttendee.firstname;
+		}
+		if (currentAttendee.lastname && !attendanceRecord.lastname) {
+			attendanceRecord.lastname = currentAttendee.lastname;
+		}
+		if (currentAttendee.notes && !attendanceRecord.notes) {
+			attendanceRecord.notes = currentAttendee.notes;
+		}
+
+		attendanceMap[key] = attendanceRecord;
 	}
 
 	// Add pending to the map

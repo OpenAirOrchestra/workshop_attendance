@@ -22,7 +22,8 @@ class MockAttendanceService {
             { user_id: 112, firstname: 'Peter', lastname: 'Armguister', phone: '', email: '', notes: 'Dude', event_id: 10, id: 320 },
             { user_id: 113, firstname: 'Quinn', lastname: 'Eskimo', phone: '', email: '', notes: 'Beatles', event_id: 10, id: 330 },
 
-            { firstname: 'Sonny', lastname: 'Bono', phone: '', email: '', notes: 'Celebrity husband', event_id: 1000, id: 340 }
+            { firstname: 'Sonny', lastname: 'Bono', phone: '', email: '', notes: 'Celebrity husband', event_id: 1000, id: 340 },
+            { firstname: 'Frank', lastname: 'Zappa', phone: '', email: '', notes: 'Guitar', event_id: 1004, id: 350 }
 
         ];
     }
