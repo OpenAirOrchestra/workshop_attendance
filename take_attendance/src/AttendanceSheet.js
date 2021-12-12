@@ -170,10 +170,26 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 }
 
 /// Add an attendance record (add attendee)
-async function addAttendanceRecord(attendee, setPending) {
-	alert('add ' + attendee.firstname);
+async function addAttendanceRecord(attendee, setPending, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
-	attendanceService.create(attendee);
+
+	// Create the record
+	let newAttendee = { ...attendee };
+	newAttendee.event_id = EVENT_ID;
+	const response = attendanceService.create(newAttendee);
+
+	// Set pending
+	setPending(attendanceService.pendingRecords);
+
+	// Await creation response
+	await response;
+
+	// List current attendees again and set them
+	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	setCurrentAttendees(currentAttendees);
+
+	// Set pending
+	setPending(attendanceService.pendingRecords);
 }
 
 /// The actual component!
@@ -190,11 +206,9 @@ function AttendanceSheet(props) {
 	const [users, setUsers] = useState([]);
 	const [recents, setRecents] = useState([])
 	const [currentAttendees, setCurrentAttendees] = useState([]);
-	const [pending, setPending] = useState([
-		{ user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', event_id: 1000, id: 203 }
-	]);
+	const [pending, setPending] = useState([]);
 
-	let pendingMap = { };
+	let pendingMap = {};
 	for (const pendingAttendee of pending) {
 		const key = attendeeKey(pendingAttendee);
 		pendingMap[key] = pendingAttendee;
@@ -237,12 +251,12 @@ function AttendanceSheet(props) {
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
-			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap = { pendingMap } />
-			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm} 
-			addAttendanceRecord = { (attendee)=> {
-				addAttendanceRecord(attendee, setPending);
-			}
-		} />
+			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap} />
+			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
+				addAttendanceRecord={(attendee) => {
+					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
+				}
+				} />
 			<Loading isLoading={isLoading} />
 		</div>
 	)

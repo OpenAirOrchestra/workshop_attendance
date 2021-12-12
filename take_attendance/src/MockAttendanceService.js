@@ -3,6 +3,9 @@
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
 class MockAttendanceService {
 
+    maxRecordId = 1000;
+    pendingRecords = [];
+
     constructor() {
         this.attendanceRecords = [
             { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 300, id: 199 },
@@ -52,6 +55,23 @@ class MockAttendanceService {
     async create(attendanceRecord) {
         console.log("MockAttendanceService.createAttendanceRecord():");
         console.log(attendanceRecord);
+
+        // Add record to pending.
+        this.pendingRecords.push(attendanceRecord);
+
+        // Fake delay
+        await new Promise((res) => setTimeout(res, 1000));
+
+        // Add the new record
+        ++ this.maxRecordId;
+        let newRecord = { ...attendanceRecord };
+        newRecord.id = this.maxRecordId;
+        this.attendanceRecords.push( newRecord );
+
+        // Remove the record from pending
+        this.pendingRecords = this.pendingRecords.filter(attendee => { return attendee !==  attendanceRecord; });
+
+        //Return the promise
         return Promise.resolve(attendanceRecord);
     }
 
