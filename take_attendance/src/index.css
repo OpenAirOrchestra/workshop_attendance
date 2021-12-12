@@ -94,8 +94,8 @@
     width: 1EM;
     height: 1EM;
     transform-origin: 50%;
-    border: 2px solid transparent;
-    border-color: #74a8d0 #74a8d0 transparent transparent;
+    border: 2px solid #80EE80;
+    border-top: 2px solid #EE8080;
     border-radius: 50%;
     content: "";
     animation: spin 2s linear infinite;
@@ -108,7 +108,7 @@
     margin: 0 3px;
   }
   .pending-spinner:before {
-    border-color: #74a8d0 #74a8d0 transparent transparent;
+    border-color: #80EE80 #80EE80 #EE8080 #EE8080;
     position: absolute;
     left: -2px;
     top: -2px;
