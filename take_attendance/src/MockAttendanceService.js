@@ -5,7 +5,7 @@ class MockAttendanceService {
 
     constructor() {
         this.attendanceRecords = [
-            { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 1000, id: 199 },
+            { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 300, id: 199 },
             { user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', event_id: 1000, id: 200 },
             { user_id: 101, firstname: 'Bob', lastname: 'Gill', phone: '', email: '', notes: 'Bob is a fella', event_id: 1000, id: 201 },
             { user_id: 102, firstname: 'Charlie', lastname: 'Lipp', phone: '', email: '', notes: 'C Saxophone', event_id: 1000, id: 202 },
@@ -20,7 +20,10 @@ class MockAttendanceService {
             { user_id: 110, firstname: 'Niel', lastname: 'Armstrong', phone: '', email: '', notes: 'Astronaut', event_id: 10, id: 300 },
             { user_id: 111, firstname: 'Oprah', lastname: 'Winfrey', phone: '', email: '', notes: 'Celebrety', event_id: 10, id: 310 },
             { user_id: 112, firstname: 'Peter', lastname: 'Armguister', phone: '', email: '', notes: 'Dude', event_id: 10, id: 320 },
-            { user_id: 113, firstname: 'Quinn', lastname: 'Eskimo', phone: '', email: '', notes: 'Beatles', event_id: 10, id: 330 }
+            { user_id: 113, firstname: 'Quinn', lastname: 'Eskimo', phone: '', email: '', notes: 'Beatles', event_id: 10, id: 330 },
+
+            { firstname: 'Sonny', lastname: 'Bono', phone: '', email: '', notes: 'Celebrity husband', event_id: 1000, id: 340 }
+
         ];
     }
 

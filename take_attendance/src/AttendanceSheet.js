@@ -12,7 +12,7 @@ import Loading from './Loading'
 export default AttendanceSheet
 
 /// Compute attendees from users and attendance records
-function possibleAttendees(users, recents) {
+function possibleAttendees(users, recents, currentAttendees) {
 	let attendanceMap = {}
 
 	// Add users to the map.
@@ -45,11 +45,37 @@ function possibleAttendees(users, recents) {
 			attendanceRecord.recent_event_id = recent.event_id;
 			attendanceMap[key] = attendanceRecord;
 		}
-		// if (!attendanceRecord) {
-		// 	attendanceRecord = { firstname: recent.firstname, lastname: recent.lastname }
-		// 	attendanceRecord.email = recent.email;
-		// }
-		
+
+		// Add currentAttendees to the map
+		for (const currentAttendee of currentAttendees) {
+			const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + currentAttendee.lastname);
+			let attendanceRecord = attendanceMap[key];
+			if (! attendanceRecord) {
+				attendanceRecord = { firstname: currentAttendee.firstname, lastname: currentAttendee.lastname }
+			}
+			attendanceRecord.recordid = currentAttendee.id;
+			attendanceRecord.event_id = currentAttendee.event_id;
+			if (currentAttendee.phone && !attendanceRecord.phone) {
+				attendanceRecord.phone = currentAttendee.phone;
+			}
+			if (currentAttendee.user_id && !attendanceRecord.user_id) {
+				attendanceRecord.user_id = currentAttendee.user_id;
+			}
+			if (currentAttendee.user_id && !attendanceRecord.user_id) {
+				attendanceRecord.user_id = currentAttendee.user_id;
+			}
+			if (currentAttendee.firstname && !attendanceRecord.firstname) {
+				attendanceRecord.firstname = currentAttendee.firstname;
+			}
+			if (currentAttendee.lastname && !attendanceRecord.lastname) {
+				attendanceRecord.lastname = currentAttendee.lastname;
+			}
+			if (currentAttendee.notes && !attendanceRecord.notes) {
+				attendanceRecord.notes = currentAttendee.notes;
+			}
+
+			attendanceMap[key] = attendanceRecord;
+		}
 	}
 
 	// Iterate the map to create result.
@@ -100,7 +126,7 @@ function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
 }
 
 /// Load all data from backend.
-async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents) {
+async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees) {
 	const eventService = Configuration.eventService;
 	const userService = Configuration.userService;
 	const attendanceService = Configuration.attendanceService;
@@ -113,6 +139,9 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents) {
 
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
 	setRecents(recents);
+
+	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	setCurrentAttendees(currentAttendees);
 
 	setIsLoading(false);
 }
@@ -129,6 +158,7 @@ function AttendanceSheet(props) {
 	const [eventRecord, setEventRecord] = useState(null);
 	const [users, setUsers] = useState([]);
 	const [recents, setRecents] = useState([])
+	const [currentAttendees, setCurrentAttendees] = useState([]);
 
 	// Set up configuration
 	useEffect(() => {
@@ -143,12 +173,12 @@ function AttendanceSheet(props) {
 	// Load initial data.
 	useEffect(() => {
 		if (isLoading) {
-			loadAll(setIsLoading, setEventRecord, setUsers, setRecents)
+			loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees)
 		}
 	}, [isLoading]);
 
 	// Attendance
-	const attendees = possibleAttendees(users, recents);
+	const attendees = possibleAttendees(users, recents, currentAttendees);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
@@ -176,39 +206,3 @@ function AttendanceSheet(props) {
 
 // Dummy data
 const EVENT_ID = 1000;
-
-const ATTENDEES = [
-	// Recent users, attending
-	{ user_id: 99, firstname: 'Zaphond', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', recent_event_id: 10, recordid: 199 },
-	{ user_id: 100, firstname: 'Alice', lastname: 'Dole', phone: '', email: '', notes: 'A Tuba', recent_event_id: 10, recordid: 200 },
-	{ user_id: 101, firstname: 'Bob', lastname: 'Gill', phone: '', email: '', notes: 'Bob is a fella', recent_event_id: 10, recordid: 201 },
-	{ user_id: 102, firstname: 'Charlie', lastname: 'Lipp', phone: '', email: '', notes: 'C Saxophone', recent_event_id: 10, recordid: 202 },
-	{ user_id: 103, firstname: 'Denise', lastname: 'Stephan', phone: '', email: '', notes: '', recent_event_id: 10, recordid: 203 },
-	{ user_id: 104, firstname: 'Ethan', lastname: 'Fuller', phone: '', email: '', notes: 'F Flute', recent_event_id: 10, recordid: 204 },
-
-
-	// Not recent users, attending
-	{ user_id: 105, firstname: 'Francine', lastname: 'Churchih', phone: '', email: '', notes: 'C Flute', recordid: 205 },
-	{ user_id: 106, firstname: 'Greg', lastname: 'Guard', phone: '', email: '', notes: 'Clarinet', recordid: 206 },
-	{ user_id: 107, firstname: 'Harry', lastname: 'Gill', phone: '', email: '', notes: 'Bassoon', recordid: 207 },
-	{ user_id: 108, firstname: 'Ichabod', lastname: 'Crane', phone: '', email: '', notes: 'Trombone', recordid: 208 },
-
-	// New users, attending
-	{ firstname: 'James', lastname: 'Brown', phone: '222-2222', email: 'j@gmail.com', notes: 'Guitar', recordid: 210 },
-	{ firstname: 'Karen', lastname: 'Fedoruk', phone: '222-3333', email: 'k@gmail.com', notes: 'Violin', recordid: 211 },
-	{ firstname: 'Leo', lastname: 'Pulaski', phone: '222-444', email: 'leo@leo.com', notes: 'Bass', recordid: 212 },
-	{ firstname: 'Mary', lastname: 'Jane', phone: '222-9999', email: '', notes: 'Viola', recordid: 213 },
-
-	// Recent users, not attending
-	{ user_id: 110, firstname: 'Niel', lastname: 'Armstrong', phone: '', email: '', notes: 'Astronaut', recent_event_id: 10 },
-	{ user_id: 111, firstname: 'Oprah', lastname: 'Winfrey', phone: '', email: '', notes: 'Celebrety', recent_event_id: 10 },
-	{ user_id: 112, firstname: 'Peter', lastname: 'Armguister', phone: '', email: '', notes: 'Dude', recent_event_id: 10 },
-	{ user_id: 113, firstname: 'Quinn', lastname: 'Eskimo', phone: '', email: '', notes: 'Beatles', recent_event_id: 10 },
-
-	// Not recent users, not attending
-	{ user_id: 123, firstname: 'Ruth', lastname: 'Ginsberg', notes: 'Hero' },
-	{ user_id: 124, firstname: 'Seth', lastname: 'Rogan', notes: 'Actor' },
-	{ user_id: 125, firstname: 'Taylor', lastname: 'Swift', notes: 'Singer' },
-	{ user_id: 126, firstname: 'Uluu', lastname: 'Luulo', notes: 'Rockin the Alien' }
-];
-
