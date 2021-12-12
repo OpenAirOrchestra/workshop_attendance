@@ -32,10 +32,12 @@ function AttendanceRecord(props) {
 
   const pendingSpinner = pending ? (<span className="pending-spinner" />) : '';
 
+  // For not new users, don't show full last name
+  const lastname = (attendee.user_id && attendee.lastname)? attendee.lastname.charAt(0) : attendee.lastname;
   return (
     <tr className={'AttendanceRecord  ' + attendanceClassName + ' ' + pendingClassName}>
       <td className='attendee' >
-        {attendee.firstname + ' ' + attendee.lastname}
+        {attendee.firstname + ' ' + lastname}
         <div className="details">
           {attendeeDetails}
         </div>
