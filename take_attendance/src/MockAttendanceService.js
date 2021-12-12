@@ -74,20 +74,21 @@ class MockAttendanceService {
     }
 
     async delete(id) {
-        console.log("MockAttendanceService.deleteAttenanceRecord():");
-        console.log("ID:" + id);
+        let attendanceRecord = this.attendanceRecords.find(attendee => attendee.id === id);
 
         // Add record to pending.
-        //  this.pendingRecords.push(attendanceRecord);
+        if (attendanceRecord) {
+            this.pendingRecords.push(attendanceRecord);
+        }
 
         // Fake delay
         await new Promise((res) => setTimeout(res, 1000));
 
-        // Remove new record
+        // Remove the record
         this.attendanceRecords = this.attendanceRecords.filter(attendee => { return id !== attendee.id; });
 
         // Remove the record from pending
-        //  this.pendingRecords = this.pendingRecords.filter(attendee => { return id !==  attendanceRecord.id; });
+        this.pendingRecords = this.pendingRecords.filter(attendee => { return id !==  attendanceRecord.id; });
 
         //Return the promise
         return Promise.resolve(id);
