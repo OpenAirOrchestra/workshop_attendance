@@ -179,7 +179,7 @@ async function addAttendanceRecord(attendee, setPending, setCurrentAttendees) {
 	const response = attendanceService.create(newAttendee);
 
 	// Set pending
-	setPending(attendanceService.pendingRecords);
+	setPending([...attendanceService.pendingRecords]);
 
 	// Await creation response
 	await response;
@@ -189,7 +189,7 @@ async function addAttendanceRecord(attendee, setPending, setCurrentAttendees) {
 	setCurrentAttendees(currentAttendees);
 
 	// Set pending
-	setPending(attendanceService.pendingRecords);
+	setPending([...attendanceService.pendingRecords]);
 }
 
 /// Add an attendance record (add attendee)
