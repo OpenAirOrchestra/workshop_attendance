@@ -6,6 +6,7 @@ import MockUserService from './MockUserService';
 import Header from './Header'
 import SearchBar from './SearchBar'
 import AttendanceList from './AttendanceList'
+import { attendeeKey } from './AttendanceRecord';
 import NewAttendeeForm from './NewAttendeeForm'
 import Loading from './Loading'
 
@@ -36,7 +37,7 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add recents to the map
 	for (const recent of recents) {
-		const key = recent.user_id ? recent.user_id : (recent.firstname + '.' + recent.lastname);
+		const key = attendeeKey(recent);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...recent };
@@ -53,7 +54,7 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add currentAttendees to the map
 	for (const currentAttendee of currentAttendees) {
-		const key = currentAttendee.user_id ? currentAttendee.user_id : (currentAttendee.firstname + '.' + currentAttendee.lastname);
+		const key = attendeeKey(currentAttendee);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...currentAttendee };
@@ -84,7 +85,7 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add pending to the map
 	for (const pendingAttendee of pending) {
-		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + '.' + pendingAttendee.lastname);
+		const key = attendeeKey(pendingAttendee);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
 			attendanceRecord = { ...pendingAttendee };
@@ -180,7 +181,7 @@ function AttendanceSheet(props) {
 
 	let pendingMap = { };
 	for (const pendingAttendee of pending) {
-		const key = pendingAttendee.user_id ? pendingAttendee.user_id : (pendingAttendee.firstname + '.' + pendingAttendee.lastname);
+		const key = attendeeKey(pendingAttendee);
 		pendingMap[key] = pendingAttendee;
 	}
 

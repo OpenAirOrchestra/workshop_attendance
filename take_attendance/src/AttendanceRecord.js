@@ -2,12 +2,17 @@ import React from 'react';
 
 export default AttendanceRecord
 
+export function attendeeKey(attendee) {
+  const key = attendee.user_id ? attendee.user_id : (attendee.firstname + '.' + attendee.lastname);
+  return key;
+}
+
 function AttendanceRecord(props) {
   const attendee = props.attendee;
   const pendingMap = props.pendingMap ? props.pendingMap : {};
   const event_id = props.event_id;
 
-  const key = attendee.user_id ? attendee.user_id : (attendee.firstname + '.' + attendee.lastname);
+  const key = attendeeKey(attendee);
 
   const pending = pendingMap[key];
   const present = attendee.event_id && (attendee.event_id === event_id);
