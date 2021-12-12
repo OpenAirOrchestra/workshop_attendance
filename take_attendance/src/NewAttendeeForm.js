@@ -36,7 +36,7 @@ function NewAttendeeForm(props) {
   return (
     <div className='NewAttendeeForm'>
       <h2>Add New Attendee</h2>
-      <form action="javascript:void(0);">
+      <form action="">
         <label htmlFor="firstname">First Name (required):</label>
         <input type="text" name="firstname" id="firstname" className='required' value={firstname} onChange={(event) => setFirstname(event.target.value)} />
         <br />
