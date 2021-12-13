@@ -179,15 +179,15 @@ async function addAttendanceRecord(attendee, modificationPromise, pending, setPe
 	setPending(newPending);
 	attendanceService.pendingRecords = newPending;
 
-	// Wait for previous modification to complete
-	await modificationPromise
-
 	// Create the record to add
 	let newAttendee = { ...attendee };
 	newAttendee.event_id = EVENT_ID;
 
 	// Ask for the server to create the attendee record
 	await attendanceService.create(newAttendee);
+
+	// Wait for previous modification to complete
+	await modificationPromise
 
 	// List current attendees again and set them
 	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
@@ -213,14 +213,14 @@ async function deleteAttendanceRecord(attendee, modificationPromise, pending, se
 	setPending(newPending);
 	attendanceService.pendingRecords = newPending;
 
-	// Wait for previous modification to complete
-	await modificationPromise
-
 	// Get the id
 	const recordId = attendee.id;
 
 	// Delete the attendance record
 	await attendanceService.delete(recordId);
+
+	// Wait for previous modification to complete
+	await modificationPromise
 
 	// List recent attendees again and set them
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);

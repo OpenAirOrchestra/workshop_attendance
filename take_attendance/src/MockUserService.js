@@ -50,7 +50,7 @@ class MockUserService {
     }
 
     async retrieve() {
-        await new Promise((res) => setTimeout(res, 1000));
+        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
         return Promise.resolve(this.users);
     }
 }

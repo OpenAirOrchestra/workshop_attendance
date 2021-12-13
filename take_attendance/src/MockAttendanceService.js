@@ -5,7 +5,7 @@ class MockAttendanceService {
 
     maxRecordId = 1000;
     pendingRecords = [];
-    
+
     constructor() {
         this.attendanceRecords = [
             { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 300, id: 199 },
@@ -39,7 +39,7 @@ class MockAttendanceService {
         if (limit) {
             records = records.slice(0, limit);
         }
-        await new Promise((res) => setTimeout(res, 1000));
+        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
         return Promise.resolve(records);
     }
 
@@ -55,7 +55,7 @@ class MockAttendanceService {
     async create(attendanceRecord) {
 
         // Fake delay
-        await new Promise((res) => setTimeout(res, 1000));
+        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
 
         // Add the new record
         ++this.maxRecordId;
@@ -69,7 +69,7 @@ class MockAttendanceService {
 
     async delete(id) {
         // Fake delay
-        await new Promise((res) => setTimeout(res, 1000));
+        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
 
         // Remove the record
         this.attendanceRecords = this.attendanceRecords.filter(attendee => { return id !== attendee.id; });
@@ -77,12 +77,6 @@ class MockAttendanceService {
         //Return the promise
         return Promise.resolve(id);
     }
-
-    async update(attendanceRecord) {
-        console.log("MockAttendanceService.updateAttendanceRecord():");
-        console.log(attendanceRecord);
-    }
-
 }
 
 export default MockAttendanceService;
