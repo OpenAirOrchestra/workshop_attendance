@@ -170,13 +170,17 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 }
 
 /// Add an attendance record (add attendee)
-async function addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees) {
+async function addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
 
 	// Add record to pending
 	let newPending = [...pending];
 	newPending.push(attendee);
 	setPending(newPending);
+	attendanceService.pendingRecords = newPending;
+
+	// Wait for previous modification to complete
+	await modificationPromise
 
 	// Create the record to add
 	let newAttendee = { ...attendee };
@@ -188,25 +192,35 @@ async function addAttendanceRecord(attendee, pending, setPending, setCurrentAtte
 	// List current attendees again and set them
 	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
+
+	// Remove record from pending.
+	// This could get messed up if we didn't serilize the modification requests.
+	newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
+		return pendingAttendee !== attendee;
+	});
+	setPending(newPending);
+	attendanceService.pendingRecords = newPending;
+	Promise.resolve(attendee);
 }
 
 /// Add an attendance record (add attendee)
-async function deleteAttendanceRecord(attendee, pending, setPending, setRecents, setCurrentAttendees) {
+async function deleteAttendanceRecord(attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
 
 	// Add record to pending
 	let newPending = [...pending];
 	newPending.push(attendee);
 	setPending(newPending);
+	attendanceService.pendingRecords = newPending;
+
+	// Wait for previous modification to complete
+	await modificationPromise
 
 	// Get the id
 	const recordId = attendee.id;
 
 	// Delete the attendance record
-	const response = attendanceService.delete(recordId);
-
-	// Await creation response
-	await response;
+	await attendanceService.delete(recordId);
 
 	// List recent attendees again and set them
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
@@ -215,6 +229,15 @@ async function deleteAttendanceRecord(attendee, pending, setPending, setRecents,
 	// List current attendees again and set them
 	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
+
+	// Remove record from pending.
+	// This could get messed up if we didn't serilize the modification requests.
+	newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
+		return pendingAttendee !== attendee;
+	});
+	setPending(newPending);
+	attendanceService.pendingRecords = newPending;
+	Promise.resolve(attendee);
 }
 
 /// The actual component!
@@ -232,6 +255,8 @@ function AttendanceSheet(props) {
 	const [recents, setRecents] = useState([])
 	const [currentAttendees, setCurrentAttendees] = useState([]);
 	const [pending, setPending] = useState([]);
+
+	const [modificationPromise, setModificationPromise] = useState(null);
 
 	let pendingMap = {};
 	for (const pendingAttendee of pending) {
@@ -278,15 +303,15 @@ function AttendanceSheet(props) {
 			/>
 			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap}
 				addAttendanceRecord={(attendee) => {
-					addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees);
+					setModificationPromise(addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees));
 				}}
 				deleteAttendanceRecord={(attendee) => {
-					deleteAttendanceRecord(attendee, pending, setPending, setRecents, setCurrentAttendees);
+					setModificationPromise(deleteAttendanceRecord(attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees));
 				}}
 			/>
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
 				addAttendanceRecord={(attendee) => {
-					addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees);
+					setModificationPromise(addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees));
 				}} />
 			<Loading isLoading={isLoading} />
 		</div>

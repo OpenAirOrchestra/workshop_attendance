@@ -4,7 +4,8 @@
 class MockAttendanceService {
 
     maxRecordId = 1000;
-
+    pendingRecords = [];
+    
     constructor() {
         this.attendanceRecords = [
             { user_id: 99, firstname: 'Zaphod', lastname: 'Beeblebrox', phone: '', email: '', notes: 'Presedent of the Galaxy', event_id: 300, id: 199 },
