@@ -102,7 +102,7 @@
     margin-right: 18px;
 }
   
-  .pending-spinner {
+.AttendanceRecord .pending-spinner {
     top: 2px;
     margin: 0 2px;
     display: inline-block;
@@ -116,7 +116,7 @@
     position: relative;
     vertical-align: inherit;
     line-height: inherit;
-  }
+}
 
 /* NewAttendeeForm */
 
