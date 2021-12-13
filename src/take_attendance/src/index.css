@@ -55,6 +55,7 @@
 
 .AttendanceRecord .presence {
     text-align: right;
+    white-space:nowrap;
 }
 
 .AttendanceRecord.present:nth-child(even) {
