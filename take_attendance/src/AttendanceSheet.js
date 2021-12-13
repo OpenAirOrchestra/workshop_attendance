@@ -170,40 +170,40 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 }
 
 /// Add an attendance record (add attendee)
-async function addAttendanceRecord(attendee, setPending, setCurrentAttendees) {
+async function addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
 
-	// Create the record
+	// Add record to pending
+	let newPending = [...pending];
+	newPending.push(attendee);
+	setPending(newPending);
+
+	// Create the record to add
 	let newAttendee = { ...attendee };
 	newAttendee.event_id = EVENT_ID;
-	const response = attendanceService.create(newAttendee);
 
-	// Set pending
-	setPending([...attendanceService.pendingRecords]);
-
-	// Await creation response
-	await response;
+	// Ask for the server to create the attendee record
+	await attendanceService.create(newAttendee);
 
 	// List current attendees again and set them
 	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
-
-	// Set pending
-	setPending([...attendanceService.pendingRecords]);
 }
 
 /// Add an attendance record (add attendee)
-async function deleteAttendanceRecord(attendee, setPending, setRecents, setCurrentAttendees) {
+async function deleteAttendanceRecord(attendee, pending, setPending, setRecents, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
+
+	// Add record to pending
+	let newPending = [...pending];
+	newPending.push(attendee);
+	setPending(newPending);
 
 	// Get the id
 	const recordId = attendee.id;
 
 	// Delete the attendance record
 	const response = attendanceService.delete(recordId);
-
-	// Set pending
-	setPending(attendanceService.pendingRecords);
 
 	// Await creation response
 	await response;
@@ -215,9 +215,6 @@ async function deleteAttendanceRecord(attendee, setPending, setRecents, setCurre
 	// List current attendees again and set them
 	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
-
-	// Set pending
-	setPending(attendanceService.pendingRecords);
 }
 
 /// The actual component!
@@ -281,15 +278,15 @@ function AttendanceSheet(props) {
 			/>
 			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap}
 				addAttendanceRecord={(attendee) => {
-					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
-				}} 
+					addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees);
+				}}
 				deleteAttendanceRecord={(attendee) => {
-					deleteAttendanceRecord(attendee, setPending, setRecents, setCurrentAttendees);
-				}} 
-				/>
+					deleteAttendanceRecord(attendee, pending, setPending, setRecents, setCurrentAttendees);
+				}}
+			/>
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
 				addAttendanceRecord={(attendee) => {
-					addAttendanceRecord(attendee, setPending, setCurrentAttendees);
+					addAttendanceRecord(attendee, pending, setPending, setCurrentAttendees);
 				}} />
 			<Loading isLoading={isLoading} />
 		</div>
