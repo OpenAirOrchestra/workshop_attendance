@@ -1,3 +1,11 @@
+/* Make font big enough to disable auto zoom on input fields */
+body {
+    font-size: 16px;
+  }
+  input {
+    font-size: inherit;
+  }
+
 /* Header  */
 .Header {
     border-bottom: 3px solid black;
