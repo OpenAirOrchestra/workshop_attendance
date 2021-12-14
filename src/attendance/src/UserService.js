@@ -4,9 +4,37 @@
 
 class UserService {
 
+    /// Get rest nonce from query parameter.
+    restNonce() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        return urlParams.get('rest_nonce');
+    }
+
+    /// Get rest api location
+    serviceLocation() {
+        // current URL will be something like:
+        // /wp-content/plugins/workshop_attendance/attendance/
+        const baseRoute = '/wp-json/wp/v2/users/';
+        // const baseRoute = '/wp-json/';
+        const relativeURL = '../../../..' + baseRoute;
+
+        return relativeURL;
+    }
+
     async retrieve() {
-        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
-        return Promise.resolve([]);
+        const rest_nonce = this.restNonce();
+        const url = this.serviceLocation();
+        
+        const response = await fetch(url, { 
+            headers : {
+                'X-WP-Nonce': rest_nonce
+            } 
+        });
+        console.log( "Response from retrieve: " + response );
+        const result = response.ok ? response.json : [];
+
+        return Promise.resolve(result);
     }
 }
 

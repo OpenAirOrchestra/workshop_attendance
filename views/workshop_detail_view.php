@@ -23,11 +23,12 @@ class workshopDetailView {
 	 */
 	function render_details( $workshop, $columns, $attendees ) {
 		$attendance_nonce = wp_create_nonce('attendance_nonce');
+		$rest_nonce = wp_create_nonce( 'wp_rest' );
 
 		$workshop_id = $workshop['id'];
 		$edit_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id&action=edit";
         $attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
-        $attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
+        $attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?workshop=$workshop_id&rest_nonce=$rest_nonce";
 
 ?>
 	<h2><?php echo stripslashes($workshop['title']); ?> 
