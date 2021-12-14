@@ -26,7 +26,7 @@ function SearchBar(props) {
         <label htmlFor="recent">recent</label>
         <input type="checkbox" name="old" id="old" checked={!!filterOld}
           onChange={(event) => setFilterOld(event.target.checked)} />
-        <label htmlFor="old">old</label>
+        <label htmlFor="old">rusty</label>
         <input type="checkbox" name="new" id="new" checked={!!filterNew}
           onChange={(event) => setFilterNew(event.target.checked)} />
         <label htmlFor="new">new folks</label>
