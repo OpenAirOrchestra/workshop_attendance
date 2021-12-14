@@ -187,6 +187,7 @@ class workshopTableView {
 		$edit_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id&action=edit";
 		$delete_url = get_admin_url() . "admin.php?page=list-workshops&workshop=$workshop_id&action=delete&delete_nonce=$delete_nonce";
 		$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
+		$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
 ?>
 		<tr>
 			<td class="post-title page-title column-title">
@@ -204,6 +205,8 @@ class workshopTableView {
 <a href="<?php echo $edit_url; ?>" title="Edit this item">Edit</a> | </span>
 					<span class="attendance">
 <a href="<?php echo $attendance_url; ?>" title="Take Attendance">Attendance</a> | </span>
+<a href="<?php echo $attendance_react_url; ?>" title="Take Attendance (React)">Attendance (React)</a> | </span>
+
 					<span class="trash">
 <a href="<?php echo $delete_url; ?>" title="Delete this item">Delete</a> | </span>
 					<span class="view">

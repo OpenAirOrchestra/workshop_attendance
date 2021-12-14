@@ -159,6 +159,7 @@ class workshopAttendance {
 		if (! $workshop_id) {
 			$attendance_nonce = wp_create_nonce('attendance_nonce');
 			$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance.php?attendance_nonce=$attendance_nonce";
+			$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance/?attendance_nonce=$attendance_nonce";
 ?>
 			<div id="icon-edit" class="icon32"><br/></div>
 			<h2>Today's Workshop
@@ -167,6 +168,7 @@ class workshopAttendance {
 ?>
 				<a class="add-new-h2" href="<?php echo $this->add_new_uri() ?>">Edit Details</a>
 				<a class="add-new-h2" href="<?php echo $attendance_url; ?>">Take Attendance</a>
+				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>">Take Attendance (React)</a>
 <?php
 			}
 ?>
