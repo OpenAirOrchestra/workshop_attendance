@@ -3,6 +3,8 @@ import Configuration from './Configuration';
 import MockAttendanceService from './MockAttendanceService';
 import MockEventService from './MockEventService';
 import MockUserService from './MockUserService';
+import UserService from './UserService';
+
 import Header from './Header'
 import SearchBar from './SearchBar'
 import AttendanceList from './AttendanceList'
@@ -271,10 +273,20 @@ function AttendanceSheet(props) {
 
 	// Set up configuration
 	useEffect(() => {
-		if (!Configuration.eventService) {
-			Configuration.eventService = new MockEventService();
-			Configuration.userService = new MockUserService();
-			Configuration.attendanceService = new MockAttendanceService();
+		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+			// Development code
+			if (!Configuration.userService) {
+				Configuration.eventService = new MockEventService();
+				Configuration.userService = new MockUserService();
+				Configuration.attendanceService = new MockAttendanceService();
+			}
+		} else {
+			// production code
+			if (!Configuration.userService) {
+				Configuration.eventService = new MockEventService();
+				Configuration.userService = new UserService();
+				Configuration.attendanceService = new MockAttendanceService();
+			}
 		}
 	});
 
