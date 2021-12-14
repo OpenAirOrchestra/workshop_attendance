@@ -8,6 +8,8 @@ function SearchBar(props) {
 
   const filterRecent = props.filterRecent;
   const setFilterRecent = props.setFilterRecent;
+  const filterOld = props.filterOld;
+  const setFilterOld = props.setFilterOld;
   const filterNew = props.filterNew;
   const setFilterNew = props.setFilterNew;
   const filterPresent = props.filterPresent;
@@ -22,6 +24,9 @@ function SearchBar(props) {
         <input type="checkbox" name="recent" id="recent" checked={!!filterRecent}
           onChange={(event) => setFilterRecent(event.target.checked)} />
         <label htmlFor="recent">recent</label>
+        <input type="checkbox" name="old" id="old" checked={!!filterOld}
+          onChange={(event) => setFilterOld(event.target.checked)} />
+        <label htmlFor="old">old</label>
         <input type="checkbox" name="new" id="new" checked={!!filterNew}
           onChange={(event) => setFilterNew(event.target.checked)} />
         <label htmlFor="new">new folks</label>

@@ -124,12 +124,16 @@ function searchAttendees(attendees, searchTerm) {
 }
 
 /// Return the subset of attendees that match the filter criteria
-function filterAttendees(attendees, filterRecent, filterNew, filterPresent) {
+function filterAttendees(attendees, filterRecent, filterOld, filterNew, filterPresent) {
 	let result = attendees;
 
-	if (filterRecent || filterNew || filterPresent) {
+	if (filterRecent || filterNew || filterOld || filterPresent) {
 		result = result.filter(attendee => {
 			if (filterRecent && attendee.event_id) {
+				return true;
+			}
+
+			if (filterOld && !attendee.event_id) {
 				return true;
 			}
 
@@ -247,6 +251,7 @@ function AttendanceSheet(props) {
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const [filterRecent, setFilterRecent] = useState(false);
+	const [filterOld, setFilterOld] = useState(false);
 	const [filterNew, setFilterNew] = useState(false);
 	const [filterPresent, setFilterPresent] = useState(false);
 
@@ -288,7 +293,7 @@ function AttendanceSheet(props) {
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
 
 	// Filter
-	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterNew, filterPresent);
+	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterOld, filterNew, filterPresent);
 
 	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
 
@@ -298,6 +303,7 @@ function AttendanceSheet(props) {
 			<SearchBar
 				searchTerm={searchTerm} setSearchTerm={setSearchTerm}
 				filterRecent={filterRecent} setFilterRecent={setFilterRecent}
+				filterOld={filterOld} setFilterOld={setFilterOld}
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
