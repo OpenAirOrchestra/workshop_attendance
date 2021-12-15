@@ -158,10 +158,9 @@ class workshopAttendance {
 
 		if (! $workshop_id) {
 			$attendance_nonce = wp_create_nonce('attendance_nonce');
-			$rest_nonce = wp_create_nonce( 'wp_rest' );
 			
 			$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance.php?attendance_nonce=$attendance_nonce";
-			$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance/?rest_nonce=$rest_nonce";
+			$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/attendance/';
 ?>
 			<div id="icon-edit" class="icon32"><br/></div>
 			<h2>Today's Workshop

@@ -170,11 +170,10 @@ class workshopTableView {
 
 		$delete_nonce = wp_create_nonce('delete_nonce');
 		$attendance_nonce = wp_create_nonce('attendance_nonce');
-		$rest_nonce = wp_create_nonce( 'wp_rest' );
 
 		foreach ($workshops as $workshop)
 		{
-			$this->render_row($workshop, $delete_nonce, $attendance_nonce, $rest_nonce);
+			$this->render_row($workshop, $delete_nonce, $attendance_nonce);
 		}
 		echo '		</tbody>';
 	}
@@ -182,13 +181,13 @@ class workshopTableView {
 	/*
 	 * render a row in workshop table
 	 */
-	function render_row( $workshop, $delete_nonce, $attendance_nonce, $rest_nonce ) {
+	function render_row( $workshop, $delete_nonce, $attendance_nonce) {
 		$workshop_id = $workshop['id'];
 		$view_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id";
 		$edit_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id&action=edit";
 		$delete_url = get_admin_url() . "admin.php?page=list-workshops&workshop=$workshop_id&action=delete&delete_nonce=$delete_nonce";
 		$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
-		$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?workshop=$workshop_id&rest_nonce=$rest_nonce";
+		$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?workshop=$workshop_id";
 ?>
 		<tr>
 			<td class="post-title page-title column-title">
