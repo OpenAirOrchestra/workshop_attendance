@@ -15,7 +15,7 @@ import Loading from './Loading'
 export default AttendanceSheet
 
 /// Compute attendees from users and attendance records
-function possibleAttendees(users, recents, currentAttendees, pending) {
+function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 	let attendanceMap = {}
 
 	// Add users to the map.
@@ -41,6 +41,9 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 
 	// Add recents to the map
 	for (const recent of recents) {
+		if (recent.id === eventId) {
+			continue;
+		}
 		const key = attendeeKey(recent);
 		let attendanceRecord = attendanceMap[key];
 		if (!attendanceRecord) {
@@ -336,7 +339,7 @@ function AttendanceSheet(props) {
 	}, [isLoading, eventId]);
 
 	// Attendance
-	const attendees = possibleAttendees(users, recents, currentAttendees, pending);
+	const attendees = possibleAttendees(eventId, users, recents, currentAttendees, pending);
 
 	// Search
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
