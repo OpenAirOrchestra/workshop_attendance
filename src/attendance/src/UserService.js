@@ -6,30 +6,27 @@ class UserService {
 
     /// Get rest api location
     serviceLocation() {
-        // DFDF TODO: deal with more than 100 users, use page=1 etc.
-        return "../../../../?rest_route=/wp/v2/users&per_page=100";
+        return "../../../../?rest_route=/wp/v2/users";
     }
 
-    async retrieve() {
-        const url = this.serviceLocation();
-        console.log( "URL to retrieve: " + url );
+    /// Retrieve users.
+    /// page and per_page are needed because of the limits on the wordpress json api.
+    async retrieve(page, per_page) {
 
+        const searchParams = new URLSearchParams( {
+            page: page,
+            per_page: per_page
+        });
+        const url = this.serviceLocation() + "&" + searchParams.toString();
         const response = await fetch(url);
 
         if (!response.ok) {
-            console.log( "Failed Response: " + response.status + " " + response.statusText );
+            const text = await response.text();
+            alert( "Failed to list users, Response: " + response.status + " " + response.statusText + "\n" + text);
 
             return Promise.resolve([]);
         }
-        // console.log( "Response ok: " + response.ok );
         
-        // const text = await response.text();
-
-        // console.log( "Response text: " + text );
-        // console.log( "Response json: " + JSON.parse(text) );
-        // // const result = response.ok ? response.json : [];
-
-        // return Promise.resolve([]);
         return response.json();
     }
 }

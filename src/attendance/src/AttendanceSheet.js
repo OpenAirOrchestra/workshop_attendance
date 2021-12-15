@@ -165,9 +165,17 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 	const eventRecord = await eventService.get(EVENT_ID);
 	setEventRecord(eventRecord);
 
-	const users = await userService.retrieve();
-	setUsers(users);
-
+	let page=1;
+	let allUsers = [];
+	let moreUsers = true;
+	do {
+		const users = await userService.retrieve(page, 100);
+		allUsers = [...allUsers, ...users];
+		setUsers(allUsers);
+		moreUsers = users.length > 0;
+		++ page;
+	} while (moreUsers);
+	
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
 	setRecents(recents);
 
