@@ -124,7 +124,7 @@ function searchAttendees(attendees, searchTerm) {
 }
 
 /// Return the subset of attendees that match the filter criteria
-function filterAttendees(attendees, filterRecent, filterOld, filterNew, filterPresent) {
+function filterAttendees(eventId, attendees, filterRecent, filterOld, filterNew, filterPresent) {
 	let result = attendees;
 
 	if (filterRecent || filterNew || filterOld || filterPresent) {
@@ -141,7 +141,7 @@ function filterAttendees(attendees, filterRecent, filterOld, filterNew, filterPr
 				return true;
 			}
 
-			if (filterPresent && attendee.event_id && attendee.event_id === EVENT_ID) {
+			if (filterPresent && attendee.event_id && attendee.event_id === eventId) {
 				return true;
 			}
 
@@ -153,12 +153,12 @@ function filterAttendees(attendees, filterRecent, filterOld, filterNew, filterPr
 }
 
 /// Load all data from backend.
-async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees) {
+async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees) {
 	const eventService = Configuration.eventService;
 	const userService = Configuration.userService;
 	const attendanceService = Configuration.attendanceService;
 
-	const eventRecord = await eventService.get(EVENT_ID);
+	const eventRecord = await eventService.get(eventId);
 	setEventRecord(eventRecord);
 
 	const users = await userService.retrieve();
@@ -167,14 +167,14 @@ async function loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCu
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
 	setRecents(recents);
 
-	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
 
 	setIsLoading(false);
 }
 
 /// Add an attendance record (add attendee)
-async function addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees) {
+async function addAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
 
 	// Add record to pending
@@ -185,7 +185,7 @@ async function addAttendanceRecord(attendee, modificationPromise, pending, setPe
 
 	// Create the record to add
 	let newAttendee = { ...attendee };
-	newAttendee.event_id = EVENT_ID;
+	newAttendee.event_id = eventId;
 
 	// Ask for the server to create the attendee record
 	await attendanceService.create(newAttendee);
@@ -194,7 +194,7 @@ async function addAttendanceRecord(attendee, modificationPromise, pending, setPe
 	await modificationPromise
 
 	// List current attendees again and set them
-	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
 
 	// Remove record from pending.
@@ -208,7 +208,7 @@ async function addAttendanceRecord(attendee, modificationPromise, pending, setPe
 }
 
 /// Add an attendance record (add attendee)
-async function deleteAttendanceRecord(attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees) {
+async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees) {
 	const attendanceService = Configuration.attendanceService;
 
 	// Add record to pending
@@ -231,7 +231,7 @@ async function deleteAttendanceRecord(attendee, modificationPromise, pending, se
 	setRecents(recents);
 
 	// List current attendees again and set them
-	const currentAttendees = await attendanceService.retrieve(EVENT_ID /* event_id */, 0 /* limit */);
+	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
 
 	// Remove record from pending.
@@ -244,8 +244,15 @@ async function deleteAttendanceRecord(attendee, modificationPromise, pending, se
 	Promise.resolve(attendee);
 }
 
+function loadEventId(setEventId) {
+	// dummy event Id
+	setEventId(1000);
+} 
+
 /// The actual component!
 function AttendanceSheet(props) {
+	const [eventId, setEventId] = useState(0);
+
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [searchTerm, setSearchTerm] = useState('');
@@ -278,13 +285,19 @@ function AttendanceSheet(props) {
 		}
 	});
 
+	// load the current event id
+	useEffect(() => {
+		if (!eventId) {
+			loadEventId(setEventId);
+		}
+	}, [eventId]);
 
 	// Load initial data.
 	useEffect(() => {
-		if (isLoading) {
-			loadAll(setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees)
+		if (isLoading && eventId) {
+			loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees)
 		}
-	}, [isLoading]);
+	}, [isLoading, eventId]);
 
 	// Attendance
 	const attendees = possibleAttendees(users, recents, currentAttendees, pending);
@@ -293,7 +306,7 @@ function AttendanceSheet(props) {
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
 
 	// Filter
-	const filteredAttendees = filterAttendees(searchedAttendees, filterRecent, filterOld, filterNew, filterPresent);
+	const filteredAttendees = filterAttendees(eventId, searchedAttendees, filterRecent, filterOld, filterNew, filterPresent);
 
 	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
 
@@ -307,22 +320,19 @@ function AttendanceSheet(props) {
 				filterNew={filterNew} setFilterNew={setFilterNew}
 				filterPresent={filterPresent} setFilterPresent={setFilterPresent}
 			/>
-			<AttendanceList attendees={filteredAttendees} event_id={EVENT_ID} pendingMap={pendingMap}
+			<AttendanceList attendees={filteredAttendees} event_id={eventId} pendingMap={pendingMap}
 				addAttendanceRecord={(attendee) => {
-					setModificationPromise(addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees));
+					setModificationPromise(addAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setCurrentAttendees));
 				}}
 				deleteAttendanceRecord={(attendee) => {
-					setModificationPromise(deleteAttendanceRecord(attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees));
+					setModificationPromise(deleteAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees));
 				}}
 			/>
 			<NewAttendeeForm hideAttendeeForm={!showNewAttendeeForm}
 				addAttendanceRecord={(attendee) => {
-					setModificationPromise(addAttendanceRecord(attendee, modificationPromise, pending, setPending, setCurrentAttendees));
+					setModificationPromise(addAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setCurrentAttendees));
 				}} />
 			<Loading isLoading={isLoading} />
 		</div>
 	)
 }
-
-// Dummy data
-const EVENT_ID = 1000;
