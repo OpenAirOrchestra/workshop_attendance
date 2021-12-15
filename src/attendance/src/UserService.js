@@ -6,7 +6,8 @@ class UserService {
 
     /// Get rest api location
     serviceLocation() {
-        return "../../../../?rest_route=/wp/v2/users";
+        // DFDF TODO: deal with more than 100 users, use page=1 etc.
+        return "../../../../?rest_route=/wp/v2/users&per_page=100";
     }
 
     async retrieve() {
