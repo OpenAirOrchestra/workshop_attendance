@@ -3,6 +3,7 @@ import Configuration from './Configuration';
 import MockAttendanceService from './MockAttendanceService';
 import MockEventService from './MockEventService';
 import MockUserService from './MockUserService';
+import EventService from './EventService';
 import UserService from './UserService';
 
 import Header from './Header'
@@ -41,7 +42,7 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 
 	// Add recents to the map
 	for (const recent of recents) {
-		if (recent.id === eventId) {
+		if (recent.event_id === eventId) {
 			continue;
 		}
 		const key = attendeeKey(recent);
@@ -136,7 +137,7 @@ function filterAttendees(eventId, attendees, recentUserKeys, filterRecent, filte
 
 	if (filterRecent || filterNew || filterOld || filterPresent) {
 		result = result.filter(attendee => {
-		
+
 			if (filterNew && !attendee.user_id) {
 				return true;
 			}
@@ -174,7 +175,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 	const eventRecord = await eventService.get(eventId);
 	setEventRecord(eventRecord);
 
-	let page=1;
+	let page = 1;
 	let allUsers = [];
 	let moreUsers = true;
 	do {
@@ -182,9 +183,9 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		allUsers = [...allUsers, ...users];
 		setUsers(allUsers);
 		moreUsers = users.length > 0;
-		++ page;
+		++page;
 	} while (moreUsers);
-	
+
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
 	setRecents(recents);
 
@@ -273,9 +274,20 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 }
 
 function loadEventId(setEventId) {
-	// dummy event Id
-	setEventId(1000);
-} 
+
+	if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+		// dummy event Id
+		setEventId(1000);
+	} else {
+		// get id from url param "event_id"
+		const paramString = window.location.search;
+		const urlParams = new URLSearchParams(paramString);
+		const eventId = urlParams.get('event_id');
+		setEventId(eventId);
+		console.log("Event Id ==>" + eventId);
+	}
+
+}
 
 /// The actual component!
 function AttendanceSheet(props) {
@@ -317,7 +329,7 @@ function AttendanceSheet(props) {
 		} else {
 			// production code
 			if (!Configuration.userService) {
-				Configuration.eventService = new MockEventService();
+				Configuration.eventService = new EventService();
 				Configuration.userService = new UserService();
 				Configuration.attendanceService = new MockAttendanceService();
 			}
