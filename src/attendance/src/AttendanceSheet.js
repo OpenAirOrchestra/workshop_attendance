@@ -28,6 +28,8 @@ function possibleAttendees(users, recents, currentAttendees, pending) {
 			if (user.last_name) {
 				attendanceRecord.lastname = user.last_name;
 			}
+		} else if (user.name) {
+			attendanceRecord.firstname = user.name;
 		}
 
 		if (user.description) {

@@ -6,17 +6,30 @@ class UserService {
 
     /// Get rest api location
     serviceLocation() {
-        return "../users.php";
+        return "../../../../?rest_route=/wp/v2/users";
     }
 
     async retrieve() {
         const url = this.serviceLocation();
-        
-        const response = await fetch(url);
-        console.log( "Response from retrieve: " + response );
-        const result = response.ok ? response.json : [];
+        console.log( "URL to retrieve: " + url );
 
-        return Promise.resolve(result);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.log( "Failed Response: " + response.status + " " + response.statusText );
+
+            return Promise.resolve([]);
+        }
+        // console.log( "Response ok: " + response.ok );
+        
+        // const text = await response.text();
+
+        // console.log( "Response text: " + text );
+        // console.log( "Response json: " + JSON.parse(text) );
+        // // const result = response.ok ? response.json : [];
+
+        // return Promise.resolve([]);
+        return response.json();
     }
 }
 
