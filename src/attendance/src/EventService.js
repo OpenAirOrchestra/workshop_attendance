@@ -1,33 +1,26 @@
 /// Restful web service for getting attendance records.
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
+/// See:  https://developer.wordpress.org/rest-api/
 class EventService {
 
-    constructor() {
-        this.events = [
-            { id: 65, title: 'Workshop for 23 03 2011', date: '23 03 2011' },
-            { id: 66, title: 'Workshop for 23 03 2011', date: '30 03 2011' },
-            { id: 67, title: 'Workshop for 23 03 2011', date: '07 04 2011' },
-            { id: 68, title: 'Workshop for 23 03 2011', date: '14 04 2011' }
-        ];
+    /// Get rest api location
+    serviceLocation() {
+        return "../../../../?rest_route=/workshop_attendance/v1/event";
     }
 
+    /// Get request (get an event)
     async get(id) {
-        let result = null;
+        const url = this.serviceLocation() + "/" + id;
+        const response = await fetch(url);
 
-        console.log("Event service, get " + id);
-        for (var i = 0; i < this.events.length; i++) {
-            if (this.events[i].id == id) {
-                result = this.events[i];
-                break;
-            }
+        if (!response.ok) {
+            const text = await response.text();
+            alert("Failed to get workshop " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
+
+            return response.error();
         }
-        if (result) {
-            // Dummy loading delay
-            await new Promise((res) => setTimeout(res, 1000 * Math.random()));
-            return Promise.resolve(result);
-        }
-        
-        return null;
+
+        return response.json();
     }
 }
 

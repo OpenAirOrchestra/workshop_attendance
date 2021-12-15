@@ -49,7 +49,7 @@ class workshopDetailView {
 		{
 			$column_name = $columns[$i]['Column Name'];
 			if ((! in_array($column_name, $this->hiddenColumns)) 
-				&& (current_user_can('read_private_pages') || (! in_array($column_name, $this->privateData)))
+				&& (('read_private_pages') || (! in_array($column_name, $this->privateData)))
 				) {
 				$data_type = $columns[$i]['Data Type'];
 				$value = $workshop[$column_name];

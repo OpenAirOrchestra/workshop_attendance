@@ -33,6 +33,7 @@ require_once( dirname(__FILE__) . '/views/workshop_table_view.php');
 require_once( dirname(__FILE__) . '/views/workshop_detail_view.php');
 require_once( dirname(__FILE__) . '/views/workshop_form_view.php');
 require_once( dirname(__FILE__) . '/controllers/workshop_form_controller.php');
+require_once( dirname(__FILE__) . '/controllers/workshop_rest_controller.php');
 
 /*
  * Main class for Workshop attandance Handles activation, hooks, etc.
@@ -429,11 +430,14 @@ class workshopAttendance {
 
 };
 
-// instantiate class
+// instantiate classes
 $WORKSHOPATTENDANCE = new workshopAttendance;
 
 add_action('admin_menu', array($WORKSHOPATTENDANCE, 'create_admin_menu'));
 
 register_activation_hook(__FILE__, array($WORKSHOPATTENDANCE, 'activate'));
+
+$WORKSHOP_REST_CONTROLLER = new WorkshopRestController;
+add_action('rest_api_init', array($WORKSHOP_REST_CONTROLLER, 'register_routes'));
 
 ?>

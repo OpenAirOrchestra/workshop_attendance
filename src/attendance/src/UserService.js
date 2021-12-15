@@ -24,7 +24,7 @@ class UserService {
             const text = await response.text();
             alert( "Failed to list users, Response: " + response.status + " " + response.statusText + "\n" + text);
 
-            return Promise.resolve([]);
+            return response.error();
         }
         
         return response.json();

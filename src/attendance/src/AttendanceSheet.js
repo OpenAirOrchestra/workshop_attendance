@@ -284,7 +284,6 @@ function loadEventId(setEventId) {
 		const urlParams = new URLSearchParams(paramString);
 		const eventId = urlParams.get('event_id');
 		setEventId(eventId);
-		console.log("Event Id ==>" + eventId);
 	}
 
 }
