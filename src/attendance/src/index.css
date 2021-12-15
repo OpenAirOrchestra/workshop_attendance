@@ -1,6 +1,6 @@
-/* Make font big enough to disable auto zoom on input fields */
+/* Make font big for our aging eyes */
 body {
-    font-size: 16px;
+    font-size: 14pt;
   }
   input {
     font-size: inherit;
