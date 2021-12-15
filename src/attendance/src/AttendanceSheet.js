@@ -124,25 +124,31 @@ function searchAttendees(attendees, searchTerm) {
 }
 
 /// Return the subset of attendees that match the filter criteria
-function filterAttendees(eventId, attendees, filterRecent, filterOld, filterNew, filterPresent) {
+function filterAttendees(eventId, attendees, recentUserKeys, filterRecent, filterOld, filterNew, filterPresent) {
 	let result = attendees;
 
 	if (filterRecent || filterNew || filterOld || filterPresent) {
 		result = result.filter(attendee => {
-			if (filterRecent && attendee.event_id) {
-				return true;
-			}
-
-			if (filterOld && !attendee.event_id) {
-				return true;
-			}
-
+		
 			if (filterNew && !attendee.user_id) {
 				return true;
 			}
 
 			if (filterPresent && attendee.event_id && attendee.event_id === eventId) {
 				return true;
+			}
+
+			if (filterRecent || filterOld) {
+				const key = attendeeKey(attendee);
+				const isRecent = recentUserKeys.has(key);
+
+				if (filterRecent && isRecent) {
+					return true;
+				}
+
+				if (filterOld && !isRecent) {
+					return true;
+				}
 			}
 
 			return false;
@@ -153,7 +159,7 @@ function filterAttendees(eventId, attendees, filterRecent, filterOld, filterNew,
 }
 
 /// Load all data from backend.
-async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees) {
+async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setRecentUserKeys, setCurrentAttendees) {
 	const eventService = Configuration.eventService;
 	const userService = Configuration.userService;
 	const attendanceService = Configuration.attendanceService;
@@ -166,6 +172,13 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 
 	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
 	setRecents(recents);
+
+	let recentUserKeys = new Set();
+	for (const recent of recents) {
+		const key = attendeeKey(recent);
+		recentUserKeys.add(key);
+	}
+	setRecentUserKeys(recentUserKeys);
 
 	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
 	setCurrentAttendees(currentAttendees);
@@ -265,6 +278,7 @@ function AttendanceSheet(props) {
 	const [eventRecord, setEventRecord] = useState(null);
 	const [users, setUsers] = useState([]);
 	const [recents, setRecents] = useState([])
+	const [recentUserKeys, setRecentUserKeys] = useState(null);
 	const [currentAttendees, setCurrentAttendees] = useState([]);
 	const [pending, setPending] = useState([]);
 
@@ -295,7 +309,7 @@ function AttendanceSheet(props) {
 	// Load initial data.
 	useEffect(() => {
 		if (isLoading && eventId) {
-			loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setCurrentAttendees)
+			loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setRecentUserKeys, setCurrentAttendees)
 		}
 	}, [isLoading, eventId]);
 
@@ -306,7 +320,7 @@ function AttendanceSheet(props) {
 	const searchedAttendees = searchAttendees(attendees, searchTerm);
 
 	// Filter
-	const filteredAttendees = filterAttendees(eventId, searchedAttendees, filterRecent, filterOld, filterNew, filterPresent);
+	const filteredAttendees = filterAttendees(eventId, searchedAttendees, recentUserKeys, filterRecent, filterOld, filterNew, filterPresent);
 
 	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
 
