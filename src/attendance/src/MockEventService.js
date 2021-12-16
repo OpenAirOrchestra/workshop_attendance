@@ -2,6 +2,8 @@
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
 class MockEventService {
 
+    maxRecordId = 1000;
+
     constructor() {
         this.events = [
             { id: 1000, title: 'Workshop for 23 03 2011', date: '23 03 2011' },
@@ -35,6 +37,21 @@ class MockEventService {
         }
         
         return null;
+    }
+
+    async create(event) {
+
+        // Fake delay
+        await new Promise((res) => setTimeout(res, 1000 * Math.random()));
+
+        // Add the new record
+        ++this.maxRecordId;
+        let newRecord = { ...event };
+        newRecord.id = this.maxRecordId;
+        this.events.push(newRecord);
+
+        //Return the promise
+        return Promise.resolve(newRecord);
     }
 }
 

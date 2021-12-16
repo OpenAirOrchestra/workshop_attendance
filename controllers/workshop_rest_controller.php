@@ -84,7 +84,7 @@ class WorkshopRestController extends WP_REST_Controller
       $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, ($page - 1));
     }
 
-    $items = $wpdb->get_results( $sql, ARRAY_A );
+    $items = $wpdb->get_results($sql, ARRAY_A);
 
     $data = array();
     foreach ($items as $item) {
@@ -136,14 +136,35 @@ class WorkshopRestController extends WP_REST_Controller
   {
     $item = $this->prepare_item_for_database($request);
 
-    if (function_exists('slug_some_function_to_create_item')) {
-      $data = slug_some_function_to_create_item($item);
-      if (is_array($data)) {
-        return new WP_REST_Response($data, 200);
-      }
-    }
+    // query the database
+    global $wpdb;
+    $table_name = $wpdb->prefix . "workshops";
 
-    return new WP_Error('cant-create', __('message', 'text-domain'), array('status' => 500));
+    $workshop_data = array();
+    $workshop_format = array();
+
+    $workshop_data['date'] = $item['date'];
+    array_push($workshop_format, "%s");
+
+    $workshop_data['title'] = $item['title'];
+    array_push($workshop_format, "%s");
+
+    $rowCount = $wpdb->insert(
+      $table_name,
+      $workshop_data,
+      $workshop_format
+    );
+
+    if ($rowCount == 1) {
+      $workshop_id = $wpdb->insert_id;
+
+      $item['id'] = $workshop_id;
+
+      $data = $this->prepare_item_for_response($item, $request);
+      return new WP_REST_Response($data, 200);
+    } else {
+      return new WP_Error('cant-create', __($request->get_json_params(), 'text-domain'), array('status' => 500));
+    }
   }
 
   /**
@@ -218,7 +239,9 @@ class WorkshopRestController extends WP_REST_Controller
    */
   public function create_item_permissions_check($request)
   {
-    return current_user_can('edit_post');
+    // DFDF:  TODO: proper authentication
+    return true; // <-- readable by all
+    // return current_user_can('edit_post');
   }
 
   /**
@@ -251,7 +274,7 @@ class WorkshopRestController extends WP_REST_Controller
    */
   protected function prepare_item_for_database($request)
   {
-    return array();
+    return $request;
   }
 
   /**

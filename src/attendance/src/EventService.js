@@ -10,7 +10,7 @@ class EventService {
 
     async retrieve(page, per_page, date) {
 
-        const searchParams = new URLSearchParams( {
+        const searchParams = new URLSearchParams({
             page: page,
             per_page: per_page
         });
@@ -18,7 +18,7 @@ class EventService {
             // YYYY-MM-DD, local time please.
             const offset = date.getTimezoneOffset();
             const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-            const dateString = localDate.toISOString().substring(0,10);
+            const dateString = localDate.toISOString().substring(0, 10);
 
             searchParams.set('search', dateString);
         }
@@ -44,6 +44,29 @@ class EventService {
         if (!response.ok) {
             const text = await response.text();
             alert("Failed to get workshop " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
+
+            return response.error();
+        }
+
+        return response.json();
+    }
+
+    // Create event (post)
+    async create(event) {
+        const url = this.serviceLocation();
+
+        const response = await fetch(url, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(event)
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            alert("Failed to create workshop, Response: " + response.status + " " + response.statusText + "\n" + text);
 
             return response.error();
         }

@@ -319,6 +319,27 @@ async function loadEventId(setEventId) {
 		}
 	}
 
+	// Still no event id?  Create a new event
+	if (!eventId) {
+		configureServices();
+		const eventService = Configuration.eventService;
+
+		const date = new Date();
+		// YYYY-MM-DD, local time please.
+		const offset = date.getTimezoneOffset();
+		const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+		const dateString = localDate.toISOString().substring(0, 10);
+
+		const titleString = localDate.toLocaleDateString() + " workshop";
+		const event = {
+			date: dateString,
+			title: titleString
+		};
+
+		const createdEvent = await eventService.create(event);
+		eventId = createdEvent.id;
+	}
+
 	setEventId(eventId);
 	return Promise.resolve(eventId);
 }
