@@ -8,6 +8,33 @@ class EventService {
         return "../../../../?rest_route=/workshop_attendance/v1/event";
     }
 
+    async retrieve(page, per_page, date) {
+
+        const searchParams = new URLSearchParams( {
+            page: page,
+            per_page: per_page
+        });
+        if (date) {
+            const offset = date.getTimezoneOffset();
+            const correctedDate = new Date(date.getTime() + (offset*60*1000));
+            const dateString = correctedDate.toISOString().substring(0,10);
+
+            searchParams.set('search', dateString);
+        }
+        const url = this.serviceLocation() + "&" + searchParams.toString();
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const text = await response.text();
+            alert("Failed to get workshops Response: " + response.status + " " + response.statusText + "\n" + text);
+
+            return response.error();
+        }
+
+        return response.json();
+    }
+
     /// Get request (get an event)
     async get(id) {
         const url = this.serviceLocation() + "/" + id;

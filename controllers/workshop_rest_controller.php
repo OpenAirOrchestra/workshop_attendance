@@ -67,7 +67,25 @@ class WorkshopRestController extends WP_REST_Controller
    */
   public function get_items($request)
   {
-    $items = array(); // DFDF do a query, call another class, etc
+    //get parameters from request
+    $params = $request->get_params();
+    $page = $params['page'];
+    $per_page = $params['per_page'];
+    $search = $params['search'];  // Should be a date.
+
+    // query the database
+    global $wpdb;
+    $table_name = $wpdb->prefix . "workshops";
+
+    $sql = "SELECT * FROM `$table_name`";
+    if ($search) {
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s LIMIT %d OFFSET %d", $search, $per_page, ($page - 1));
+    } else {
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, ($page - 1));
+    }
+
+    $items = $wpdb->get_results( $sql, ARRAY_A );
+
     $data = array();
     foreach ($items as $item) {
       $itemdata = $this->prepare_item_for_response($item, $request);
@@ -246,6 +264,18 @@ class WorkshopRestController extends WP_REST_Controller
   public function prepare_item_for_response($item, $request)
   {
     return $item;
+  }
+
+  /**
+   * Prepares a response for insertion into a collection.
+   *
+   * @param mixed $item WordPress representation of the item.
+   * @param WP_REST_Response $response response object.
+   * @return Array|Mixed. Response data, ready for insertion into collection data.
+   */
+  public function prepare_response_for_collection($response)
+  {
+    return $response;
   }
 
   /**

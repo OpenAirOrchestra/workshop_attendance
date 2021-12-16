@@ -273,19 +273,54 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 	Promise.resolve(attendee);
 }
 
-function loadEventId(setEventId) {
+function configureServices() {
+	if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+		// Development code
+		if (!Configuration.userService) {
+			Configuration.eventService = new MockEventService();
+			Configuration.userService = new MockUserService();
+			Configuration.attendanceService = new MockAttendanceService();
+		}
+	} else {
+		// production code
+		if (!Configuration.userService) {
+			Configuration.eventService = new EventService();
+			Configuration.userService = new UserService();
+			Configuration.attendanceService = new MockAttendanceService();
+		}
+	}
+}
+
+async function loadEventId(setEventId) {
+	let eventId = null;
 
 	if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 		// dummy event Id
-		setEventId(1000);
-	} else {
-		// get id from url param "event_id"
-		const paramString = window.location.search;
-		const urlParams = new URLSearchParams(paramString);
-		const eventId = urlParams.get('event_id');
-		setEventId(eventId);
+		eventId = 1000;
 	}
 
+	// get id from url param "event_id"
+	if (!eventId) {
+		const paramString = window.location.search;
+		const urlParams = new URLSearchParams(paramString);
+		eventId = urlParams.get('event_id');
+	}
+
+	// No event id? try getting today's event.
+	if (!eventId) {
+		configureServices();
+		const eventService = Configuration.eventService;
+
+		// try to find today's event
+		const events = await eventService.retrieve(1 /* page */, 100 /* limit */, new Date());
+
+		if (events.length === 1) {
+			eventId = events[0].id;
+		}
+	}
+
+	setEventId(eventId);
+	return Promise.resolve(eventId);
 }
 
 /// The actual component!
@@ -318,21 +353,7 @@ function AttendanceSheet(props) {
 
 	// Set up configuration
 	useEffect(() => {
-		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-			// Development code
-			if (!Configuration.userService) {
-				Configuration.eventService = new MockEventService();
-				Configuration.userService = new MockUserService();
-				Configuration.attendanceService = new MockAttendanceService();
-			}
-		} else {
-			// production code
-			if (!Configuration.userService) {
-				Configuration.eventService = new EventService();
-				Configuration.userService = new UserService();
-				Configuration.attendanceService = new MockAttendanceService();
-			}
-		}
+		configureServices();
 	});
 
 	// load the current event id
