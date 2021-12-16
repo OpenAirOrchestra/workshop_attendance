@@ -64,7 +64,7 @@ class MockAttendanceService {
         this.attendanceRecords.push(newRecord);
 
         //Return the promise
-        return Promise.resolve(attendanceRecord);
+        return Promise.resolve(newRecord);
     }
 
     async delete(id) {
