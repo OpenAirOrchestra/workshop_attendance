@@ -89,7 +89,7 @@ class AttendanceRestController extends WP_REST_Controller
 
     $sql = "SELECT * FROM `$table_name`";
     if ($search) {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshop = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshopid = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
     } else {
       $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, $offset);
     }
@@ -296,7 +296,9 @@ class AttendanceRestController extends WP_REST_Controller
    */
   public function prepare_item_for_response($item, $request)
   {
-    return $item;
+    $newItem = $item;
+    $newItem['event_id'] = $item['workshopid'];
+    return $newItem;
   }
 
   /**
