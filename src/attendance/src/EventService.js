@@ -15,11 +15,10 @@ class EventService {
             per_page: per_page
         });
         if (date) {
-            // This code is getting me *tomorrow*!!! at 5:29 PM
-            // DFDF TODO: fix this horribleness!
+            // YYYY-MM-DD, local time please.
             const offset = date.getTimezoneOffset();
-            const correctedDate = new Date(date.getTime() + (offset*60*1000));
-            const dateString = correctedDate.toISOString().substring(0,10);
+            const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+            const dateString = localDate.toISOString().substring(0,10);
 
             searchParams.set('search', dateString);
         }
