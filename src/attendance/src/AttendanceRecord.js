@@ -3,7 +3,11 @@ import React from 'react';
 export default AttendanceRecord
 
 export function attendeeKey(attendee) {
-  const key = attendee.user_id ? attendee.user_id : (attendee.firstname + '.' + attendee.lastname);
+  let key = attendee.user_id;
+
+  if (!key || key === '0') {
+    key = (attendee.firstname + '.' + attendee.lastname);
+  }
   return key;
 }
 

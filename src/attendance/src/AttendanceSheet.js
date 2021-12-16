@@ -187,7 +187,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		++page;
 	} while (moreUsers);
 
-	const recents = await attendanceService.retrieve(1, 100 );
+	const recents = await attendanceService.retrieve(1, 50);
 	setRecents(recents);
 
 	let recentUserKeys = new Set();
@@ -274,7 +274,7 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 	await modificationPromise
 
 	// List recent attendees again and set them
-	const recents = await attendanceService.retrieve(1, 100);
+	const recents = await attendanceService.retrieve(1, 50);
 	setRecents(recents);
 
 	// List current attendees again and set them
