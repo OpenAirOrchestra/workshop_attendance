@@ -21,7 +21,7 @@ function AttendanceList(props) {
         return 1;
       }
 
-      if (aFirstname.toLowerCase() > bFirstname.toLowerCase()) {
+      if (aFirstname.toLowerCase() < bFirstname.toLowerCase()) {
         return -1;
       }
 
@@ -32,7 +32,7 @@ function AttendanceList(props) {
         return 1;
       }
 
-      if (aLastname.toLowerCase() > bLastname.toLowerCase()) {
+      if (aLastname.toLowerCase() < bLastname.toLowerCase()) {
         return -1;
       }
 
