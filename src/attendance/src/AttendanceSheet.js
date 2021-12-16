@@ -225,6 +225,7 @@ async function addAttendanceRecord(eventId, attendee, modificationPromise, pendi
 	// Create the record to add
 	let newAttendee = { ...attendee };
 	newAttendee.event_id = eventId;
+	newAttendee.id = undefined;
 
 	// Ask for the server to create the attendee record
 	await attendanceService.create(newAttendee);

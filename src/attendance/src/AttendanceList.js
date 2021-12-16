@@ -13,11 +13,35 @@ function AttendanceList(props) {
   const deleteAttendanceRecord = props.deleteAttendanceRecord;
 
   const rows = attendees
-    .sort((a, b) => (a.firstname.toLowerCase() > b.firstname.toLowerCase()) ? 1 : (a.firstname.toLowerCase() === b.firstname.toLowerCase()) ? ((a.lastname.toLowerCase() > b.lastname.toLowerCase()) ? 1 : -1) : -1)
+    .sort((a, b) => {
+      let aFirstname = a.firstname.toLowerCase();
+      let bFirstname = b.firstname.toLowerCase();
+
+      if (aFirstname.toLowerCase() > bFirstname.toLowerCase()) {
+        return 1;
+      }
+
+      if (aFirstname.toLowerCase() > bFirstname.toLowerCase()) {
+        return -1;
+      }
+
+      let aLastname = a.lastname ? a.lastname.toLowerCase() : '';
+      let bLastname = b.lastname ? b.lastname.toLowerCase() : '';
+
+      if (aLastname.toLowerCase() > bLastname.toLowerCase()) {
+        return 1;
+      }
+
+      if (aLastname.toLowerCase() > bLastname.toLowerCase()) {
+        return -1;
+      }
+
+      return 0;
+    })
     .map((attendee) =>
-      <AttendanceRecord attendee={attendee} event_id={event_id} pendingMap={pendingMap} key={attendeeKey(attendee)} 
-      addAttendanceRecord={addAttendanceRecord} 
-      deleteAttendanceRecord={deleteAttendanceRecord} />
+      <AttendanceRecord attendee={attendee} event_id={event_id} pendingMap={pendingMap} key={attendeeKey(attendee)}
+        addAttendanceRecord={addAttendanceRecord}
+        deleteAttendanceRecord={deleteAttendanceRecord} />
     );
   return (
     <div className='AttendanceList'>

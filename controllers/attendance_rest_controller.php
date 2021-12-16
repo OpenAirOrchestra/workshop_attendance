@@ -153,11 +153,36 @@ class AttendanceRestController extends WP_REST_Controller
     $workshop_data = array();
     $workshop_format = array();
 
-    $workshop_data['date'] = $item['date'];
+    $workshop_data['workshopid'] = $item['event_id'];
+    array_push($workshop_format, "%d");
+
+    if ($workshop_data['user_id']) {
+      $workshop_data['user_id'] = $item['user_id'];
+      array_push($workshop_format, "%d");
+    }
+
+    $workshop_data['firstname'] = $item['firstname'];
     array_push($workshop_format, "%s");
 
-    $workshop_data['title'] = $item['title'];
-    array_push($workshop_format, "%s");
+    if ($workshop_data['lastname']) {
+      $workshop_data['lastname'] = $item['lastname'];
+      array_push($workshop_format, "%s");
+    }
+
+    if ($workshop_data['phone']) {
+      $workshop_data['phone'] = $item['phone'];
+      array_push($workshop_format, "%s");
+    }
+
+    if ($workshop_data['email']) {
+      $workshop_data['email'] = $item['email'];
+      array_push($workshop_format, "%s");
+    }
+
+    if ($workshop_data['notes']) {
+      $workshop_data['notes'] = $item['notes'];
+      array_push($workshop_format, "%s");
+    }
 
     $rowCount = $wpdb->insert(
       $table_name,
