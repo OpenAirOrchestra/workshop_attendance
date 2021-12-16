@@ -139,7 +139,7 @@ function filterAttendees(eventId, attendees, recentUserKeys, filterRecent, filte
 	if (filterRecent || filterNew || filterOld || filterPresent) {
 		result = result.filter(attendee => {
 
-			if (filterNew && !attendee.user_id) {
+			if (filterNew && (!attendee.user_id || attendee.user_id === '0')) {
 				return true;
 			}
 
