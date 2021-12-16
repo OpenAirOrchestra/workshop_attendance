@@ -115,13 +115,13 @@ class AttendanceRestController extends WP_REST_Controller
   {
     //get parameters from request
     $params = $request->get_params();
-    $event_id = $params['id'];
+    $record_id = $params['id'];
 
     // query the database
     global $wpdb;
     $table_name = $wpdb->prefix . "workshop_attendance";
 
-    $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE id = %d", $event_id);
+    $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE id = %d", $record_id);
     $workshop = $wpdb->get_row($sql, ARRAY_A);
 
     $item = $workshop;
@@ -230,14 +230,17 @@ class AttendanceRestController extends WP_REST_Controller
   public function delete_item($request)
   {
     $item = $this->prepare_item_for_database($request);
+    $record_id = $item['id'];
 
-    if (function_exists('slug_some_function_to_delete_item')) {
-      $deleted = slug_some_function_to_delete_item($item);
-      if ($deleted) {
-        return new WP_REST_Response(true, 200);
-      }
+    // query the database
+    global $wpdb;
+    $table_name = $wpdb->prefix . "workshop_attendance";
+
+    $wpdb->delete( $table_name, array( 'id' => $record_id ), array( '%d' ) );
+
+    if (! $wpdb->last_error) {
+      return new WP_REST_Response(true, 200);
     }
-
     return new WP_Error('cant-delete', __('message', 'text-domain'), array('status' => 500));
   }
 
