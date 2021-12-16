@@ -156,9 +156,8 @@ class AttendanceRestController extends WP_REST_Controller
     $workshop_data['workshopid'] = $item['workshopid'];
     array_push($workshop_format, "%d");
 
-      $workshop_data['user_id'] = $item['user_id'];
-      array_push($workshop_format, "%d");
-  
+    $workshop_data['user_id'] = $item['user_id'] ? $item['user_id'] : 0;
+    array_push($workshop_format, "%d");
 
     $workshop_data['firstname'] = $item['firstname'];
     array_push($workshop_format, "%s");
@@ -189,7 +188,7 @@ class AttendanceRestController extends WP_REST_Controller
       $workshop_format
     );
 
-    if ($rowCount == 1) {
+    if (! $wpdb->last_error) {
       $workshop_id = $wpdb->insert_id;
 
       $item['id'] = $workshop_id;
@@ -197,7 +196,8 @@ class AttendanceRestController extends WP_REST_Controller
       $data = $this->prepare_item_for_response($item, $request);
       return new WP_REST_Response($data, 200);
     } else {
-      return new WP_Error('cant-create', __($request->get_json_params(), 'text-domain'), array('status' => 500));
+      // return new WP_Error('cant-create', __($request->get_json_params(), 'text-domain'), array('status' => 500));
+      return new WP_Error('cant-create', __($wpdb->last_error, 'text-domain'), array('status' => 500));
     }
   }
 
