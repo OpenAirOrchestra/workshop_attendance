@@ -11,8 +11,12 @@ class MockEventService {
         ];
     }
 
-    async retrieve() {
-        return Promise.resolve(this.events);
+    async retrieve(page, per_page, date) {
+        if (page === 1) {
+            await new Promise((res) => setTimeout(res, 1000 * Math.random()));
+            return Promise.resolve(this.events);       
+         }
+         return Promise.resolve([]); 
     }
 
     async get(id) {
