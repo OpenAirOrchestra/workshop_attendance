@@ -330,7 +330,8 @@ async function loadEventId(setEventId) {
 		const localDate = new Date(date.getTime() - (offset * 60 * 1000));
 		const dateString = localDate.toISOString().substring(0, 10);
 
-		const titleString = localDate.toLocaleDateString() + " workshop";
+		const locale = navigator.languages[0];
+		const titleString = localDate.toLocaleDateString(locale, { weekday: 'long' }) + " Workshop " + localDate.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 		const event = {
 			date: dateString,
 			title: titleString
