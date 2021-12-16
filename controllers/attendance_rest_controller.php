@@ -89,9 +89,9 @@ class AttendanceRestController extends WP_REST_Controller
 
     $sql = "SELECT * FROM `$table_name`";
     if ($search) {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshopid = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshopid = %s  ORDER BY id DESC LIMIT %d OFFSET %d", $search, $per_page, $offset);
     } else {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, $offset);
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name`  ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset);
     }
 
     $items = $wpdb->get_results($sql, ARRAY_A);
