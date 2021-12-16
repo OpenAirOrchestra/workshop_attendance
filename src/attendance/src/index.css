@@ -5,6 +5,9 @@ body {
   input {
     font-size: inherit;
   }
+  textarea {
+    font-size: inherit;
+  }
 
 /* Header  */
 .Header {
