@@ -1,26 +1,19 @@
 /// Restful web service for getting attendance records.
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
-/// See:  https://developer.wordpress.org/rest-api/
-class EventService {
+class AttendanceService {
 
     /// Get rest api location
     serviceLocation() {
-        return "../../../../?rest_route=/workshop_attendance/v1/events";
+        return "../../../../?rest_route=/workshop_attendance/v1/attendees";
     }
 
-    async retrieve(page, per_page, date) {
-
+    async retrieve(page, per_page, event_id) {
         const searchParams = new URLSearchParams({
             page: page,
             per_page: per_page
         });
-        if (date) {
-            // YYYY-MM-DD, local time please.
-            const offset = date.getTimezoneOffset();
-            const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-            const dateString = localDate.toISOString().substring(0, 10);
-
-            searchParams.set('search', dateString);
+        if (event_id) {
+            searchParams.set('search', event_id);
         }
         const url = this.serviceLocation() + "&" + searchParams.toString();
 
@@ -28,7 +21,7 @@ class EventService {
 
         if (!response.ok) {
             const text = await response.text();
-            alert("Failed to get workshops Response: " + response.status + " " + response.statusText + "\n" + text);
+            alert("Failed to get attendees Response: " + response.status + " " + response.statusText + "\n" + text);
 
             return response.error();
         }
@@ -43,7 +36,7 @@ class EventService {
 
         if (!response.ok) {
             const text = await response.text();
-            alert("Failed to get workshop " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
+            alert("Failed to get attendee " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
 
             return response.error();
         }
@@ -51,8 +44,7 @@ class EventService {
         return response.json();
     }
 
-    // Create event (post)
-    async create(event) {
+    async create(attendanceRecord) {
         const url = this.serviceLocation();
 
         const response = await fetch(url, {
@@ -61,18 +53,36 @@ class EventService {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(attendanceRecord)
         });
 
         if (!response.ok) {
             const text = await response.text();
-            alert("Failed to create workshop, Response: " + response.status + " " + response.statusText + "\n" + text);
+            alert("Failed to create attendance record, Response: " + response.status + " " + response.statusText + "\n" + text);
 
             return response.error();
         }
 
         return response.json();
     }
+
+    async delete(id) {
+        const url = this.serviceLocation() + "/" + id;
+
+        const response = await fetch(url, {
+            method: "DELETE",
+            mode: "cors"
+        })
+
+        if (!response.ok) {
+            const text = await response.text();
+            alert("Failed to create attendance record, Response: " + response.status + " " + response.statusText + "\n" + text);
+
+            return response.error();
+        }
+
+        return Promise.resolve(response);
+    }
 }
 
-export default EventService;
+export default AttendanceService;

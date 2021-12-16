@@ -3,6 +3,7 @@ import Configuration from './Configuration';
 import MockAttendanceService from './MockAttendanceService';
 import MockEventService from './MockEventService';
 import MockUserService from './MockUserService';
+import AttendanceService from './AttendanceService';
 import EventService from './EventService';
 import UserService from './UserService';
 
@@ -311,7 +312,7 @@ function configureServices() {
 		if (!Configuration.userService) {
 			Configuration.eventService = new EventService();
 			Configuration.userService = new UserService();
-			Configuration.attendanceService = new MockAttendanceService();
+			Configuration.attendanceService = new AttendanceService();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-class WorkshopRestController extends WP_REST_Controller
+class AttendanceRestController extends WP_REST_Controller
 {
 
   /**
@@ -10,7 +10,7 @@ class WorkshopRestController extends WP_REST_Controller
   {
     $version = '1';
     $namespace = 'workshop_attendance/v' . $version;
-    $base = 'events';
+    $base = 'attendees';
     register_rest_route($namespace, '/' . $base, array(
       array(
         'methods'             => WP_REST_Server::READABLE,
@@ -71,7 +71,7 @@ class WorkshopRestController extends WP_REST_Controller
     $params = $request->get_params();
     $page = $params['page'];
     $per_page = $params['per_page'];
-    $search = $params['search'];  // Should be a date.
+    $search = $params['search'];  // Should be an event id (workshop id).
 
     if ($page == 0) {
       $page = 1;
@@ -85,11 +85,11 @@ class WorkshopRestController extends WP_REST_Controller
 
     // query the database
     global $wpdb;
-    $table_name = $wpdb->prefix . "workshops";
+    $table_name = $wpdb->prefix . "workshop_attendance";
 
     $sql = "SELECT * FROM `$table_name`";
     if ($search) {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE workshop = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
     } else {
       $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, $offset);
     }
@@ -119,7 +119,7 @@ class WorkshopRestController extends WP_REST_Controller
 
     // query the database
     global $wpdb;
-    $table_name = $wpdb->prefix . "workshops";
+    $table_name = $wpdb->prefix . "workshop_attendance";
 
     $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE id = %d", $event_id);
     $workshop = $wpdb->get_row($sql, ARRAY_A);
@@ -148,7 +148,7 @@ class WorkshopRestController extends WP_REST_Controller
 
     // query the database
     global $wpdb;
-    $table_name = $wpdb->prefix . "workshops";
+    $table_name = $wpdb->prefix . "workshop_attendance";
 
     $workshop_data = array();
     $workshop_format = array();
