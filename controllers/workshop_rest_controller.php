@@ -73,15 +73,25 @@ class WorkshopRestController extends WP_REST_Controller
     $per_page = $params['per_page'];
     $search = $params['search'];  // Should be a date.
 
+    if ($page == 0) {
+      $page = 1;
+    }
+
+    if ($per_page == 0) {
+      $per_page = 100;
+    }
+
+    $offset = ($page - 1) * $per_page;
+
     // query the database
     global $wpdb;
     $table_name = $wpdb->prefix . "workshops";
 
     $sql = "SELECT * FROM `$table_name`";
     if ($search) {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s LIMIT %d OFFSET %d", $search, $per_page, ($page - 1));
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s LIMIT %d OFFSET %d", $search, $per_page, $offset);
     } else {
-      $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, ($page - 1));
+      $sql = $wpdb->prepare("SELECT * FROM `$table_name` LIMIT %d OFFSET %d", $per_page, $offset);
     }
 
     $items = $wpdb->get_results($sql, ARRAY_A);

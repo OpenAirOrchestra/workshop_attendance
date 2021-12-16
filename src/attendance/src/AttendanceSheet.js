@@ -186,7 +186,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		++page;
 	} while (moreUsers);
 
-	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
+	const recents = await attendanceService.retrieve(1, 100 );
 	setRecents(recents);
 
 	let recentUserKeys = new Set();
@@ -196,9 +196,18 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 	}
 	setRecentUserKeys(recentUserKeys);
 
-	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
-	setCurrentAttendees(currentAttendees);
+	page = 1;
+	let allAttendees = [];
+	let moreAttendees = true;
+	do {
+		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+		allAttendees = [...allAttendees, ...currentAttendees];
+		setCurrentAttendees(allAttendees);
+		moreAttendees = currentAttendees.length > 0;
+		++page;
+	} while (moreAttendees);
 
+	
 	setIsLoading(false);
 }
 
@@ -223,8 +232,16 @@ async function addAttendanceRecord(eventId, attendee, modificationPromise, pendi
 	await modificationPromise
 
 	// List current attendees again and set them
-	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
-	setCurrentAttendees(currentAttendees);
+	let page = 1;
+	let allAttendees = [];
+	let moreAttendees = true;
+	do {
+		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+		allAttendees = [...allAttendees, ...currentAttendees];
+		setCurrentAttendees(allAttendees);
+		moreAttendees = currentAttendees.length > 0;
+		++page;
+	} while (moreAttendees);
 
 	// Remove record from pending.
 	// This could get messed up if we didn't serilize the modification requests.
@@ -256,12 +273,20 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 	await modificationPromise
 
 	// List recent attendees again and set them
-	const recents = await attendanceService.retrieve(null /* event_id */, 256 /* limit */);
+	const recents = await attendanceService.retrieve(1, 100);
 	setRecents(recents);
 
 	// List current attendees again and set them
-	const currentAttendees = await attendanceService.retrieve(eventId /* event_id */, 0 /* limit */);
-	setCurrentAttendees(currentAttendees);
+	let page = 1;
+	let allAttendees = [];
+	let moreAttendees = true;
+	do {
+		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+		allAttendees = [...allAttendees, ...currentAttendees];
+		setCurrentAttendees(allAttendees);
+		moreAttendees = currentAttendees.length > 0;
+		++page;
+	} while (moreAttendees);
 
 	// Remove record from pending.
 	// This could get messed up if we didn't serilize the modification requests.
