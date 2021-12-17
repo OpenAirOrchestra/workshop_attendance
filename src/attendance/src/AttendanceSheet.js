@@ -16,6 +16,13 @@ import Loading from './Loading'
 
 export default AttendanceSheet
 
+/// Minimal error handling function
+function handleError(error) {
+	if (window.confirm(error + "\nReload?")) {
+		window.location.reload();
+	}
+}
+
 /// Compute attendees from users and attendance records
 function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 	let attendanceMap = {}
@@ -169,135 +176,147 @@ function filterAttendees(eventId, attendees, recentUserKeys, filterRecent, filte
 
 /// Load all data from backend.
 async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecents, setRecentUserKeys, setCurrentAttendees) {
-	const eventService = Configuration.eventService;
-	const userService = Configuration.userService;
-	const attendanceService = Configuration.attendanceService;
+	try {
 
-	const eventRecord = await eventService.get(eventId);
-	setEventRecord(eventRecord);
+		const eventService = Configuration.eventService;
+		const userService = Configuration.userService;
+		const attendanceService = Configuration.attendanceService;
 
-	let page = 1;
-	let allUsers = [];
-	let moreUsers = true;
-	do {
-		const users = await userService.retrieve(page, 100);
-		allUsers = [...allUsers, ...users];
-		setUsers(allUsers);
-		moreUsers = users.length > 0;
-		++page;
-	} while (moreUsers);
+		const eventRecord = await eventService.get(eventId);
+		setEventRecord(eventRecord);
 
-	const recents = await attendanceService.retrieve(1, 50);
-	setRecents(recents);
+		let page = 1;
+		let allUsers = [];
+		let moreUsers = true;
+		do {
+			const users = await userService.retrieve(page, 100);
+			allUsers = [...allUsers, ...users];
+			setUsers(allUsers);
+			moreUsers = users.length > 0;
+			++page;
+		} while (moreUsers);
 
-	let recentUserKeys = new Set();
-	for (const recent of recents) {
-		const key = attendeeKey(recent);
-		recentUserKeys.add(key);
+		const recents = await attendanceService.retrieve(1, 50);
+		setRecents(recents);
+
+		let recentUserKeys = new Set();
+		for (const recent of recents) {
+			const key = attendeeKey(recent);
+			recentUserKeys.add(key);
+		}
+		setRecentUserKeys(recentUserKeys);
+
+		page = 1;
+		let allAttendees = [];
+		let moreAttendees = true;
+		do {
+			const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+			allAttendees = [...allAttendees, ...currentAttendees];
+			setCurrentAttendees(allAttendees);
+			moreAttendees = currentAttendees.length > 0;
+			++page;
+		} while (moreAttendees);
+
+		setIsLoading(false);
+	} catch (error) {
+		handleError(error);
 	}
-	setRecentUserKeys(recentUserKeys);
-
-	page = 1;
-	let allAttendees = [];
-	let moreAttendees = true;
-	do {
-		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
-		allAttendees = [...allAttendees, ...currentAttendees];
-		setCurrentAttendees(allAttendees);
-		moreAttendees = currentAttendees.length > 0;
-		++page;
-	} while (moreAttendees);
-
-
-	setIsLoading(false);
 }
 
 /// Add an attendance record (add attendee)
 async function addAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setCurrentAttendees) {
-	const attendanceService = Configuration.attendanceService;
+	try {
+		const attendanceService = Configuration.attendanceService;
 
-	// Add record to pending
-	let newPending = [...pending];
-	newPending.push(attendee);
-	setPending(newPending);
-	attendanceService.pendingRecords = newPending;
+		// Add record to pending
+		let newPending = [...pending];
+		newPending.push(attendee);
+		setPending(newPending);
+		attendanceService.pendingRecords = newPending;
 
-	// Create the record to add
-	let newAttendee = { ...attendee };
-	newAttendee.event_id = eventId;
-	newAttendee.id = undefined;
+		// Create the record to add
+		let newAttendee = { ...attendee };
+		newAttendee.event_id = eventId;
+		newAttendee.id = undefined;
 
-	// Ask for the server to create the attendee record
-	await attendanceService.create(newAttendee);
+		// Ask for the server to create the attendee record
+		await attendanceService.create(newAttendee);
 
-	// Wait for previous modification to complete
-	await modificationPromise
+		// Wait for previous modification to complete
+		await modificationPromise
 
-	// List current attendees again and set them
-	let page = 1;
-	let allAttendees = [];
-	let moreAttendees = true;
-	do {
-		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
-		allAttendees = [...allAttendees, ...currentAttendees];
-		setCurrentAttendees(allAttendees);
-		moreAttendees = currentAttendees.length > 0;
-		++page;
-	} while (moreAttendees);
+		// List current attendees again and set them
+		let page = 1;
+		let allAttendees = [];
+		let moreAttendees = true;
+		do {
+			const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+			allAttendees = [...allAttendees, ...currentAttendees];
+			setCurrentAttendees(allAttendees);
+			moreAttendees = currentAttendees.length > 0;
+			++page;
+		} while (moreAttendees);
 
-	// Remove record from pending.
-	// This could get messed up if we didn't serilize the modification requests.
-	newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
-		return pendingAttendee !== attendee;
-	});
-	setPending(newPending);
-	attendanceService.pendingRecords = newPending;
-	Promise.resolve(attendee);
+		// Remove record from pending.
+		// This could get messed up if we didn't serilize the modification requests.
+		newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
+			return pendingAttendee !== attendee;
+		});
+		setPending(newPending);
+		attendanceService.pendingRecords = newPending;
+		Promise.resolve(attendee);
+	} catch (error) {
+		handleError(error);
+	}
 }
 
 /// Add an attendance record (add attendee)
 async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pending, setPending, setRecents, setCurrentAttendees) {
-	const attendanceService = Configuration.attendanceService;
+	try {
+		const attendanceService = Configuration.attendanceService;
 
-	// Add record to pending
-	let newPending = [...pending];
-	newPending.push(attendee);
-	setPending(newPending);
-	attendanceService.pendingRecords = newPending;
+		// Add record to pending
+		let newPending = [...pending];
+		newPending.push(attendee);
+		setPending(newPending);
+		attendanceService.pendingRecords = newPending;
 
-	// Get the id
-	const recordId = attendee.id;
+		// Get the id
+		const recordId = attendee.id;
 
-	// Delete the attendance record
-	await attendanceService.delete(recordId);
+		// Delete the attendance record
+		await attendanceService.delete(recordId);
 
-	// Wait for previous modification to complete
-	await modificationPromise
+		// Wait for previous modification to complete
+		await modificationPromise
 
-	// List recent attendees again and set them
-	const recents = await attendanceService.retrieve(1, 50);
-	setRecents(recents);
+		// List recent attendees again and set them
+		const recents = await attendanceService.retrieve(1, 50);
+		setRecents(recents);
 
-	// List current attendees again and set them
-	let page = 1;
-	let allAttendees = [];
-	let moreAttendees = true;
-	do {
-		const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
-		allAttendees = [...allAttendees, ...currentAttendees];
-		setCurrentAttendees(allAttendees);
-		moreAttendees = currentAttendees.length > 0;
-		++page;
-	} while (moreAttendees);
+		// List current attendees again and set them
+		let page = 1;
+		let allAttendees = [];
+		let moreAttendees = true;
+		do {
+			const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
+			allAttendees = [...allAttendees, ...currentAttendees];
+			setCurrentAttendees(allAttendees);
+			moreAttendees = currentAttendees.length > 0;
+			++page;
+		} while (moreAttendees);
 
-	// Remove record from pending.
-	// This could get messed up if we didn't serilize the modification requests.
-	newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
-		return pendingAttendee !== attendee;
-	});
-	setPending(newPending);
-	attendanceService.pendingRecords = newPending;
-	Promise.resolve(attendee);
+		// Remove record from pending.
+		// This could get messed up if we didn't serilize the modification requests.
+		newPending = [...attendanceService.pendingRecords].filter(pendingAttendee => {
+			return pendingAttendee !== attendee;
+		});
+		setPending(newPending);
+		attendanceService.pendingRecords = newPending;
+		Promise.resolve(attendee);
+	} catch (error) {
+		handleError(error);
+	}
 }
 
 function configureServices() {
@@ -319,57 +338,61 @@ function configureServices() {
 }
 
 async function loadEventId(setEventId) {
-	let eventId = null;
+	try {
+		let eventId = null;
 
-	if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-		// dummy event Id
-		eventId = 1000;
-	}
-
-	// get id from url param "event_id"
-	if (!eventId) {
-		const paramString = window.location.search;
-		const urlParams = new URLSearchParams(paramString);
-		eventId = urlParams.get('event_id');
-	}
-
-	// No event id? try getting today's event.
-	if (!eventId) {
-		configureServices();
-		const eventService = Configuration.eventService;
-
-		// try to find today's event
-		const events = await eventService.retrieve(1 /* page */, 100 /* limit */, new Date());
-
-		if (events.length === 1) {
-			eventId = events[0].id;
+		if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+			// dummy event Id
+			eventId = 1000;
 		}
+
+		// get id from url param "event_id"
+		if (!eventId) {
+			const paramString = window.location.search;
+			const urlParams = new URLSearchParams(paramString);
+			eventId = urlParams.get('event_id');
+		}
+
+		// No event id? try getting today's event.
+		if (!eventId) {
+			configureServices();
+			const eventService = Configuration.eventService;
+
+			// try to find today's event
+			const events = await eventService.retrieve(1 /* page */, 100 /* limit */, new Date());
+
+			if (events.length === 1) {
+				eventId = events[0].id;
+			}
+		}
+
+		// Still no event id?  Create a new event
+		if (!eventId) {
+			configureServices();
+			const eventService = Configuration.eventService;
+
+			const date = new Date();
+			// YYYY-MM-DD, local time please.
+			const offset = date.getTimezoneOffset();
+			const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+			const dateString = localDate.toISOString().substring(0, 10);
+
+			const locale = navigator.languages[0];
+			const titleString = localDate.toLocaleDateString(locale, { weekday: 'long' }) + " Workshop " + localDate.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+			const event = {
+				date: dateString,
+				title: titleString
+			};
+
+			const createdEvent = await eventService.create(event);
+			eventId = createdEvent.id;
+		}
+
+		setEventId(eventId);
+		return Promise.resolve(eventId);
+	} catch (error) {
+		handleError(error);
 	}
-
-	// Still no event id?  Create a new event
-	if (!eventId) {
-		configureServices();
-		const eventService = Configuration.eventService;
-
-		const date = new Date();
-		// YYYY-MM-DD, local time please.
-		const offset = date.getTimezoneOffset();
-		const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-		const dateString = localDate.toISOString().substring(0, 10);
-
-		const locale = navigator.languages[0];
-		const titleString = localDate.toLocaleDateString(locale, { weekday: 'long' }) + " Workshop " + localDate.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
-		const event = {
-			date: dateString,
-			title: titleString
-		};
-
-		const createdEvent = await eventService.create(event);
-		eventId = createdEvent.id;
-	}
-
-	setEventId(eventId);
-	return Promise.resolve(eventId);
 }
 
 /// The actual component!
