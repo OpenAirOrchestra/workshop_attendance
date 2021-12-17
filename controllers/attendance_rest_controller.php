@@ -96,13 +96,16 @@ class AttendanceRestController extends WP_REST_Controller
 
     $items = $wpdb->get_results($sql, ARRAY_A);
 
-    $data = array();
-    foreach ($items as $item) {
-      $itemdata = $this->prepare_item_for_response($item, $request);
-      $data[] = $this->prepare_response_for_collection($itemdata);
-    }
+    if (!$wpdb->last_error) {
+      $data = array();
+      foreach ($items as $item) {
+        $itemdata = $this->prepare_item_for_response($item, $request);
+        $data[] = $this->prepare_response_for_collection($itemdata);
+      }
 
-    return new WP_REST_Response($data, 200);
+      return new WP_REST_Response($data, 200);
+    }
+    return new WP_Error('cant-delete', __($wpdb->last_error, 'text-domain'), array('status' => 500));
   }
 
   /**
@@ -128,12 +131,11 @@ class AttendanceRestController extends WP_REST_Controller
 
     $data = $this->prepare_item_for_response($item, $request);
 
-    //return a response or error based on some conditional
-    if (1 == 1) {
+    //return a response or error
+    if (!$wpdb->last_error) {
       return new WP_REST_Response($data, 200);
-    } else {
-      return new WP_Error('code', __('message', 'text-domain'));
     }
+    return new WP_Error('cant-get', __($wpdb->last_error, 'text-domain'), array('status' => 500));
   }
 
   /**
@@ -188,7 +190,7 @@ class AttendanceRestController extends WP_REST_Controller
       $workshop_format
     );
 
-    if (! $wpdb->last_error) {
+    if (!$wpdb->last_error) {
       $workshop_id = $wpdb->insert_id;
 
       $item['id'] = $workshop_id;
@@ -196,7 +198,6 @@ class AttendanceRestController extends WP_REST_Controller
       $data = $this->prepare_item_for_response($item, $request);
       return new WP_REST_Response($data, 200);
     } else {
-      // return new WP_Error('cant-create', __($request->get_json_params(), 'text-domain'), array('status' => 500));
       return new WP_Error('cant-create', __($wpdb->last_error, 'text-domain'), array('status' => 500));
     }
   }
@@ -209,16 +210,8 @@ class AttendanceRestController extends WP_REST_Controller
    */
   public function update_item($request)
   {
-    $item = $this->prepare_item_for_database($request);
-
-    if (function_exists('slug_some_function_to_update_item')) {
-      $data = slug_some_function_to_update_item($item);
-      if (is_array($data)) {
-        return new WP_REST_Response($data, 200);
-      }
-    }
-
-    return new WP_Error('cant-update', __('message', 'text-domain'), array('status' => 500));
+    // $item = $this->prepare_item_for_database($request);
+    return new WP_Error('cant-update', __('not implemented', 'text-domain'), array('status' => 500));
   }
 
   /**
@@ -236,12 +229,12 @@ class AttendanceRestController extends WP_REST_Controller
     global $wpdb;
     $table_name = $wpdb->prefix . "workshop_attendance";
 
-    $wpdb->delete( $table_name, array( 'id' => $record_id ), array( '%d' ) );
+    $wpdb->delete($table_name, array('id' => $record_id), array('%d'));
 
-    if (! $wpdb->last_error) {
+    if (!$wpdb->last_error) {
       return new WP_REST_Response(true, 200);
     }
-    return new WP_Error('cant-delete', __('message', 'text-domain'), array('status' => 500));
+    return new WP_Error('cant-delete', __($wpdb->last_error, 'text-domain'), array('status' => 500));
   }
 
   /**
@@ -313,7 +306,6 @@ class AttendanceRestController extends WP_REST_Controller
   {
     $item = $request;
     $item['workshopid'] = $request['event_id'];
-
     return $item;
   }
 
