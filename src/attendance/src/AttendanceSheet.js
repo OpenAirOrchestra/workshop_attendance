@@ -208,7 +208,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		++page;
 	} while (moreAttendees);
 
-	
+
 	setIsLoading(false);
 }
 
@@ -430,9 +430,11 @@ function AttendanceSheet(props) {
 
 	const showNewAttendeeForm = !isLoading && (filterNew || filterPresent || !filterRecent);
 
+	// url for workshop
+	const workshopURL = eventId ? "../../../../wp-admin/admin.php?page=workshop&workshop=" + eventId : null;
 	return (
 		<div className="AttendanceSheet">
-			<Header name={eventRecord ? eventRecord.title : ''} />
+			<Header name={eventRecord ? eventRecord.title : ''} url={workshopURL} />
 			<SearchBar
 				searchTerm={searchTerm} setSearchTerm={setSearchTerm}
 				filterRecent={filterRecent} setFilterRecent={setFilterRecent}
