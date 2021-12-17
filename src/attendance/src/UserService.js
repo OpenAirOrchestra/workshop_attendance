@@ -13,7 +13,7 @@ class UserService {
     /// page and per_page are needed because of the limits on the wordpress json api.
     async retrieve(page, per_page) {
 
-        const searchParams = new URLSearchParams( {
+        const searchParams = new URLSearchParams({
             page: page,
             per_page: per_page
         });
@@ -21,12 +21,9 @@ class UserService {
         const response = await fetch(url);
 
         if (!response.ok) {
-            const text = await response.text();
-            alert( "Failed to list users, Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to list users Response: " + response.status + " " + response.statusText);
         }
-        
+
         return response.json();
     }
 }

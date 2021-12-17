@@ -20,10 +20,7 @@ class AttendanceService {
         const response = await fetch(url);
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to get attendees Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to get attendees Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
@@ -35,10 +32,7 @@ class AttendanceService {
         const response = await fetch(url);
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to get attendee " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to get attendee Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
@@ -57,10 +51,7 @@ class AttendanceService {
         });
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to create attendance record, Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to create attendance record Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
@@ -75,10 +66,7 @@ class AttendanceService {
         })
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to create attendance record, Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to delete attendees Response: " + response.status + " " + response.statusText);
         }
 
         return Promise.resolve(response);

@@ -27,10 +27,7 @@ class EventService {
         const response = await fetch(url);
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to get workshops Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to get workshops Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
@@ -42,10 +39,7 @@ class EventService {
         const response = await fetch(url);
 
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to get workshop " + id + ", Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to get workshop Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
@@ -63,12 +57,8 @@ class EventService {
             },
             body: JSON.stringify(event)
         });
-
         if (!response.ok) {
-            const text = await response.text();
-            alert("Failed to create workshop, Response: " + response.status + " " + response.statusText + "\n" + text);
-
-            return response.error();
+            throw new Error("Failed to create workshop Response: " + response.status + " " + response.statusText);
         }
 
         return response.json();
