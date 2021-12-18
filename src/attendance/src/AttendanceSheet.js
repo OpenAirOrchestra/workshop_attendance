@@ -30,13 +30,13 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 	// Add users to the map.
 	for (const user of users) {
 		let attendanceRecord = { user_id: user.id, firstname: '', lastname: '' };
-		if (user.nickname) {
-			attendanceRecord.firstname = user.nickname;
-		} else if (user.first_name) {
+		if (user.first_name) {
 			attendanceRecord.firstname = user.first_name;
 			if (user.last_name) {
 				attendanceRecord.lastname = user.last_name;
 			}
+		} else if (user.nickname) {
+			attendanceRecord.firstname = user.nickname;
 		} else if (user.name) {
 			attendanceRecord.firstname = user.name;
 		}
@@ -45,7 +45,8 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 			attendanceRecord.notes = user.description;
 		}
 
-		attendanceMap[user.id] = attendanceRecord;
+		const key = attendeeKey(attendanceRecord);
+		attendanceMap[key] = attendanceRecord;
 	}
 
 	// Add recents to the map
@@ -191,10 +192,10 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		do {
 			const users = await userService.retrieve(page, 100);
 			allUsers = [...allUsers, ...users];
-			setUsers(allUsers);
 			moreUsers = users.length > 0;
 			++page;
 		} while (moreUsers);
+		setUsers(allUsers);
 
 		const recents = await attendanceService.retrieve(1, 50);
 		setRecents(recents);
@@ -212,10 +213,10 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		do {
 			const currentAttendees = await attendanceService.retrieve(page, 100, eventId);
 			allAttendees = [...allAttendees, ...currentAttendees];
-			setCurrentAttendees(allAttendees);
 			moreAttendees = currentAttendees.length > 0;
 			++page;
 		} while (moreAttendees);
+		setCurrentAttendees(allAttendees);
 
 		setIsLoading(false);
 	} catch (error) {
