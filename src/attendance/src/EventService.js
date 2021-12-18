@@ -5,7 +5,11 @@ class EventService {
 
     /// Get rest api location
     serviceLocation() {
-        return "../../../../?rest_route=/workshop_attendance/v1/events";
+        const pathname = window.location.pathname;
+        const pathComponents = pathname.split('/');
+        const pluginName = pathComponents[pathComponents.length - 3];
+
+        return "../../../../?rest_route=/" + pluginName + " /v1/events";
     }
 
     restNonce() {
