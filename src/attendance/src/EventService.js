@@ -8,11 +8,18 @@ class EventService {
         return "../../../../?rest_route=/workshop_attendance/v1/events";
     }
 
+    restNonce() {
+        const paramString = window.location.search;
+        const urlParams = new URLSearchParams(paramString);
+        return urlParams.get('_wpnonce');
+    }
+
     async retrieve(page, per_page, date) {
 
         const searchParams = new URLSearchParams({
             page: page,
-            per_page: per_page
+            per_page: per_page,
+            _wpnonce: this.restNonce()
         });
         if (date) {
             // YYYY-MM-DD, local time please.
@@ -35,7 +42,11 @@ class EventService {
 
     /// Get request (get an event)
     async get(id) {
-        const url = this.serviceLocation() + "/" + id;
+        const searchParams = new URLSearchParams({
+            _wpnonce: this.restNonce()
+        });
+
+        const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -47,7 +58,11 @@ class EventService {
 
     // Create event (post)
     async create(event) {
-        const url = this.serviceLocation();
+        const searchParams = new URLSearchParams({
+            _wpnonce: this.restNonce()
+        });
+
+        const url = this.serviceLocation() + "&" + searchParams.toString();
 
         const response = await fetch(url, {
             method: "POST",

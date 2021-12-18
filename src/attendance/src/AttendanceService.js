@@ -7,11 +7,19 @@ class AttendanceService {
         return "../../../../?rest_route=/workshop_attendance/v1/attendees";
     }
 
+    restNonce() {
+        const paramString = window.location.search;
+        const urlParams = new URLSearchParams(paramString);
+        return urlParams.get('_wpnonce');
+    }
+
     async retrieve(page, per_page, event_id) {
         const searchParams = new URLSearchParams({
             page: page,
-            per_page: per_page
+            per_page: per_page,
+            _wpnonce: this.restNonce()
         });
+
         if (event_id) {
             searchParams.set('search', event_id);
         }
@@ -28,7 +36,11 @@ class AttendanceService {
 
     /// Get request (get an event)
     async get(id) {
-        const url = this.serviceLocation() + "/" + id;
+        const searchParams = new URLSearchParams({
+            _wpnonce: this.restNonce()
+        });
+
+        const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -39,13 +51,16 @@ class AttendanceService {
     }
 
     async create(attendanceRecord) {
-        const url = this.serviceLocation();
+        const searchParams = new URLSearchParams({
+            _wpnonce: this.restNonce()
+        });
 
+        const url = this.serviceLocation() + "&" + searchParams.toString();
         const response = await fetch(url, {
             method: "POST",
             mode: "cors",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",                
             },
             body: JSON.stringify(attendanceRecord)
         });
@@ -58,7 +73,11 @@ class AttendanceService {
     }
 
     async delete(id) {
-        const url = this.serviceLocation() + "/" + id;
+        const searchParams = new URLSearchParams({
+            _wpnonce: this.restNonce()
+        });
+
+        const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
 
         const response = await fetch(url, {
             method: "DELETE",

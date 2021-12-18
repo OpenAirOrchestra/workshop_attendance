@@ -245,9 +245,7 @@ class AttendanceRestController extends WP_REST_Controller
    */
   public function get_items_permissions_check($request)
   {
-    // DFDF:  TODO: proper authentication
-    return true; // <-- readable by all
-    // return current_user_can( 'read_private_posts' );
+    return current_user_can( 'read_private_posts' );
   }
 
   /**
@@ -269,9 +267,7 @@ class AttendanceRestController extends WP_REST_Controller
    */
   public function create_item_permissions_check($request)
   {
-    // DFDF:  TODO: proper authentication
-    return true; // <-- readable by all
-    // return current_user_can('edit_post');
+    return current_user_can( 'edit_others_posts' );
   }
 
   /**
