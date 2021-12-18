@@ -23,10 +23,12 @@ class workshopDetailView {
 	 */
 	function render_details( $workshop, $columns, $attendees ) {
 		$attendance_nonce = wp_create_nonce('attendance_nonce');
+		$wp_rest_nonce = wp_create_nonce( 'wp_rest' );
 
 		$workshop_id = $workshop['id'];
 		$edit_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id&action=edit";
-                $attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
+        $attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
+        $attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?event_id=$workshop_id&_wpnonce=$wp_rest_nonce";
 
 ?>
 	<h2><?php echo stripslashes($workshop['title']); ?> 
@@ -34,7 +36,8 @@ class workshopDetailView {
 	if (current_user_can('edit_pages')) {
 ?>
 		<a class="add-new-h2" href="<?php echo $edit_url; ?>" title="Edit Details">Edit Details</a>
-		<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance">Take Attendance</a>
+		<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance">Take Attendance</a>
+		<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance (Legacy)">Take Attendance (Legacy)</a>
 <?php
 	}
 ?>
@@ -47,7 +50,7 @@ class workshopDetailView {
 		{
 			$column_name = $columns[$i]['Column Name'];
 			if ((! in_array($column_name, $this->hiddenColumns)) 
-				&& (current_user_can('read_private_pages') || (! in_array($column_name, $this->privateData)))
+				&& (('read_private_pages') || (! in_array($column_name, $this->privateData)))
 				) {
 				$data_type = $columns[$i]['Data Type'];
 				$value = $workshop[$column_name];
