@@ -158,7 +158,6 @@ function filterAttendees(eventId, attendees, recentUserKeys, filterRecent, filte
 			if (filterRecent || filterOld) {
 				const key = attendeeKey(attendee);
 				const isRecent = recentUserKeys.has(key);
-
 				if (filterRecent && isRecent) {
 					return true;
 				}

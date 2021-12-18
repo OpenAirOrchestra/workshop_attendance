@@ -8,7 +8,7 @@ export function attendeeKey(attendee) {
   if (!key || key === '0') {
     key = (attendee.firstname + '.' + attendee.lastname);
   }
-  return key;
+  return key.toString();
 }
 
 function AttendanceRecord(props) {
