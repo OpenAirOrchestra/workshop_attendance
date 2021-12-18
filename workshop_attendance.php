@@ -171,8 +171,8 @@ class workshopAttendance {
 			if (current_user_can('edit_pages')) {
 ?>
 				<a class="add-new-h2" href="<?php echo $this->add_new_uri() ?>">Edit Details</a>
-				<a class="add-new-h2" href="<?php echo $attendance_url; ?>">Take Attendance</a>
-				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>">Take Attendance (React)</a>
+				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>">Take Attendance</a>
+				<a class="add-new-h2" href="<?php echo $attendance_url; ?>">Take Attendance (Legacy)</a>
 <?php
 			}
 ?>

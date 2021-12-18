@@ -36,8 +36,8 @@ class workshopDetailView {
 	if (current_user_can('edit_pages')) {
 ?>
 		<a class="add-new-h2" href="<?php echo $edit_url; ?>" title="Edit Details">Edit Details</a>
-		<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance">Take Attendance</a>
-		<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance (React)">Take Attendance (React)</a>
+		<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance">Take Attendance</a>
+		<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance (Legacy)">Take Attendance (Legacy)</a>
 <?php
 	}
 ?>
