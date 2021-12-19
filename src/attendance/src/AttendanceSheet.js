@@ -35,10 +35,12 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 			if (user.last_name) {
 				attendanceRecord.lastname = user.last_name;
 			}
-		} else if (user.nickname) {
-			attendanceRecord.firstname = user.nickname;
-		} else if (user.name) {
-			attendanceRecord.firstname = user.name;
+		} else if (user.display_name) {
+			attendanceRecord.firstname = user.display_name;
+		} 
+
+		if (user.email) {
+			attendanceRecord.email = user.email;
 		}
 
 		if (user.description) {
@@ -188,12 +190,16 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		let page = 1;
 		let allUsers = [];
 		let moreUsers = true;
+
 		do {
-			const users = await userService.retrieve(page, 100);
+			const users = await userService.retrieve(page, 25);
+
 			allUsers = [...allUsers, ...users];
 			moreUsers = users.length > 0;
+			
 			++page;
 		} while (moreUsers);
+
 		setUsers(allUsers);
 
 		const recents = await attendanceService.retrieve(1, 50);
