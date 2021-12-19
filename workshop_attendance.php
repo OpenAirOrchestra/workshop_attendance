@@ -3,7 +3,7 @@
  * Plugin Name: Workshop Attendance
  * Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
  * Description: A simple workshop attendance plugin for the carnival band
- * Version: 1.5
+ * Version: 1.5.1
  * Author: DarrylF
  * Author URI: http://www.thecarnivalband.com
  * License: GPL2
@@ -171,8 +171,8 @@ class workshopAttendance {
 			if (current_user_can('edit_pages')) {
 ?>
 				<a class="add-new-h2" href="<?php echo $this->add_new_uri() ?>">Edit Details</a>
-				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>">Take Attendance</a>
-				<a class="add-new-h2" href="<?php echo $attendance_url; ?>">Take Attendance (Legacy)</a>
+				<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance">Take Attendance</a>
+				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance (Alpha)" >Take Attendance (Alpha)</a>
 <?php
 			}
 ?>

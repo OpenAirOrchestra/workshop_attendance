@@ -210,6 +210,17 @@ class AttendanceRestController extends WP_REST_Controller
    */
   public function update_item($request)
   {
+    $params = $request->get_params();
+    $record_id = $params['id'];
+
+    // Some configurations of apache don't support DELETE, so for those, we do an "update" request with a "method" param set to "DELETE".  It's a hack.
+    $method = $params['method'];
+    if ($method == 'DELETE') {
+      return $this->delete_item($request);
+    }
+
+    // We haven't implemented regular udate, don't need it yet.
+    
     // $item = $this->prepare_item_for_database($request);
     return new WP_Error('cant-update', __('not implemented', 'text-domain'), array('status' => 500));
   }

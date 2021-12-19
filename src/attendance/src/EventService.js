@@ -9,7 +9,7 @@ class EventService {
         const pathComponents = pathname.split('/');
         const pluginName = pathComponents[pathComponents.length - 3];
 
-        return "../../../../?rest_route=/" + pluginName + " /v1/events";
+        return "../../../../?rest_route=/" + pluginName + "/v1/events";
     }
 
     restNonce() {

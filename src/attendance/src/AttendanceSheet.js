@@ -281,11 +281,8 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 		setPending(newPending);
 		attendanceService.pendingRecords = newPending;
 
-		// Get the id
-		const recordId = attendee.id;
-
 		// Delete the attendance record
-		await attendanceService.delete(recordId);
+		await attendanceService.delete(attendee);
 
 		// Wait for previous modification to complete
 		await modificationPromise

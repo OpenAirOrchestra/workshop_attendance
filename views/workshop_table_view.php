@@ -205,8 +205,8 @@ class workshopTableView {
 					<span class="edit">
 <a href="<?php echo $edit_url; ?>" title="Edit this item">Edit</a> | </span>
 					<span class="attendance">
-<a href="<?php echo $attendance_react_url; ?>" title="Take Attendance">Attendance </a> | 
-<a href="<?php echo $attendance_url; ?>" title="Take Attendance (Legacy)">Attendance (Legacy)</a> | 
+<a href="<?php echo $attendance_url; ?>" title="Take Attendance">Attendance</a> | 
+<a href="<?php echo $attendance_react_url; ?>" title="Take Attendance (Alpha)">Attendance (Alpha)</a> | 
 
 </span>
 

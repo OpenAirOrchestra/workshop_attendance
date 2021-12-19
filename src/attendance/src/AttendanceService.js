@@ -64,7 +64,7 @@ class AttendanceService {
             method: "POST",
             mode: "cors",
             headers: {
-                "Content-Type": "application/json",                
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(attendanceRecord)
         });
@@ -76,20 +76,41 @@ class AttendanceService {
         return response.json();
     }
 
-    async delete(id) {
-        const searchParams = new URLSearchParams({
+    async delete(attendanceRecord) {
+        const id = attendanceRecord.id;
+
+        // Firt try normal DELETE
+        let searchParams = new URLSearchParams({
             _wpnonce: this.restNonce()
         });
 
-        const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
+        let url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
 
-        const response = await fetch(url, {
+        let response = await fetch(url, {
             method: "DELETE",
             mode: "cors"
         })
 
         if (!response.ok) {
-            throw new Error("Failed to delete attendees Response: " + response.status + " " + response.statusText);
+            // If DELETE failed, try the hack.  DELETE may fail because of server configuration.
+            searchParams = new URLSearchParams({
+                method: 'DELETE',
+                _wpnonce: this.restNonce()
+            });
+            let url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
+
+            response = await fetch(url, {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(attendanceRecord)
+            });
+        }
+
+        if (!response.ok) {
+            throw new Error("Failed to delete attendee Response: " + response.status + " " + response.statusText);
         }
 
         return Promise.resolve(response);
