@@ -188,12 +188,24 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		let page = 1;
 		let allUsers = [];
 		let moreUsers = true;
+		console.log(" ===> DFDF =========================== START <===")
+
 		do {
-			const users = await userService.retrieve(page, 100);
+			const users = await userService.retrieve(page, 25);
+
 			allUsers = [...allUsers, ...users];
 			moreUsers = users.length > 0;
+
+			console.log(" ===> DFDF < ====")
+
+			console.log(" ===> DFDF users page: " + page  + " length: " + users.length + " " + JSON.stringify(users))
+
 			++page;
 		} while (moreUsers);
+		console.log(" ===> DFDF =========================== DONE <===")
+
+		console.log(" ===> DFDF " + JSON.stringify(allUsers))
+
 		setUsers(allUsers);
 
 		const recents = await attendanceService.retrieve(1, 50);

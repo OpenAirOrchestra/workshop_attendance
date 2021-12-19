@@ -6,7 +6,17 @@ class UserService {
 
     /// Get rest api location
     serviceLocation() {
-        return "../../../../?rest_route=/wp/v2/users";
+        const pathname = window.location.pathname;
+        const pathComponents = pathname.split('/');
+        const pluginName = pathComponents[pathComponents.length - 3];
+
+        return "../../../../?rest_route=/" + pluginName + "/v1/users";
+    }
+
+    restNonce() {
+        const paramString = window.location.search;
+        const urlParams = new URLSearchParams(paramString);
+        return urlParams.get('_wpnonce');
     }
 
     /// Retrieve users.
@@ -15,7 +25,8 @@ class UserService {
 
         const searchParams = new URLSearchParams({
             page: page,
-            per_page: per_page
+            per_page: per_page,
+            _wpnonce: this.restNonce()
         });
         const url = this.serviceLocation() + "&" + searchParams.toString();
         const response = await fetch(url);
