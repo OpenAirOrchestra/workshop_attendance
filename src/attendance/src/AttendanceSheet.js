@@ -35,11 +35,9 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 			if (user.last_name) {
 				attendanceRecord.lastname = user.last_name;
 			}
-		} else if (user.nickname) {
-			attendanceRecord.firstname = user.nickname;
-		} else if (user.name) {
-			attendanceRecord.firstname = user.name;
-		}
+		} else if (user.display_name) {
+			attendanceRecord.firstname = user.display_name;
+		} 
 
 		if (user.description) {
 			attendanceRecord.notes = user.description;
