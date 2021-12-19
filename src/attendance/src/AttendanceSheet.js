@@ -202,7 +202,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 
 		setUsers(allUsers);
 
-		const recents = await attendanceService.retrieve(1, 50);
+		const recents = await attendanceService.retrieve(1, 100);
 		setRecents(recents);
 
 		let recentUserKeys = new Set();
