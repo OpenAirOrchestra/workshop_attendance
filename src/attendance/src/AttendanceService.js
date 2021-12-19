@@ -2,6 +2,8 @@
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
 class AttendanceService {
 
+    deleteUnsupported = false;
+
     /// Get rest api location
     serviceLocation() {
         const pathname = window.location.pathname;
@@ -78,26 +80,33 @@ class AttendanceService {
 
     async delete(attendanceRecord) {
         const id = attendanceRecord.id;
+        let response = null;
 
-        // Firt try normal DELETE
-        let searchParams = new URLSearchParams({
-            _wpnonce: this.restNonce()
-        });
+        if (!this.deleteUnsupported) {
+            // Firt try normal DELETE
+            const searchParams = new URLSearchParams({
+                _wpnonce: this.restNonce()
+            });
 
-        let url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
+            const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
 
-        let response = await fetch(url, {
-            method: "DELETE",
-            mode: "cors"
-        })
+            response = await fetch(url, {
+                method: "DELETE",
+                mode: "cors"
+            })
 
-        if (!response.ok) {
+            if (!response.ok) {
+                this.deleteUnsupported = true;
+            }
+        }
+
+        if (this.deleteUnsupported) {
             // If DELETE failed, try the hack.  DELETE may fail because of server configuration.
-            searchParams = new URLSearchParams({
+            const searchParams = new URLSearchParams({
                 method: 'DELETE',
                 _wpnonce: this.restNonce()
             });
-            let url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
+            const url = this.serviceLocation() + "/" + id + "&" + searchParams.toString();
 
             response = await fetch(url, {
                 method: "POST",
