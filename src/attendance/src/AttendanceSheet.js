@@ -39,6 +39,10 @@ function possibleAttendees(eventId, users, recents, currentAttendees, pending) {
 			attendanceRecord.firstname = user.display_name;
 		} 
 
+		if (user.email) {
+			attendanceRecord.email = user.email;
+		}
+
 		if (user.description) {
 			attendanceRecord.notes = user.description;
 		}
@@ -186,23 +190,15 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		let page = 1;
 		let allUsers = [];
 		let moreUsers = true;
-		console.log(" ===> DFDF =========================== START <===")
 
 		do {
 			const users = await userService.retrieve(page, 25);
 
 			allUsers = [...allUsers, ...users];
 			moreUsers = users.length > 0;
-
-			console.log(" ===> DFDF < ====")
-
-			console.log(" ===> DFDF users page: " + page  + " length: " + users.length + " " + JSON.stringify(users))
-
+			
 			++page;
 		} while (moreUsers);
-		console.log(" ===> DFDF =========================== DONE <===")
-
-		console.log(" ===> DFDF " + JSON.stringify(allUsers))
 
 		setUsers(allUsers);
 
