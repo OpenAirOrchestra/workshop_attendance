@@ -88,10 +88,11 @@ class UsersRestController extends WP_REST_Controller
         $usermeta_name = $wpdb->prefix . "usermeta";
 
         // Unfiltered users sql query.
-        $sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
+        $sql = $wpdb->prepare("SELECT display_name, u.ID, user_email, m.meta_value as first_name, m3.meta_value as last_name
                             FROM  `$users_name` u
-                            JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key IN ('first_name', 'last_name')
-                            JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
+                            JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key = 'first_name'
+                            JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key = 'wp_capabilities'
+                            JOIN  `$usermeta_name` m3 ON u.id = m3.user_id AND m3.meta_key = 'last_name'
                             WHERE u.id <> 1 
                             AND 
                                 (
@@ -223,6 +224,12 @@ class UsersRestController extends WP_REST_Controller
     protected function prepare_item_for_database($request)
     {
         $item = $request;
+        $item['ID'] = $request['id'];
+        unset($item['id']);
+
+        $item['email'] = $request['user_email'];
+        unset($item['user_email']);
+
         return $item;
     }
 
