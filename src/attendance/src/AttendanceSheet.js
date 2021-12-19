@@ -192,7 +192,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		let moreUsers = true;
 
 		do {
-			const users = await userService.retrieve(page, 25);
+			const users = await userService.retrieve(page, 100);
 
 			allUsers = [...allUsers, ...users];
 			moreUsers = users.length > 0;

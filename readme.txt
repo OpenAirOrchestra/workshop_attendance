@@ -3,8 +3,8 @@ Contributors: Darryl F, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 3.6
-Tested up to: 5.3.1
-Stable tag: 1.5.2
+Tested up to: 5.8.2
+Stable tag: 1.5.3
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -61,3 +61,6 @@ Taking attendance at workshops was tedious.
 
 = 1.5.2
 * Fix fetch user records bug.
+
+= 1.5.3
+* Fetch more users at a time.
