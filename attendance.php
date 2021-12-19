@@ -150,7 +150,6 @@ class workshopAttendees {
 		$sql = $wpdb->prepare("SELECT display_name, u.ID, user_email
 								FROM  `$users_name` u
 								JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key =  'first_name'
-								JOIN  `$usermeta_name` m ON u.id = m.user_id AND m.meta_key =  'last_name'
 								JOIN  `$usermeta_name` m2 ON u.id = m2.user_id AND m2.meta_key IN ('wp_capabilities')								
 								WHERE u.id <> 1 
 								AND 
