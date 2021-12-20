@@ -56,6 +56,7 @@ class workshopAttendanceWorkshopRestController extends WP_REST_Controller
     register_rest_route($namespace, '/' . $base . '/schema', array(
       'methods'  => WP_REST_Server::READABLE,
       'callback' => array($this, 'get_public_item_schema'),
+      'permission_callback' => array($this, 'get_items_permissions_check'),
     ));
   }
 
