@@ -1,6 +1,6 @@
 <?php
 
-class WorkshopRestController extends WP_REST_Controller
+class workshopAttendanceWorkshopRestController extends WP_REST_Controller
 {
 
   /**

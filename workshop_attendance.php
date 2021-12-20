@@ -3,7 +3,7 @@
  * Plugin Name: Workshop Attendance
  * Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
  * Description: A simple workshop attendance plugin for the carnival band
- * Version: 1.5.4
+ * Version: 1.5.5
  * Author: DarrylF
  * Author URI: http://www.thecarnivalband.com
  * License: GPL2
@@ -440,13 +440,13 @@ add_action('admin_menu', array($WORKSHOPATTENDANCE, 'create_admin_menu'));
 
 register_activation_hook(__FILE__, array($WORKSHOPATTENDANCE, 'activate'));
 
-$WORKSHOP_REST_CONTROLLER = new WorkshopRestController;
+$WORKSHOP_REST_CONTROLLER = new workshopAttendanceWorkshopRestController;
 add_action('rest_api_init', array($WORKSHOP_REST_CONTROLLER, 'register_routes'));
 
-$ATTENDANCE_REST_CONTROLLER = new AttendanceRestController;
+$ATTENDANCE_REST_CONTROLLER = new workshopAttendanceAttendanceRestController;
 add_action('rest_api_init', array($ATTENDANCE_REST_CONTROLLER, 'register_routes'));
 
-$USER_REST_CONTROLLER = new UsersRestController;
+$USER_REST_CONTROLLER = new workshopAttendanceUsersRestController;
 add_action('rest_api_init', array($USER_REST_CONTROLLER, 'register_routes'));
 
 ?>
