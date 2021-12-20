@@ -54,7 +54,7 @@ class workshopDetailView {
 				) {
 				$data_type = $columns[$i]['Data Type'];
 				$value = $workshop[$column_name];
-				$column_title = $this->fancyColumnTitles[$column_name];
+				$column_title = array_key_exists($column_name, $this->fancyColumnTitles) ? $this->fancyColumnTitles[$column_name] : null;
 				if (! $column_title) {
 					$column_title = ucwords($column_name);
 				}

@@ -183,7 +183,7 @@ class workshopAttendance {
 			$this->process_post();
 
 		} else {
-			 if ( strcasecmp($_GET["action"], 'edit') == 0 &&
+			 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'edit') == 0 &&
 				current_user_can('edit_pages')) {
 ?>
 				<div id="icon-edit" class="icon32"><br/></div>
@@ -202,7 +202,7 @@ class workshopAttendance {
 
 			$columns = $wpdb->get_results( $sql, ARRAY_A );
 
-			 if ( strcasecmp($_GET["action"], 'edit') == 0 &&
+			 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'edit') == 0 &&
 				current_user_can('edit_pages')) {
 				$this->workshopFormView = new workshopFormView;
 				$this->workshopFormView->render_form($_SERVER['REQUEST_URI'], $workshop, $columns);
@@ -293,7 +293,7 @@ class workshopAttendance {
 
 		 global $wpdb;
 
-		 if ( strcasecmp($_GET["action"], 'delete') == 0) {
+		 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'delete') == 0) {
 			$delete_nonce = $_GET["delete_nonce"];
 			$workshop_id = $_GET["workshop"];
 			if ($workshop_id && $delete_nonce && 
@@ -308,16 +308,16 @@ class workshopAttendance {
 
 		$orderBy = 'date';
 		$order = 'DESC';
-		if ( strcasecmp($_GET["orderby"], 'title') == 0 ||
-			strcasecmp($_GET["orderby"], 'facilitators') == 0) {
+		if ((array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'title') == 0) ||
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0)) {
 			$orderBy = strtolower($_GET["orderby"]);
 		}
-		if ( strcasecmp($_GET["order"], 'asc') == 0) {
+		if (array_key_exists('order', $_GET) && strcasecmp($_GET["order"], 'asc') == 0) {
 			$order = "ASC";
 		}
 		
 		$paged = 1;
-		if ($_GET["paged"]) {
+		if (array_key_exists('paged', $_GET) && $_GET["paged"]) {
 			$paged = intval($_GET['paged']);
 			if ($paged < 1) {
 				$paged = 1;
@@ -337,7 +337,7 @@ class workshopAttendance {
 
 		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT %d, %d", $offset, $limit);
  
-		if ($_GET["attendee"]) {
+		if (array_key_exists('attendee', $_GET) && $_GET["attendee"]) {
 			$attendee = intval($_GET['attendee']);
 		}
 		if ($attendee > 0) {

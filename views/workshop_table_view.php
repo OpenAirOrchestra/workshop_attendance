@@ -41,11 +41,10 @@ class workshopTableView {
 
 		$all_class = "current";
 		$attended_class = "";
-		if ($_GET["attendee"] && $_GET["attendee"] == $current_user->ID) {
+		if (array_key_exists('attendee', $_GET) && $_GET["attendee"] && $_GET["attendee"] == $current_user->ID) {
 			$all_class = "";
 			$attended_class = "current";
 		} 
-
 ?>
 
 		<ul class="subsubsub">
