@@ -3,7 +3,7 @@
  * Plugin Name: Workshop Attendance
  * Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
  * Description: A simple workshop attendance plugin for the carnival band
- * Version: 1.5.4
+ * Version: 1.5.5
  * Author: DarrylF
  * Author URI: http://www.thecarnivalband.com
  * License: GPL2
@@ -68,7 +68,7 @@ class workshopAttendance {
 	 */
 	function process_post() {
 		if (current_user_can('edit_pages')) {
-			$nonce = $_POST['_wpnonce'];
+			$nonce = array_key_exists('_wpnonce', $_POST) ? $_POST['_wpnonce'] : null;
 			if ($nonce && wp_verify_nonce($nonce, 'workshop_details_nonce')) {
 				// Process post
 				$this->workshopFormController = new workshopFormController;
@@ -144,7 +144,7 @@ class workshopAttendance {
 	 * Create a page that views, edits, or does attendance for a workshop
 	 */
 	function workshop_details() {
-		$workshop_id = intval($_GET['workshop']);
+		$workshop_id = array_key_exists('workshop', $_GET) ? intval($_GET['workshop']) : 0;
 		
 ?>
 	<div class="wrap">
@@ -156,7 +156,7 @@ class workshopAttendance {
 			$today = date( 'Y-m-d' , time() - 8 * 60 * 60 /* we are GMT-8 */);
 			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s", $today);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
-			$workshop_id = $workshop['id'];
+			$workshop_id = $workshop ? $workshop['id'] : 0;
 		}
 
 		if (! $workshop_id) {
@@ -183,7 +183,7 @@ class workshopAttendance {
 			$this->process_post();
 
 		} else {
-			 if ( strcasecmp($_GET["action"], 'edit') == 0 &&
+			 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'edit') == 0 &&
 				current_user_can('edit_pages')) {
 ?>
 				<div id="icon-edit" class="icon32"><br/></div>
@@ -202,7 +202,7 @@ class workshopAttendance {
 
 			$columns = $wpdb->get_results( $sql, ARRAY_A );
 
-			 if ( strcasecmp($_GET["action"], 'edit') == 0 &&
+			 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'edit') == 0 &&
 				current_user_can('edit_pages')) {
 				$this->workshopFormView = new workshopFormView;
 				$this->workshopFormView->render_form($_SERVER['REQUEST_URI'], $workshop, $columns);
@@ -293,7 +293,7 @@ class workshopAttendance {
 
 		 global $wpdb;
 
-		 if ( strcasecmp($_GET["action"], 'delete') == 0) {
+		 if (array_key_exists('action', $_GET) && strcasecmp($_GET["action"], 'delete') == 0) {
 			$delete_nonce = $_GET["delete_nonce"];
 			$workshop_id = $_GET["workshop"];
 			if ($workshop_id && $delete_nonce && 
@@ -308,16 +308,16 @@ class workshopAttendance {
 
 		$orderBy = 'date';
 		$order = 'DESC';
-		if ( strcasecmp($_GET["orderby"], 'title') == 0 ||
-			strcasecmp($_GET["orderby"], 'facilitators') == 0) {
+		if ((array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'title') == 0) ||
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0)) {
 			$orderBy = strtolower($_GET["orderby"]);
 		}
-		if ( strcasecmp($_GET["order"], 'asc') == 0) {
+		if (array_key_exists('order', $_GET) && strcasecmp($_GET["order"], 'asc') == 0) {
 			$order = "ASC";
 		}
 		
 		$paged = 1;
-		if ($_GET["paged"]) {
+		if (array_key_exists('paged', $_GET) && $_GET["paged"]) {
 			$paged = intval($_GET['paged']);
 			if ($paged < 1) {
 				$paged = 1;
@@ -337,7 +337,7 @@ class workshopAttendance {
 
 		$sql = $wpdb->prepare("SELECT * FROM `$table_name` ORDER BY `$table_name`.`$orderBy` $order LIMIT %d, %d", $offset, $limit);
  
-		if ($_GET["attendee"]) {
+		if (array_key_exists('attendee', $_GET) && $_GET["attendee"]) {
 			$attendee = intval($_GET['attendee']);
 		}
 		if ($attendee > 0) {
@@ -440,13 +440,13 @@ add_action('admin_menu', array($WORKSHOPATTENDANCE, 'create_admin_menu'));
 
 register_activation_hook(__FILE__, array($WORKSHOPATTENDANCE, 'activate'));
 
-$WORKSHOP_REST_CONTROLLER = new WorkshopRestController;
+$WORKSHOP_REST_CONTROLLER = new workshopAttendanceWorkshopRestController;
 add_action('rest_api_init', array($WORKSHOP_REST_CONTROLLER, 'register_routes'));
 
-$ATTENDANCE_REST_CONTROLLER = new AttendanceRestController;
+$ATTENDANCE_REST_CONTROLLER = new workshopAttendanceAttendanceRestController;
 add_action('rest_api_init', array($ATTENDANCE_REST_CONTROLLER, 'register_routes'));
 
-$USER_REST_CONTROLLER = new UsersRestController;
+$USER_REST_CONTROLLER = new workshopAttendanceUsersRestController;
 add_action('rest_api_init', array($USER_REST_CONTROLLER, 'register_routes'));
 
 ?>

@@ -1,3 +1,5 @@
+import Configuration from './Configuration';
+
 /// Restful web service for getting attendance records.
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
 /// See:  https://developer.wordpress.org/rest-api/
@@ -5,11 +7,7 @@ class EventService {
 
     /// Get rest api location
     serviceLocation() {
-        const pathname = window.location.pathname;
-        const pathComponents = pathname.split('/');
-        const pluginName = pathComponents[pathComponents.length - 3];
-
-        return "../../../../?rest_route=/" + pluginName + "/v1/events";
+        return "../../../../?rest_route=/" + Configuration.pluginName + "/v1/events";
     }
 
     restNonce() {
@@ -38,6 +36,9 @@ class EventService {
         const response = await fetch(url);
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to get workshops Response: " + response.status + " " + response.statusText);
         }
 
@@ -54,6 +55,9 @@ class EventService {
         const response = await fetch(url);
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to get workshop Response: " + response.status + " " + response.statusText);
         }
 
@@ -77,6 +81,9 @@ class EventService {
             body: JSON.stringify(event)
         });
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to create workshop Response: " + response.status + " " + response.statusText);
         }
 

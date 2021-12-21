@@ -1,3 +1,5 @@
+import Configuration from './Configuration';
+
 /// Restful web service for getting attendance records.
 /// See:  https://dzone.com/articles/consuming-rest-api-with-reactjs
 class AttendanceService {
@@ -6,11 +8,7 @@ class AttendanceService {
 
     /// Get rest api location
     serviceLocation() {
-        const pathname = window.location.pathname;
-        const pathComponents = pathname.split('/');
-        const pluginName = pathComponents[pathComponents.length - 3];
-
-        return "../../../../?rest_route=/" + pluginName + "/v1/attendees";
+        return "../../../../?rest_route=/" + Configuration.pluginName + "/v1/attendees";
     }
 
     restNonce() {
@@ -34,6 +32,9 @@ class AttendanceService {
         const response = await fetch(url);
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to get attendees Response: " + response.status + " " + response.statusText);
         }
 
@@ -50,6 +51,9 @@ class AttendanceService {
         const response = await fetch(url);
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to get attendee Response: " + response.status + " " + response.statusText);
         }
 
@@ -72,6 +76,9 @@ class AttendanceService {
         });
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to create attendance record Response: " + response.status + " " + response.statusText);
         }
 
@@ -119,6 +126,9 @@ class AttendanceService {
         }
 
         if (!response.ok) {
+            console.log("Failed url fetch: " + response.status + " " + response.statusText);
+            const text = await response.text();
+            console.log("Response text: " + text);
             throw new Error("Failed to delete attendee Response: " + response.status + " " + response.statusText);
         }
 

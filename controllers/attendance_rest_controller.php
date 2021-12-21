@@ -1,6 +1,6 @@
 <?php
 
-class AttendanceRestController extends WP_REST_Controller
+class workshopAttendanceAttendanceRestController extends WP_REST_Controller
 {
 
   /**
@@ -56,6 +56,7 @@ class AttendanceRestController extends WP_REST_Controller
     register_rest_route($namespace, '/' . $base . '/schema', array(
       'methods'  => WP_REST_Server::READABLE,
       'callback' => array($this, 'get_public_item_schema'),
+      'permission_callback' => array($this, 'get_items_permissions_check'),
     ));
   }
 
@@ -71,7 +72,7 @@ class AttendanceRestController extends WP_REST_Controller
     $params = $request->get_params();
     $page = $params['page'];
     $per_page = $params['per_page'];
-    $search = $params['search'];  // Should be an event id (workshop id).
+    $search = array_key_exists('search', $params) ? $params['search'] : null;  // Should be an event id (workshop id).
 
     if ($page == 0) {
       $page = 1;
