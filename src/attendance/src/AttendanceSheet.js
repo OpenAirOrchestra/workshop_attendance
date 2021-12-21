@@ -471,7 +471,7 @@ function AttendanceSheet(props) {
 	
 	if (Configuration.pluginName === 'carnie-gigs') {
 		// http://localhost:8888/wordpress/wp-admin/post.php?post=16083&action=edit
-	     eventURL = eventId ? "../../../../?page_id=16" + eventId + '&action=edit': null;
+	     eventURL = eventId ? "../../../../wp-admin/post.php?post=" + eventId + '&action=edit': null;
 	}
 
 	return (
