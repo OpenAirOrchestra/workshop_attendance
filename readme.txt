@@ -69,4 +69,4 @@ Taking attendance at workshops was tedious.
 * Double number of recents.
 
 = 1.5.5
-* Use PHP namespaces for REST api classes.
+* Update attendance REST component to be usable by other plugin.
