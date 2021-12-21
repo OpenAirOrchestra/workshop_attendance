@@ -3,7 +3,7 @@
  * Plugin Name: Workshop Attendance
  * Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
  * Description: A simple workshop attendance plugin for the carnival band
- * Version: 1.5.5
+ * Version: 1.5.6
  * Author: DarrylF
  * Author URI: http://www.thecarnivalband.com
  * License: GPL2
@@ -375,8 +375,8 @@ class workshopAttendance {
          */
         function create_admin_menu() {
 
-                // Add object page
-                add_object_page( 'Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url( 'images/music-stand.png' , __FILE__ ));
+        // Add menu page
+        add_menu_page( 'Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url( 'images/music-stand.png' , __FILE__ ));
 
 		add_submenu_page( 'list-workshops', "Add New Workshop", "Add New", 'edit_others_pages', 'new-workshop', array($this, 'new_workshop'));
 

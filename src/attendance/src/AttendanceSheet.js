@@ -192,7 +192,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		let moreUsers = true;
 
 		do {
-			const users = await userService.retrieve(page, 100);
+			const users = await userService.retrieve(page, 500);
 
 			allUsers = [...allUsers, ...users];
 			moreUsers = users.length > 0;
@@ -202,7 +202,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 
 		setUsers(allUsers);
 
-		const recents = await attendanceService.retrieve(1, 100);
+		const recents = await attendanceService.retrieve(1, 75);
 		setRecents(recents);
 
 		let recentUserKeys = new Set();
