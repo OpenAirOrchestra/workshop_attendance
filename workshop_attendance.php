@@ -403,6 +403,7 @@ class workshopAttendance {
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
   			date date DEFAULT '0000-00-00' NOT NULL,
   			title text ,
+			categories text,
   			donations text ,
   			donationsdeposited date DEFAULT '0000-00-00',
   			facilitators text ,
