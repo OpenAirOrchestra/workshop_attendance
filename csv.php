@@ -7,8 +7,8 @@ require_once 'ajaxSetup.php';
 
 $Filename = "data.csv";
 
-$workshop_export = $_POST['workshop_export'];
-$attendance_export = $_POST['attendance_export'];
+$workshop_export = isset($_POST['workshop_export']) ? $_POST['workshop_export'] : null;
+$attendance_export = isset($_POST['attendance_export']) ? $_POST['attendance_export'] : null;
 
 if ($workshop_export) {
 	$Filename = "workshops.csv";
@@ -109,7 +109,7 @@ if (! wp_verify_nonce($_POST['export_nonce'], 'export_nonce') ) {
 	foreach($columns as $column) {
 		$column_name = $column['Column Name'];
 		if (! in_array($column_name, $hiddenColumns)) {
-			$column_title = $fancyColumnTitles[$column_name];
+			$column_title = isset($fancyColumnTitles[$column_name]) ? $fancyColumnTitles[$column_name] : null;
 			if (! $column_title) {
 				$column_title = ucwords($column_name);
 			}
