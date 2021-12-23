@@ -65,14 +65,17 @@ if (! wp_verify_nonce($_POST['export_nonce'], 'export_nonce') ) {
 		$table_name = $wpdb->prefix . "workshops";
 
 		// Titles
-		$sql = $wpdb->prepare("SELECT column_name 'Column Name'
+		$sql = "SELECT column_name 'Column Name'
 			FROM information_schema.columns
-			WHERE table_name = '$table_name'");
+			WHERE table_name = '$table_name'";
 		$columns = $wpdb->get_results( $sql, ARRAY_A );
 
 		// data
-		$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE `date` >= %s AND `date` <= %s ORDER BY `date`",
-				$from, $to);
+		$sql = $wpdb->prepare("
+					SELECT * FROM `$table_name` 
+					WHERE `date` >= %s 
+					AND `date` <= %s ORDER BY `date`
+					", $from, $to);
 
 		$rows = $wpdb->get_results( $sql, ARRAY_A );
 
@@ -87,9 +90,9 @@ if (! wp_verify_nonce($_POST['export_nonce'], 'export_nonce') ) {
 		// Titles
 		$columns = array( array("Column Name" => "Date") );
 
-		$sql = $wpdb->prepare("SELECT column_name 'Column Name'
+		$sql = "SELECT column_name 'Column Name'
 			FROM information_schema.columns
-			WHERE table_name = '$attendance_table'");
+			WHERE table_name = '$attendance_table'";
 		$columns = array_merge($columns, $wpdb->get_results( $sql, ARRAY_A ));
 
 		$sql = $wpdb->prepare("
@@ -143,6 +146,3 @@ if (! wp_verify_nonce($_POST['export_nonce'], 'export_nonce') ) {
 		echo "\n";
 	}
 }
-
-
-?>
