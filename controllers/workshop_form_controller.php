@@ -85,7 +85,7 @@ class workshopFormController {
 			<p><?php echo $error_message; ?></p>
 			</div>
 <?php
-		} else if ($db_error) {
+		} else if (isset($db_error)) {
 ?>
 			<div id="message" class="error below-h2">
 			<p> 
