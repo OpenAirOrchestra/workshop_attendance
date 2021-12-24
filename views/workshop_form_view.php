@@ -47,11 +47,11 @@ class workshopFormView {
 			} else {
 				echo "<tr>";
 				$data_type = $columns[$i]['Data Type'];
-				$input_type = $this->inputTypes[$column_name];
+				$input_type = isset($this->inputTypes[$column_name]) ? $this->inputTypes[$column_name] : null;
 				if (! $input_type) {
 					$input_type = "text";
 				}
-				$column_title = $this->fancyColumnTitles[$column_name];
+				$column_title = isset($this->fancyColumnTitles[$column_name]) ? $this->fancyColumnTitles[$column_name] : null;
 				if (! $column_title) {
 					$column_title = ucwords($column_name);
 				}
@@ -66,7 +66,7 @@ class workshopFormView {
 						}
 					}
 				}
-				$column_description = $this->columnDescriptions[$column_name];
+				$column_description = isset($this->columnDescriptions[$column_name]) ? $this->columnDescriptions[$column_name] : '';
 ?>
 				<th>
 				<label for="<?php echo $column_name; ?>">
