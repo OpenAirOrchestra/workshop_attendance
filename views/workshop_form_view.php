@@ -44,6 +44,26 @@ class workshopFormView {
 				       name="<?php echo $column_name; ?>"
 				       value="<?php echo $value; ?>" />
 <?php
+			} else if ($column_name == 'categories') {
+				// Special handling for categories.
+
+				echo "<tr><th>Categories :</th>";
+				echo "<td><fieldset>";
+
+				$categories = get_categories();
+				foreach ($categories as $category) {
+					$category_id = "category_" . $category->name;
+
+					$input =  '<input type="checkbox" id="' . $category_id . '" name="' . $category_id . '" value="' . $category->name . '"/>';
+					$label = '<label for="' . $category_id . '">' .  $category->name . '</label>';
+
+					echo $input;
+					echo $label;
+					echo "<br/>";
+				}
+
+				echo "</fieldset></td>";
+				echo "</tr>";
 			} else {
 				echo "<tr>";
 				$data_type = $columns[$i]['Data Type'];
