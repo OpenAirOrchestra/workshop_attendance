@@ -45,6 +45,9 @@ class workshopFormView {
 				       value="<?php echo $value; ?>" />
 <?php
 			} else if ($column_name == 'categories') {
+				$value = $workshop[$column_name];
+				$values = isset($value) ? explode($value, ",") : array();
+
 				// Special handling for categories.
 
 				echo "<tr><th>Categories :</th>";
@@ -53,8 +56,9 @@ class workshopFormView {
 				$categories = get_categories();
 				foreach ($categories as $category) {
 					$category_id = "category_" . $category->name;
+					$checked = in_array($category->name, $values) ? 'checked=true' : '';
 
-					$input =  '<input type="checkbox" id="' . $category_id . '" name="' . $category_id . '" value="' . $category->name . '"/>';
+					$input =  '<input type="checkbox" id="' . $category_id . '" name="' . $category_id . '" value="' . $category->name . '" ' . $checked .'/>';
 					$label = '<label for="' . $category_id . '">' .  $category->name . '</label>';
 
 					echo $input;
