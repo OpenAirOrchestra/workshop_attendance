@@ -37,8 +37,19 @@ class workshopFormController {
 			for($i = 0; $i < $size; ++$i)
 			{
 				$column_name = $columns[$i]['Column Name'];
-				$value = $_POST[$column_name];
+				$value = isset($_POST[$column_name]) ? $_POST[$column_name] : '';
 				$data_type = $columns[$i]['Data Type'];
+
+				// Special handling for categories
+				if ($column_name == 'categories') {
+					$categories = array();
+					foreach ($_POST as $key => $val) {
+						if (strpos($key, 'category_') === 0) {
+							array_push($categories, $val);
+						}
+					}
+					$value = implode(',', $categories);
+				}
 
 				// Deal with date formatting
 				if (strcmp($data_type, "date") == 0) {
