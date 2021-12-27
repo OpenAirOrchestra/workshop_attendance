@@ -55,7 +55,7 @@ class workshopFormView {
 				echo "<tr><th>Categories :</th>";
 				echo "<td><fieldset>";
 
-				$categories = get_categories();
+				$categories = get_terms('events', array('hide_empty' => false));
 				foreach ($categories as $category) {
 					$category_id = "category_" . $category->term_id;
 					$checked = in_array($category->name, $values) ? 'checked=true' : '';

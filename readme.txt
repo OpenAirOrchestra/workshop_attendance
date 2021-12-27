@@ -85,3 +85,4 @@ Taking attendance at workshops was tedious.
 
 = 1.5.10
 * move export to tools menu.
+* add workshop categories.
