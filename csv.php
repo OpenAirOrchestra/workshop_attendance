@@ -81,7 +81,6 @@ if (!wp_verify_nonce($_POST['export_nonce'], 'export_nonce')) {
 	} else {
 		// attendance
 
-		// $hiddenColumns = array("id", "workshopid");
 		$hiddenColumns = array("id");
 
 		$workshop_table = $wpdb->prefix . "workshops";
@@ -89,6 +88,7 @@ if (!wp_verify_nonce($_POST['export_nonce'], 'export_nonce')) {
 
 		// Titles
 		$columns = array(array("Column Name" => "Date"));
+		array_push($columns, array("Column Name" => "Categories"));
 
 		$sql = "SELECT column_name 'Column Name'
 			FROM information_schema.columns
@@ -96,7 +96,7 @@ if (!wp_verify_nonce($_POST['export_nonce'], 'export_nonce')) {
 		$columns = array_merge($columns, $wpdb->get_results($sql, ARRAY_A));
 
 		$sql = $wpdb->prepare("
-			SELECT $workshop_table.date, $attendance_table . * 
+			SELECT $workshop_table.date, $workshop_table.categories, $attendance_table . *
 			FROM  `$workshop_table` ,  `$attendance_table` 
 			WHERE $workshop_table.id = $attendance_table.workshopid
 			AND
