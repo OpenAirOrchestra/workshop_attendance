@@ -88,15 +88,16 @@ if (!wp_verify_nonce($_POST['export_nonce'], 'export_nonce')) {
 
 		// Titles
 		$columns = array(array("Column Name" => "Date"));
-		array_push($columns, array("Column Name" => "Categories"));
 
 		$sql = "SELECT column_name 'Column Name'
 			FROM information_schema.columns
 			WHERE table_name = '$attendance_table'";
 		$columns = array_merge($columns, $wpdb->get_results($sql, ARRAY_A));
 
+		array_push($columns, array("Column Name" => "Categories"));
+
 		$sql = $wpdb->prepare("
-			SELECT $workshop_table.date, $workshop_table.categories, $attendance_table . *
+			SELECT $workshop_table.date, $attendance_table . *, $workshop_table.categories
 			FROM  `$workshop_table` ,  `$attendance_table` 
 			WHERE $workshop_table.id = $attendance_table.workshopid
 			AND
