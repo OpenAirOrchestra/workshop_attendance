@@ -35,7 +35,7 @@ class workshopFormView {
 		for($i = 0; $i < $size; ++$i)
 		{
 			$column_name = $columns[$i]['Column Name'];
-			$value = $workshop[$column_name];
+			$value = isset($workshop[$column_name]) ? $workshop[$column_name] : '';
 			if (in_array($column_name, $this->hiddenColumns)) {
 				// Hidden input
 ?>
@@ -47,7 +47,7 @@ class workshopFormView {
 			} else if ($column_name == 'categories') {
 				// Special handling for categories.
 
-				$value = $workshop[$column_name];
+				$value = isset($workshop[$column_name]) ? $workshop[$column_name] : '';
 				$values = isset($value) ? explode(',', $value) : array();
 
 				// echo "<tr><th>DFDF  ==> DEBUG: " . $value . " " . $values[0] . "</th></tr>";
@@ -127,7 +127,7 @@ class workshopFormView {
 		}
 
 		$button_label = "Add Workshop";
-		if ($workshop['id']) {
+		if (isset($workshop['id']) && $workshop['id']) {
 			$button_label = "Update Workshop Details";
 		}
 ?>
