@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * Workshop form controller.
  * nonce: workshop_details_nonce
@@ -77,9 +75,18 @@ class workshopFormController {
 					$db_error = 1;
 				}
 			} else {
-				if ($wpdb->insert( $table_name,
+				if ($wpdb->insert(
+					$table_name,
 					$data,
-					$format) ) {
+					$format)) {
+
+					$workshop_id = $wpdb->insert_id;
+
+					// Redirect to edit page for the new workshop.
+					$newURL = get_admin_url() . "admin.php?page=workshop&workshop=" . $workshop_id . "&action=edit";
+
+					echo "<script>window.location=\"$newURL\";</script>";
+					
 					$updated = "Added " . $data['title'];
 				} else {
 					$db_error = 1;
