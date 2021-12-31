@@ -82,8 +82,9 @@ class workshopFormController {
 
 					$workshop_id = $wpdb->insert_id;
 
-					// Redirect to edit page for the new workshop.
-					$newURL = get_admin_url() . "admin.php?page=workshop&workshop=" . $workshop_id . "&action=edit";
+					// Redirect to view page for the new workshop.
+					// This makes it easier to go directly to attendance.
+					$newURL = get_admin_url() . "admin.php?page=workshop&workshop=" . $workshop_id;
 
 					echo "<script>window.location=\"$newURL\";</script>";
 					
