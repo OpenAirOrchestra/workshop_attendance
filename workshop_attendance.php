@@ -222,6 +222,24 @@ class workshopAttendance {
 <?php
 	}
 
+	/// Rough time of day (morning, afternoon, evening, night) from hours
+	function roughTimeOfDay($hours)
+	{
+		if ($hours < 12) {
+			return "Morning";
+		}
+
+		if ($hours < 17) {
+			return "Afternoon";
+		}
+
+		if ($hours < 20) {
+			return "Evening";
+		}
+
+		return "Night";
+	}
+
 	/*
 	 * Create a page to create a new workshop 
 	 */
@@ -242,8 +260,10 @@ class workshopAttendance {
 
 		$columns = $wpdb->get_results( $sql, ARRAY_A );
 
+		$hours = date("H", time() - 8 * 60 * 60 /* we are GMT-8 */);
+
 		$workshop = array( 'date' => date("j M o", time() - 8 * 60 * 60 /* we are GMT-8 */),
-				   'title' => date("l", time() - 8 * 60 * 60 /* we are GMT-8 */) . " Workshop, " . date("j F", time() - 8 * 60 * 60 /* we are GMT-8 */));
+				   'title' => date("l", time() - 8 * 60 * 60 /* we are GMT-8 */) . " " . $this->roughTimeOfDay($hours) . " Workshop, " . date("jS F Y", time() - 8 * 60 * 60 /* we are GMT-8 */));
 		$this->workshopFormView = new workshopFormView;
 		$this->workshopFormView->render_form($this->list_uri(), $workshop, $columns);
 ?>
