@@ -154,7 +154,7 @@ class workshopAttendance {
 
 		if (! $workshop_id) {
 			$today = date( 'Y-m-d' , time() - 8 * 60 * 60 /* we are GMT-8 */);
-			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s", $today);
+			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s ORDER BY id DESC", $today);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
 			$workshop_id = $workshop ? $workshop['id'] : 0;
 		}
@@ -391,35 +391,38 @@ class workshopAttendance {
 
 
 	/*
+     * Create admin menu(s) for this plugin.  
          * Create admin menu(s) for this plugin.  
-         */
-        function create_admin_menu() {
+     * Create admin menu(s) for this plugin.  
+     */
+	function create_admin_menu()
+	{
 
-        // Add menu page
-        add_menu_page( 'Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url( 'images/music-stand.png' , __FILE__ ));
+		// Add menu page
+		add_menu_page('Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url('images/music-stand.png', __FILE__));
 
-		add_submenu_page( 'list-workshops', "Add New Workshop", "Add New", 'edit_others_pages', 'new-workshop', array($this, 'new_workshop'));
+		add_submenu_page('list-workshops', "Add New Workshop", "Add New", 'edit_others_pages', 'new-workshop', array($this, 'new_workshop'));
 
-		add_submenu_page( 'list-workshops', "View Workshop", "Today's Workshop", 'read', 'workshop', array($this, 'workshop_details'));
+		add_submenu_page('list-workshops', "View Workshop", "Newest Workshop Today", 'read', 'workshop', array($this, 'workshop_details'));
 
 		// Add tools page
 		add_management_page('Export Workshops', 'Export Workshops', 'read_private_pages', 'export-workshops', array($this, 'export_workshops'));
-	
-        }
+	}
 
 	/*
 	 * Plugin is being activated
  	 * Here we will create tables needed for attendance
  	 */
-        function activate() {
+	function activate()
+	{
 
-		 global $wpdb;
+		global $wpdb;
 
 
 		// Database version option
-	
+
 		// Create workshops table
-   		$table_name = $wpdb->prefix . "workshops";
+		$table_name = $wpdb->prefix . "workshops";
 		$sql = "CREATE TABLE $table_name (
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
   			date date DEFAULT '0000-00-00' NOT NULL,
@@ -436,7 +439,7 @@ class workshopAttendance {
 		dbDelta($sql);
 
 		// Create workshop_attendance table
-   		$table_name = $wpdb->prefix . "workshop_attendance";
+		$table_name = $wpdb->prefix . "workshop_attendance";
 
 		$sql = "CREATE TABLE $table_name (
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -450,7 +453,6 @@ class workshopAttendance {
   			UNIQUE KEY id (id) );";
 
 		dbDelta($sql);
-
 	}
 
 };
