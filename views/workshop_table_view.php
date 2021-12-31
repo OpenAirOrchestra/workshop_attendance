@@ -156,6 +156,7 @@ class workshopTableView {
 			$this->render_th('title', 'Title', $orderBy, $order); 
 			$this->render_th('date', 'Date', $orderBy, $order); 
 			$this->render_th('facilitators', 'Facilitators', $orderBy, $order); 
+			$this->render_th('categories', 'Categories', $orderBy, $order); 
 ?>
 		</tr>
 <?php
@@ -219,9 +220,13 @@ class workshopTableView {
 ?>
 			</td>
 			<td class="date column-date"><abbr title="<?php echo $workshop['date']; ?>"><?php echo $workshop['date']; ?></abbr></td>
-			<td class="facilitators column-details">
+			<td class="facilitators column-facilitators">
 			<?php echo stripslashes($workshop['facilitators']); ?> 
 			</td>
+			<td class="categories column-categories">
+			<?php echo stripslashes($workshop['categories']); ?> 
+			</td>
+
 		</tr>
 <?php
 	}
