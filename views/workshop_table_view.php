@@ -113,7 +113,7 @@ class workshopTableView {
 
 	/*
 	 * render th
-         */
+     */
 	function render_th($column, $title, $orderBy, $order) {
 		$newOrder = $order;
 		if ( strcasecmp($order, 'desc') == 0) {

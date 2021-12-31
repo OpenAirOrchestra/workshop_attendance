@@ -329,7 +329,8 @@ class workshopAttendance {
 		$orderBy = 'date';
 		$order = 'DESC';
 		if ((array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'title') == 0) ||
-		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0)) {
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0) || 
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'categories') == 0)) {
 			$orderBy = strtolower($_GET["orderby"]);
 		}
 		if (array_key_exists('order', $_GET) && strcasecmp($_GET["order"], 'asc') == 0) {
