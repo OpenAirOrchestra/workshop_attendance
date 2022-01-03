@@ -18,7 +18,7 @@ function SearchBar(props) {
   return (
     <div className='SearchBar'>
       <form>
-        <input type="text" name="search" placeholder="&#128269;" value={searchTerm}
+        <input type="search" name="search" results="0" placeholder="Search" value={searchTerm}
           onChange={(event) => setSearchTerm(event.target.value)} />
         <br />
         <input type="checkbox" name="recent" id="recent" checked={!!filterRecent}
