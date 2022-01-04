@@ -3,7 +3,7 @@
  * Plugin Name: Workshop Attendance
  * Plugin URI: https://github.com/OpenAirOrchestra/workshop_attendance
  * Description: A simple workshop attendance plugin for the carnival band
- * Version: 1.5.9
+ * Version: 1.5.10
  * Author: DarrylF
  * Author URI: http://www.thecarnivalband.com
  * License: GPL2
@@ -154,7 +154,7 @@ class workshopAttendance {
 
 		if (! $workshop_id) {
 			$today = date( 'Y-m-d' , time() - 8 * 60 * 60 /* we are GMT-8 */);
-			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s", $today);
+			$sql = $wpdb->prepare("SELECT * FROM `$table_name` WHERE date = %s ORDER BY id DESC", $today);
 			$workshop = $wpdb->get_row( $sql, ARRAY_A );
 			$workshop_id = $workshop ? $workshop['id'] : 0;
 		}
@@ -222,6 +222,24 @@ class workshopAttendance {
 <?php
 	}
 
+	/// Rough time of day (morning, afternoon, evening, night) from hours
+	function roughTimeOfDay($hours)
+	{
+		if ($hours < 12) {
+			return "Morning";
+		}
+
+		if ($hours < 17) {
+			return "Afternoon";
+		}
+
+		if ($hours < 20) {
+			return "Evening";
+		}
+
+		return "Night";
+	}
+
 	/*
 	 * Create a page to create a new workshop 
 	 */
@@ -242,8 +260,10 @@ class workshopAttendance {
 
 		$columns = $wpdb->get_results( $sql, ARRAY_A );
 
+		$hours = date("H", time() - 8 * 60 * 60 /* we are GMT-8 */);
+
 		$workshop = array( 'date' => date("j M o", time() - 8 * 60 * 60 /* we are GMT-8 */),
-				   'title' => date("l", time() - 8 * 60 * 60 /* we are GMT-8 */) . " Workshop, " . date("j F", time() - 8 * 60 * 60 /* we are GMT-8 */));
+				   'title' => date("l", time() - 8 * 60 * 60 /* we are GMT-8 */) . " " . $this->roughTimeOfDay($hours) . " Workshop, " . date("jS F Y", time() - 8 * 60 * 60 /* we are GMT-8 */));
 		$this->workshopFormView = new workshopFormView;
 		$this->workshopFormView->render_form($this->list_uri(), $workshop, $columns);
 ?>
@@ -309,7 +329,8 @@ class workshopAttendance {
 		$orderBy = 'date';
 		$order = 'DESC';
 		if ((array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'title') == 0) ||
-		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0)) {
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'facilitators') == 0) || 
+		(array_key_exists('orderby', $_GET) && strcasecmp($_GET["orderby"], 'categories') == 0)) {
 			$orderBy = strtolower($_GET["orderby"]);
 		}
 		if (array_key_exists('order', $_GET) && strcasecmp($_GET["order"], 'asc') == 0) {
@@ -371,38 +392,43 @@ class workshopAttendance {
 
 
 	/*
+     * Create admin menu(s) for this plugin.  
          * Create admin menu(s) for this plugin.  
-         */
-        function create_admin_menu() {
+     * Create admin menu(s) for this plugin.  
+     */
+	function create_admin_menu()
+	{
 
-        // Add menu page
-        add_menu_page( 'Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url( 'images/music-stand.png' , __FILE__ ));
+		// Add menu page
+		add_menu_page('Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url('images/music-stand.png', __FILE__));
 
-		add_submenu_page( 'list-workshops', "Add New Workshop", "Add New", 'edit_others_pages', 'new-workshop', array($this, 'new_workshop'));
+		add_submenu_page('list-workshops', "Add New Workshop", "Add New", 'edit_others_pages', 'new-workshop', array($this, 'new_workshop'));
 
-		add_submenu_page( 'list-workshops', "View Workshop", "Today's Workshop", 'read', 'workshop', array($this, 'workshop_details'));
+		add_submenu_page('list-workshops', "View Workshop", "Newest Workshop Today", 'read', 'workshop', array($this, 'workshop_details'));
 
-		add_submenu_page( 'list-workshops', "Export Workshops", "Export", 'read_private_pages', 'export-workshops', array($this, 'export_workshops'));
-
-        }
+		// Add tools page
+		add_management_page('Export Workshops', 'Export Workshops', 'read_private_pages', 'export-workshops', array($this, 'export_workshops'));
+	}
 
 	/*
 	 * Plugin is being activated
  	 * Here we will create tables needed for attendance
  	 */
-        function activate() {
+	function activate()
+	{
 
-		 global $wpdb;
+		global $wpdb;
 
 
 		// Database version option
-	
+
 		// Create workshops table
-   		$table_name = $wpdb->prefix . "workshops";
+		$table_name = $wpdb->prefix . "workshops";
 		$sql = "CREATE TABLE $table_name (
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
   			date date DEFAULT '0000-00-00' NOT NULL,
   			title text ,
+			categories text,
   			donations text ,
   			donationsdeposited date DEFAULT '0000-00-00',
   			facilitators text ,
@@ -414,7 +440,7 @@ class workshopAttendance {
 		dbDelta($sql);
 
 		// Create workshop_attendance table
-   		$table_name = $wpdb->prefix . "workshop_attendance";
+		$table_name = $wpdb->prefix . "workshop_attendance";
 
 		$sql = "CREATE TABLE $table_name (
   			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -428,7 +454,6 @@ class workshopAttendance {
   			UNIQUE KEY id (id) );";
 
 		dbDelta($sql);
-
 	}
 
 };

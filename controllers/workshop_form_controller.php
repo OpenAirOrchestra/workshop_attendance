@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * Workshop form controller.
  * nonce: workshop_details_nonce
@@ -37,8 +35,19 @@ class workshopFormController {
 			for($i = 0; $i < $size; ++$i)
 			{
 				$column_name = $columns[$i]['Column Name'];
-				$value = $_POST[$column_name];
+				$value = isset($_POST[$column_name]) ? $_POST[$column_name] : '';
 				$data_type = $columns[$i]['Data Type'];
+
+				// Special handling for categories
+				if ($column_name == 'categories') {
+					$categories = array();
+					foreach ($_POST as $key => $val) {
+						if (strpos($key, 'category_') === 0) {
+							array_push($categories, $val);
+						}
+					}
+					$value = implode(',', $categories);
+				}
 
 				// Deal with date formatting
 				if (strcmp($data_type, "date") == 0) {
@@ -66,9 +75,19 @@ class workshopFormController {
 					$db_error = 1;
 				}
 			} else {
-				if ($wpdb->insert( $table_name,
+				if ($wpdb->insert(
+					$table_name,
 					$data,
-					$format) ) {
+					$format)) {
+
+					$workshop_id = $wpdb->insert_id;
+
+					// Redirect to view page for the new workshop.
+					// This makes it easier to go directly to attendance.
+					$newURL = get_admin_url() . "admin.php?page=workshop&workshop=" . $workshop_id;
+
+					echo "<script>window.location=\"$newURL\";</script>";
+					
 					$updated = "Added " . $data['title'];
 				} else {
 					$db_error = 1;
@@ -85,7 +104,7 @@ class workshopFormController {
 			<p><?php echo $error_message; ?></p>
 			</div>
 <?php
-		} else if ($db_error) {
+		} else if (isset($db_error)) {
 ?>
 			<div id="message" class="error below-h2">
 			<p> 

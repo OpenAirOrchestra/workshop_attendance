@@ -35,7 +35,7 @@ class workshopFormView {
 		for($i = 0; $i < $size; ++$i)
 		{
 			$column_name = $columns[$i]['Column Name'];
-			$value = $workshop[$column_name];
+			$value = isset($workshop[$column_name]) ? $workshop[$column_name] : '';
 			if (in_array($column_name, $this->hiddenColumns)) {
 				// Hidden input
 ?>
@@ -44,14 +44,40 @@ class workshopFormView {
 				       name="<?php echo $column_name; ?>"
 				       value="<?php echo $value; ?>" />
 <?php
+			} else if ($column_name == 'categories') {
+				// Special handling for categories.
+
+				$value = isset($workshop[$column_name]) ? $workshop[$column_name] : '';
+				$values = isset($value) ? explode(',', $value) : array();
+
+				// echo "<tr><th>DFDF  ==> DEBUG: " . $value . " " . $values[0] . "</th></tr>";
+
+				echo "<tr><th>Categories :</th>";
+				echo "<td><fieldset>";
+
+				$categories = get_terms('events', array('hide_empty' => false));
+				foreach ($categories as $category) {
+					$category_id = "category_" . $category->term_id;
+					$checked = in_array($category->name, $values) ? 'checked=true' : '';
+
+					$input =  '<input type="checkbox" id="' . $category_id . '" name="' . $category_id . '" value="' . $category->name . '" ' . $checked .'/>';
+					$label = '<label for="' . $category_id . '">' .  $category->name . '</label>';
+
+					echo $input;
+					echo $label;
+					echo "<br/>";
+				}
+
+				echo "</fieldset></td>";
+				echo "</tr>";
 			} else {
 				echo "<tr>";
 				$data_type = $columns[$i]['Data Type'];
-				$input_type = $this->inputTypes[$column_name];
+				$input_type = isset($this->inputTypes[$column_name]) ? $this->inputTypes[$column_name] : null;
 				if (! $input_type) {
 					$input_type = "text";
 				}
-				$column_title = $this->fancyColumnTitles[$column_name];
+				$column_title = isset($this->fancyColumnTitles[$column_name]) ? $this->fancyColumnTitles[$column_name] : null;
 				if (! $column_title) {
 					$column_title = ucwords($column_name);
 				}
@@ -66,7 +92,7 @@ class workshopFormView {
 						}
 					}
 				}
-				$column_description = $this->columnDescriptions[$column_name];
+				$column_description = isset($this->columnDescriptions[$column_name]) ? $this->columnDescriptions[$column_name] : '';
 ?>
 				<th>
 				<label for="<?php echo $column_name; ?>">
@@ -101,7 +127,7 @@ class workshopFormView {
 		}
 
 		$button_label = "Add Workshop";
-		if ($workshop['id']) {
+		if (isset($workshop['id']) && $workshop['id']) {
 			$button_label = "Update Workshop Details";
 		}
 ?>
