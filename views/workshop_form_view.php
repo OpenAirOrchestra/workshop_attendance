@@ -17,8 +17,8 @@ class workshopFormView {
 		$this->hiddenColumns = array("id");
 		$this->fancyColumnTitles = array("donationsdeposited" => "Date Donations Deposited", 
 						"chequenumber" => "Cheque Number");
-		$this->inputTypes = array("notes" => "textarea");
-		$this->columnDescriptions = array("date" => "e.g., 04 Dec 2012.");
+		$this->inputTypes = array("notes" => "textarea", "date" => "date", "donationsdeposited" => "date");
+		$this->columnDescriptions = array("date" => "e.g., 2021-01-24.", "donationsdeposited" => "e.g., 2021-01-24.");
 	}
 
 	/*
@@ -85,12 +85,7 @@ class workshopFormView {
 				if ($value && (strcmp($data_type, "date") == 0)) {
 					if (strcmp($value, "0000-00-00") == 0) {
 						$value = "";
-					} else {
-						$value = strtotime($value);
-						if ($value) {
-							$value = strftime("%e %b %Y", $value);
-						}
-					}
+					} 
 				}
 				$column_description = isset($this->columnDescriptions[$column_name]) ? $this->columnDescriptions[$column_name] : '';
 ?>

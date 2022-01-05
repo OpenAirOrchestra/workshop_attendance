@@ -52,9 +52,7 @@ class workshopFormController {
 				// Deal with date formatting
 				if (strcmp($data_type, "date") == 0) {
 					$time = strtotime($value);
-					if ($time > 0) {
-						$value = date( 'Y-m-d', $time );
-					} else {
+					if ($time <= 0) {
 						$value = "0000-00-00";
 					}
 				}
