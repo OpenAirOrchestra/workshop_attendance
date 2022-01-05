@@ -66,6 +66,15 @@ class workshopFormController {
 			}
 
 			if ($_POST['id']) {
+
+				// special handling for no categories (NULL)
+				// See: https://core.trac.wordpress.org/ticket/15158
+				if (!isset($data['categories'])) {
+					$data['categories'] = NULL;
+					array_push($format, NULL);
+				}
+
+				// Update the table.
 				if ($wpdb->update( $table_name,
 					$data,
 					array ( 'ID' => $_POST['id']),
