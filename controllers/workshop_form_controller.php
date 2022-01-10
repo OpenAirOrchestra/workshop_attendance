@@ -61,16 +61,15 @@ class workshopFormController {
 					$data[$column_name] = $value;
 					array_push($format, "%s");
 				}
+
+				// Handle empty text fields.
+				if ((strcmp($column_name, 'id') != 0) && (!isset($value) || !($value)) && (strcmp($data_type, "text") == 0)) {
+					$data[$column_name] = NULL;
+					array_push($format, NULL);
+				}
 			}
 
 			if ($_POST['id']) {
-
-				// special handling for no categories (NULL)
-				// See: https://core.trac.wordpress.org/ticket/15158
-				if (!isset($data['categories'])) {
-					$data['categories'] = NULL;
-					array_push($format, NULL);
-				}
 
 				// Update the table.
 				if ($wpdb->update( $table_name,

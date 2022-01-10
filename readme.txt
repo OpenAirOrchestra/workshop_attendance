@@ -4,7 +4,7 @@ Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 4.0
 Tested up to: 5.8.2
-Stable tag: 1.5.13
+Stable tag: 1.5.14
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -95,3 +95,6 @@ Handle removing all categories
 
 = 1.5.13
 Use date input type
+
+= 1.5.14
+fix text empty field bug.
