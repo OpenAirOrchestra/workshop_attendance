@@ -234,7 +234,15 @@ async function fetchCurrentAttendees(eventId) {
 }
 
 /// Fetch recent attendees
-async function fetchRecentAttendees(maxRecents) {
+async function fetchRecentAttendees() {
+
+	// Get max recents from URL param string.  Defaults to 100
+	// This so we can tune this better.
+	const paramString = window.location.search;
+	const urlParams = new URLSearchParams(paramString);
+	let urlMaxRecents = urlParams.get('max_recents');
+	const maxRecents = urlMaxRecents ? urlMaxRecents : 100; 
+
 	const attendanceService = Configuration.attendanceService;
 
 	let page = 1;
@@ -258,7 +266,7 @@ async function loadAll(eventId, setIsLoading, setEventRecord, setUsers, setRecen
 		const eventService = Configuration.eventService;
 		const eventRecordPromise = eventService.get(eventId);
 		const usersPromise = fetchUsers();
-		const recentsPromise = fetchRecentAttendees(100);
+		const recentsPromise = fetchRecentAttendees();
 		const attendeesPromise = fetchCurrentAttendees(eventId);
 
 		const eventRecord = await eventRecordPromise;
@@ -352,7 +360,7 @@ async function deleteAttendanceRecord(eventId, attendee, modificationPromise, pe
 		await modificationPromise
 
 		// List recent attendees again and set them
-		const recentsPromise = fetchRecentAttendees(100);
+		const recentsPromise = fetchRecentAttendees();
 
 		// List current attendees again and set them
 		const currentAttendeesPromise = fetchCurrentAttendees(eventId);
