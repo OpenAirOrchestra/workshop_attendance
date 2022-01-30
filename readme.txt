@@ -88,13 +88,18 @@ Taking attendance at workshops was tedious.
 * add workshop categories.
 
 = 1.5.11
-Proper tagging
+* Proper tagging
 
 = 1.5.12
-Handle removing all categories
+* Handle removing all categories
 
 = 1.5.13
-Use date input type
+* Use date input type
 
 = 1.5.14
-fix text empty field bug.
+* Fix text empty field bug.
+
+= 1.5.15
+* change font to Helvetica for react attendance component.
+* Increase number of recents for react attendance component.
+* Truncate notes shown in react attendance component.
