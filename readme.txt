@@ -4,7 +4,7 @@ Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 4.0
 Tested up to: 5.8.2
-Stable tag: 1.5.15
+Stable tag: 1.5.16
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -103,3 +103,6 @@ Taking attendance at workshops was tedious.
 * change font to Helvetica for react attendance component.
 * Increase number of recents for react attendance component.
 * Truncate notes shown in react attendance component.
+
+= 1.5.16
+* Configurable recents in attendance component.
