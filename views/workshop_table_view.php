@@ -189,6 +189,10 @@ class workshopTableView {
 		$delete_url = get_admin_url() . "admin.php?page=list-workshops&workshop=$workshop_id&action=delete&delete_nonce=$delete_nonce";
 		$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
 		$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?event_id=$workshop_id&_wpnonce=$wp_rest_nonce";
+		$max_recents = get_option('workshop_attendance_recents_history_length');
+		if (isset($max_recents) && is_numeric($max_recents)) {
+			$attendance_react_url = $attendance_react_url . "&max_recents=$max_recents";
+		}
 ?>
 		<tr>
 			<td class="post-title page-title column-title">
