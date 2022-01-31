@@ -29,6 +29,7 @@
 
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+require_once( dirname(__FILE__) . '/views/options.php');
 require_once( dirname(__FILE__) . '/views/workshop_table_view.php');
 require_once( dirname(__FILE__) . '/views/workshop_detail_view.php');
 require_once( dirname(__FILE__) . '/views/workshop_form_view.php');
@@ -165,6 +166,11 @@ class workshopAttendance {
 			
 			$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance.php?attendance_nonce=$attendance_nonce";
 			$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance/?_wpnonce=$wp_rest_nonce";
+			$max_recents = get_option('workshop_attendance_recents_history_length');
+			if (isset($max_recents) && is_numeric($max_recents)) {
+				$attendance_react_url = $attendance_react_url . "&max_recents=$max_recents";
+			}
+
 ?>
 			<div id="icon-edit" class="icon32"><br/></div>
 			<h2>Today's Workshop
@@ -389,15 +395,31 @@ class workshopAttendance {
 <?php
 	}
 
+	/*
+     * Register settings for this plugin
+     */
+	function register_settings()
+	{
+		register_setting('workshop-attendance-settings-group', 'workshop_attendance_recents_history_length');
+	}
 
+	function options_page()
+	{
+		if (!current_user_can('manage_options')) {
+			wp_die(__('You do not have sufficient permissions to access this page.'));
+		}
+
+		$workshop_attendance_options_view = new workshopAttendanceOptionsView;
+		$workshop_attendance_options_view->render();
+	}
 
 	/*
-     * Create admin menu(s) for this plugin.  
-         * Create admin menu(s) for this plugin.  
      * Create admin menu(s) for this plugin.  
      */
 	function create_admin_menu()
 	{
+		// Add options page
+		add_options_page('Workshop Attendance Plugin Settings', 'Workshop Attendance Settings', 'manage_options', 'workshop-attendance-options', array($this, 'options_page'));
 
 		// Add menu page
 		add_menu_page('Workshops', 'Workshops', 'read', 'list-workshops', array($this, 'list_workshops'), plugins_url('images/music-stand.png', __FILE__));
@@ -408,6 +430,9 @@ class workshopAttendance {
 
 		// Add tools page
 		add_management_page('Export Workshops', 'Export Workshops', 'read_private_pages', 'export-workshops', array($this, 'export_workshops'));
+
+		//call register settings function
+		add_action('admin_init', array($this, 'register_settings'));
 	}
 
 	/*
