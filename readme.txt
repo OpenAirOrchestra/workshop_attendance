@@ -4,7 +4,7 @@ Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 4.0
 Tested up to: 5.8.2
-Stable tag: 1.5.16
+Stable tag: 1.5.17
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -106,3 +106,7 @@ Taking attendance at workshops was tedious.
 
 = 1.5.16
 * Configurable recents in attendance component.
+
+= 1.5.17
+* Remove legacy attendance component.
+
