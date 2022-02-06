@@ -187,7 +187,6 @@ class workshopTableView {
 		$view_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id";
 		$edit_url = get_admin_url() . "admin.php?page=workshop&workshop=$workshop_id&action=edit";
 		$delete_url = get_admin_url() . "admin.php?page=list-workshops&workshop=$workshop_id&action=delete&delete_nonce=$delete_nonce";
-		$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance.php?workshop=$workshop_id&attendance_nonce=$attendance_nonce";
 		$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(dirname(__FILE__))) . "/attendance/?event_id=$workshop_id&_wpnonce=$wp_rest_nonce";
 		$max_recents = get_option('workshop_attendance_recents_history_length');
 		if (isset($max_recents) && is_numeric($max_recents)) {
@@ -209,8 +208,7 @@ class workshopTableView {
 					<span class="edit">
 <a href="<?php echo $edit_url; ?>" title="Edit this item">Edit</a> | </span>
 					<span class="attendance">
-<a href="<?php echo $attendance_url; ?>" title="Take Attendance">Attendance</a> | 
-<a href="<?php echo $attendance_react_url; ?>" title="Take Attendance (Alpha)">Attendance (Alpha)</a> | 
+<a href="<?php echo $attendance_react_url; ?>" title="Take Attendance">Attendance</a> | 
 
 </span>
 

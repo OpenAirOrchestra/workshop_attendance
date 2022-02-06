@@ -164,7 +164,6 @@ class workshopAttendance {
 			$attendance_nonce = wp_create_nonce('attendance_nonce');
 			$wp_rest_nonce = wp_create_nonce( 'wp_rest' );
 			
-			$attendance_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance.php?attendance_nonce=$attendance_nonce";
 			$attendance_react_url = get_bloginfo('wpurl') . '/wp-content/plugins/' . basename(dirname(__FILE__)) . "/attendance/?_wpnonce=$wp_rest_nonce";
 			$max_recents = get_option('workshop_attendance_recents_history_length');
 			if (isset($max_recents) && is_numeric($max_recents)) {
@@ -178,8 +177,7 @@ class workshopAttendance {
 			if (current_user_can('edit_pages')) {
 ?>
 				<a class="add-new-h2" href="<?php echo $this->add_new_uri() ?>">Edit Details</a>
-				<a class="add-new-h2" href="<?php echo $attendance_url; ?>" title="Take Attendance">Take Attendance</a>
-				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance (Alpha)" >Take Attendance (Alpha)</a>
+				<a class="add-new-h2" href="<?php echo $attendance_react_url; ?>" title="Take Attendance" >Take Attendance</a>
 <?php
 			}
 ?>
