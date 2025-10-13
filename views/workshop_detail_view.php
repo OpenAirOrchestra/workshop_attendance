@@ -43,7 +43,11 @@ class workshopDetailView {
 	}
 ?>
 	</h2>
-	<h3><?php echo strftime("%A, %e %B %Y",strtotime($workshop['date'])); ?></h3>
+	<h3>	
+		<?php 
+			echo date('l, jS F Y',strtotime($workshop['date'])); 
+		?>
+	</h3>
 	<div>
 <?php
 		$size = sizeof($workshop);
@@ -66,7 +70,7 @@ class workshopDetailView {
 					} else {
 						$value = strtotime($value);
 						if ($value) {
-							$value = strftime("%A, %e %B %Y", $value);
+							$value = date("l, jS F Y", $value);
 						}
 					}
 				}
