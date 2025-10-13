@@ -110,3 +110,5 @@ Taking attendance at workshops was tedious.
 = 1.5.17
 * Remove legacy attendance component.
 
+= 1.5.18
+* Updates for PHP 8
