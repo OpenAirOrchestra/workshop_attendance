@@ -137,8 +137,8 @@ if (!wp_verify_nonce($_POST['export_nonce'], 'export_nonce')) {
 					$field = str_replace("\"", "\"\"", $field);
 					// strip newlines in field
 					$field = str_replace(array("\n", "\r"), " ", $field);
+					echo "\"" . stripslashes($field) . "\"";
 				}
-				echo "\"" . stripslashes($field) . "\"";
 				$sep = ",";
 			}
 		}
