@@ -3,8 +3,8 @@ Contributors: Darryl F, Richard K
 Donate link: http://www.thecarnivalband.com/
 Tags: users, logging
 Requires at least: 4.0
-Tested up to: 5.8.2
-Stable tag: 1.5.19
+Tested up to: 7.1.5
+Stable tag: 1.5.20
 
 A simple workshop attendance plugin for The Carnival Band
 
@@ -115,3 +115,6 @@ Taking attendance at workshops was tedious.
 
 = 1.5.19
 * Fix stripslashes bug
+
+= 1.5.20
+* Fix another stripslashes bug

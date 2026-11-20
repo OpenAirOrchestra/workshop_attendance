@@ -150,7 +150,11 @@ class workshopDetailView {
 			}
 ?>
 					<td>
-						<?php echo stripslashes($attendee['notes']); ?>
+						<?php 
+						if ($attendee['notes'] != null) {
+						    echo stripslashes($attendee['notes']); 
+ 						}
+?>
 					</td>
 					<td>
 <?php
